@@ -107,7 +107,7 @@ object FundOrderRules {
       if (!((p.fundOrderId == state.id))) return Left(iMadzError("TA_SUBMIT_RESOURCE", "TA_SUBMIT_RESOURCE"))
       if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains("succeeded")))) return Left(iMadzError("TA_PAID", "TA_PAID"))
       if (!(((state.taRequestId).value).isEmpty)) return Right(Nil)
-      Right(List(FundTASubmissionRegistered(p.fundOrderId, p.paymentTxId, hosts.StableTaRequestId(state, p))))
+      Right(List(FundTASubmissionRegistered(p.fundOrderId, p.paymentTxId, hosts.stableTaRequestId(state, p))))
     }
   }
   final class RecordFundTAAcceptedRule(hosts: FundOrderComputations)
@@ -179,7 +179,7 @@ object FundOrderRules {
       if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains("succeeded")))) return Left(iMadzError("REFUND_PAYMENT", "REFUND_PAYMENT"))
       if (!((state.taStatus == "rejected"))) return Left(iMadzError("REFUND_TA_REJECTED", "REFUND_TA_REJECTED"))
       if (!(((state.refundOperationId).value).isEmpty)) return Right(Nil)
-      Right(List(FundPurchaseRefundRequested(p.fundOrderId, p.paymentTxId, state.investorAccountId, state.fundCollectionAccountId, state.amount, hosts.StableRefundOperationId(state, p))))
+      Right(List(FundPurchaseRefundRequested(p.fundOrderId, p.paymentTxId, state.investorAccountId, state.fundCollectionAccountId, state.amount, hosts.stableRefundOperationId(state, p))))
     }
   }
   final class RecordFundRefundSucceededRule(hosts: FundOrderComputations)

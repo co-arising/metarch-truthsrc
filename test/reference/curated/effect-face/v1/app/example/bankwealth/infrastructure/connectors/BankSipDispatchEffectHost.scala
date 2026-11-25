@@ -1,27 +1,31 @@
-package example.bankwealth.application.connectors
+package example.bankwealth.infrastructure.connectors
 
 import scala.concurrent.Future
 
 import akka.actor.typed.ActorRef
 import com.google.protobuf.ByteString
-import example.bankwealth.application.process.BankTaSubmissionExecution
-import BankTaEffectProtocol._
+import example.bankwealth.application.connectors.BankSipDispatchGateway
+import example.bankwealth.application.process.sip_dispatch.BankSipDispatchExecution
+import example.bankwealth.application.connectors.BankSipDispatchProtocol._
 
-/** Durable external-effect host of the TA submission pipeline: owns the
-  * intent, the observed TA evidence and the authorized retry, for exactly one
-  * submission operation.
+/** Durable external-effect host of the SIP dispatch pipeline: owns the intent,
+  * the observed external evidence and the authorized retry, for exactly one
+  * dispatch operation.
   *
-  * Semantics contracts (identical to the dispatch effect host — the effect
-  * face's one shape, per-case knowledge):
-  * - Invoke is idempotent; every reply derives from durable state (R2:
-    * waiters are in-memory coalesced, never persisted; callers own ask
-    * timeout and retry).
-  * - No implicit retry; Reconcile demands explicit authorization and durable
-    * absent evidence; the authorized retry clears the observation (the
-    * journal keeps the evidence history) so stale evidence cannot answer
+  * Semantics contracts:
+  * - Invoke is idempotent: the same complete input under the same operation
+  *   identity is coalesced; a different input under a live effect is a
+  *   Conflict. Every reply is derived from durable state, so a caller that
+  *   re-invokes after any crash recovers its answer (R2: reply targets are
+  *   in-memory coalesced and never persisted; caller-side ask timeout and
+  *   retry are part of the contract).
+  * - No implicit retry: an unobserved effect answers Pending. A retry happens
+    * only through Reconcile with explicit authorization and durable absent
+    * evidence; the observation is cleared on the authorized retry (the journal
+    * keeps the full evidence history) so stale evidence can never answer
     * during the retry window (R3).
   * - Observation validation is fail-closed: an unknown status wire refuses. */
-object BankTaEffectHost {
+object BankSipDispatchEffectHost {
 
   /** External observation status; `wire` is the domain value's spelling. */
   sealed trait ObservationStatus { def wire: String }
@@ -54,21 +58,21 @@ object BankTaEffectHost {
   }
 
   final case class Bindings(
-    execute: EffectBinding[BankTaEffectOperation, BankTaEffectObservation],
-    query: EffectBinding[BankTaEffectOperation, Option[BankTaEffectObservation]],
-    reconcile: EffectBinding[BankTaEffectReconcile, Boolean],
+    execute: EffectBinding[BankSipDispatchOperation, BankSipDispatchObservation],
+    query: EffectBinding[BankSipDispatchOperation, Option[BankSipDispatchObservation]],
+    reconcile: EffectBinding[BankSipDispatchReconcile, Boolean],
   )
 
   /** The obligation table drives install-time exact-binding checks and the
     * ownership evidence — written once, never per binding. */
   private val obligations: Vector[(String, String, Bindings => EffectBinding[_, _])] = Vector(
-    ("BankTaEffectExecute", "execute", _.execute),
-    ("BankTaEffectQuery", "query", _.query),
-    ("BankTaEffectReconcilePort", "reconcile", _.reconcile),
+    ("BankSipDispatchExecute", "execute", _.execute),
+    ("BankSipDispatchQuery", "query", _.query),
+    ("BankSipDispatchReconcilePort", "reconcile", _.reconcile),
   )
 
   private val ImplementationVersion = "bank-v1-1"
-  private val Artifact = "BankTaTechnical"
+  private val Artifact = "BankSipTechnical"
 
   /** Static binding ownership per implementation: (id, role, artifact,
     * version, boundary). Ownership is a static binding obligation, not proof
@@ -90,24 +94,25 @@ object BankTaEffectHost {
     new Installed(bindings)
   }
 
-  final class Installed private[BankTaEffectHost] (private val bindings: Bindings) {
-    def execute(input: BankTaEffectOperation): Future[BankTaEffectObservation] = bindings.execute.run(input)
-    def query(input: BankTaEffectOperation): Future[Option[BankTaEffectObservation]] = bindings.query.run(input)
-    def reconcile(input: BankTaEffectReconcile): Future[Boolean] = bindings.reconcile.run(input)
+  final class Installed private[BankSipDispatchEffectHost] (private val bindings: Bindings)
+      extends BankSipDispatchGateway {
+    def execute(input: BankSipDispatchOperation): Future[BankSipDispatchObservation] = bindings.execute.run(input)
+    def query(input: BankSipDispatchOperation): Future[Option[BankSipDispatchObservation]] = bindings.query.run(input)
+    def reconcile(input: BankSipDispatchReconcile): Future[Boolean] = bindings.reconcile.run(input)
   }
 
   sealed trait Request
-  final case class Invoke(input: BankTaSubmissionExecution.State, replyTo: ActorRef[Reply]) extends Request
-  final case class Reconcile(input: BankTaSubmissionExecution.State,
+  final case class Invoke(input: BankSipDispatchExecution.State, replyTo: ActorRef[Reply]) extends Request
+  final case class Reconcile(input: BankSipDispatchExecution.State,
       decision: ReconcileDecision, authorization: String, replyTo: ActorRef[Reply]) extends Request
   private[bankwealth] final case class Observed(operation: String,
-      round: Long, value: Option[BankTaEffectObservation], fromQuery: Boolean) extends Request
+      round: Long, value: Option[BankSipDispatchObservation], fromQuery: Boolean) extends Request
   private[bankwealth] final case class Authorized(operation: String,
       round: Long, allowed: Boolean, decision: ReconcileDecision, authorization: String,
       proof: ByteString) extends Request
 
   sealed trait Reply
-  final case class Completed(result: BankTaSubmissionExecution.SubmitTaResult) extends Reply
+  final case class Completed(result: BankSipDispatchExecution.DispatchCashResult) extends Reply
   final case class Pending(reason: String) extends Reply
   final case class Conflict(reason: String) extends Reply
 
@@ -119,19 +124,19 @@ object BankTaEffectHost {
   final case class State(original: ByteString = ByteString.EMPTY,
       operation: String = "", observation: ByteString = ByteString.EMPTY)
 
-  def request(input: BankTaSubmissionExecution.State): BankTaEffectRequest =
-    BankTaEffectRequest(input.inputs.taRequestId, input.inputs.fundOrderId, input.inputs.paymentTxId)
+  def request(input: BankSipDispatchExecution.State): BankSipDispatchRequest =
+    BankSipDispatchRequest(input.inputs.occurrenceId, input.inputs.occurrence)
 
   /** Durable operation identity: scheme, saga and step tokens plus the
-    * request key, length-prefixed and SHA-256 digested. */
-  def operationIdentity(input: BankTaSubmissionExecution.State): String = {
+    * occurrence key, length-prefixed and SHA-256 digested. */
+  def operationIdentity(input: BankSipDispatchExecution.State): String = {
     require(input != null && input.inputs != null, "complete durable external input required")
     val parts = Vector(
       "bankwealth",
-      "bank-ta-submission-v1", "bank-v1-1",
-      "bank-ta-effect", "bank-v1-1",
-      "submit-ta", "SubmitPaidTaRequest",
-      input.inputs.taRequestId.value,
+      "bank-sip-dispatch-v1", "bank-v1-1",
+      "bank-sip-dispatch", "bank-v1-1",
+      "dispatch-cash", "DispatchSipCash",
+      input.inputs.occurrenceId.value,
     )
     parts.foreach(part => require(part != null && part.nonEmpty, "stable initial external identity required"))
     val buffer = new java.io.ByteArrayOutputStream()
@@ -145,13 +150,13 @@ object BankTaEffectHost {
     java.security.MessageDigest.getInstance("SHA-256").digest(buffer.toByteArray).map(b => f"${b & 0xff}%02x").mkString
   }
 
-  def statusOf(value: BankTaEffectObservation): ObservationStatus =
+  def statusOf(value: BankSipDispatchObservation): ObservationStatus =
     ObservationStatus
         .fromWire(value.status).getOrElse(throw new IllegalArgumentException("unknown external observation status"))
 
   /** Full same-operation same-request observation with status-consistent
     * evidence; anything else refuses. */
-  def checked(value: BankTaEffectObservation, expected: BankTaEffectOperation): BankTaEffectObservation = {
+  def checked(value: BankSipDispatchObservation, expected: BankSipDispatchOperation): BankSipDispatchObservation = {
     require(value != null && value.operation == expected.operation && value.request == expected.request &&
       value.result != null &&
           value.evidence != null, "complete same-operation same-request effect observation required")
@@ -166,18 +171,19 @@ object BankTaEffectHost {
     value
   }
 
-  def terminalOutcome(observation: Option[BankTaEffectObservation]): Option[BankTaSubmissionExecution.SubmitTaResult] =
+  def terminalOutcome(observation: Option[BankSipDispatchObservation]):
+      Option[BankSipDispatchExecution.DispatchCashResult] =
     observation.flatMap { value =>
       statusOf(value) match {
         case ObservationStatus.Confirmed =>
-            Some(BankTaSubmissionExecution.SubmitTaObserved(value.result.get.taRequestId))
-        case ObservationStatus.Rejected => Some(BankTaSubmissionExecution.SubmitTaRefused)
-        case ObservationStatus.Failed => Some(BankTaSubmissionExecution.SubmitTaUnavailable)
+            Some(BankSipDispatchExecution.DispatchCashDispatched(value.result.get.operationId))
+        case ObservationStatus.Rejected => Some(BankSipDispatchExecution.DispatchCashRefused)
+        case ObservationStatus.Failed => Some(BankSipDispatchExecution.DispatchCashUnavailable)
         case ObservationStatus.Absent | ObservationStatus.Unknown => None
       }
     }
 
-  def isReconcileAuthorized(decision: ReconcileDecision, proof: Option[BankTaEffectObservation]): Boolean =
+  def isReconcileAuthorized(decision: ReconcileDecision, proof: Option[BankSipDispatchObservation]): Boolean =
     (decision, proof) match {
       case (ReconcileDecision.Retry, Some(value))
           if statusOf(value) == ObservationStatus.Absent && value.evidence.nonEmpty => true

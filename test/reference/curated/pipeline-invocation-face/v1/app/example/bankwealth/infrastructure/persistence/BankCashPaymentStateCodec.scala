@@ -1,6 +1,6 @@
 package example.bankwealth.infrastructure.persistence
 
-import example.bankwealth.application.process.BankCashPaymentExecution
+import example.bankwealth.application.process.cash_payment.BankCashPaymentExecution
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import net.imadz.monarch.persistence.StateCodec
 

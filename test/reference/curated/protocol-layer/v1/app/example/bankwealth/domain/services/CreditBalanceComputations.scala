@@ -6,9 +6,9 @@ import example.bankwealth.domain.values._
 import net.imadz.common.CommonTypes.DomainService
 
 trait CreditBalanceComputations extends DomainService {
-  def BalanceAfterCommitIncomingCredits(state: State, p: CommitIncomingCreditsParams): Money
-  def BalanceAfterReleaseReservedFunds(state: State, p: ReleaseReservedFundsParams): Money
-  def BalanceAfterReserveFunds(state: State, p: ReserveFundsParams): Money
+  def balanceAfterCommitIncomingCredits(state: State, p: CommitIncomingCreditsParams): Money
+  def balanceAfterReleaseReservedFunds(state: State, p: ReleaseReservedFundsParams): Money
+  def balanceAfterReserveFunds(state: State, p: ReserveFundsParams): Money
 }
 object CreditBalanceComputations {
 }

@@ -150,7 +150,7 @@ object SipPlanRules {
       if (!((state.revisions).contains(p.revision))) return Left(iMadzError("SIP_REVISION_DECLARED", "SIP_REVISION_DECLARED"))
       if (!((((state.revisions)(p.revision) == p.config) && ((p.config).revision == p.revision)))) return Left(iMadzError("SIP_RETAINED_CONFIG", "SIP_RETAINED_CONFIG"))
       if (!(((p.dueSlot >= (p.config).effectiveSlot) && (!((state.revisionEnds).contains(p.revision)) || (p.dueSlot < (state.revisionEnds)(p.revision)))))) return Left(iMadzError("SIP_REVISION_INTERVAL", "SIP_REVISION_INTERVAL"))
-      Right(List(SipInstallmentTriggered(p.position, hosts.StableSipOccurrence(state, p))))
+      Right(List(SipInstallmentTriggered(p.position, hosts.stableSipOccurrence(state, p))))
     }
   }
   final class RecordSipInstallmentPendingRule(hosts: SipPlanComputations)

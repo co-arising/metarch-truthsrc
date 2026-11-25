@@ -9,14 +9,23 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.application.connectors._
-import example.bankwealth.application.process.BankTaSubmissionExecution
+import example.bankwealth.infrastructure.connectors._
+import example.bankwealth.application.process.ta_submission.BankTaSubmissionExecution
 import example.bankwealth.application.connectors.BankTaEffectProtocol._
 import example.bankwealth.infrastructure.persistence.BankTaSubmissionStateCodec
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 
 /** Runtime persistence & actor assembly for `BankTaEffectHost` and `BankTaSubmissionExecution`. */
 object BankTaEffectBootstrap {
+
+  def install(submitTaHost: ActorRef[BankTaEffectHost.Request]): Installed = {
+    require(submitTaHost != null, "the exact effect host actor is required")
+    new Installed(submitTaHost)
+  }
+
+  final class Installed private[BankTaEffectBootstrap] (
+    val submitTaHost: ActorRef[BankTaEffectHost.Request],
+  )
 
   def hostBehavior(
     persistenceId: String,
@@ -155,7 +164,7 @@ object BankTaEffectBootstrap {
 
   def executionBehavior(
     persistenceId: String,
-    installed: BankTaSubmissionExecution.Installed,
+    installed: Installed,
     observer: RunObserver[BankTaSubmissionExecution.State],
   )(implicit ec: ExecutionContext): Behavior[PersistentMonarch.Command[BankTaSubmissionExecution.State]] =
     Behaviors.setup { context =>

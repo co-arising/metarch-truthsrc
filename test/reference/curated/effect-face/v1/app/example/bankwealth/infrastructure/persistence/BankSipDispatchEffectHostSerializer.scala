@@ -1,7 +1,7 @@
 package example.bankwealth.infrastructure.persistence
 
 import akka.serialization.SerializerWithStringManifest
-import example.bankwealth.application.connectors.BankSipDispatchEffectHost
+import example.bankwealth.infrastructure.connectors.BankSipDispatchEffectHost
 
 /** Wire codec of the effect-host event journal. Event identities stay the
   * declared protobuf shapes (the proto face owns the schema). Unknown event

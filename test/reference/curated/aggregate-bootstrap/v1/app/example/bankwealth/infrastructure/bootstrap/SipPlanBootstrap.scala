@@ -24,7 +24,10 @@ trait SipPlanBootstrap {
     sharding.init(Entity(SipPlanAggregate.EntityKey)(behaviorFactory))
   }
 
-  def create(persistenceId: String, initial: State, hosts: SipPlanComputations, tag: String = SipPlanAggregate.tags.head): Behavior[Command] = {
+  def create(persistenceId: String, initial: State, hosts: SipPlanComputations): Behavior[Command] =
+    create(persistenceId, initial, hosts, SipPlanAggregate.tags.head)
+
+  def create(persistenceId: String, initial: State, hosts: SipPlanComputations, tag: String): Behavior[Command] = {
     require(persistenceId != null && persistenceId.nonEmpty && hosts != null, "explicit persistence identity and implementations required")
 
     EventSourcedBehavior[Command, Event, State](

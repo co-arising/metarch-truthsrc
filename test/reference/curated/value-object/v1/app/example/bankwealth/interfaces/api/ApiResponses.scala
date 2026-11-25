@@ -1,6 +1,6 @@
 package example.bankwealth.interfaces.api
 
-import example.bankwealth.application.projection._
+import example.bankwealth.application.readmodels.ReadModelViews._
 
 object ApiResponses {
   final case class BankAccountResponse(metadata: BankReadMetadata, account: Option[BankAccountView])

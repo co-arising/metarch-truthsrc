@@ -1,11 +1,11 @@
-package example.bankwealth.application.process
+package example.bankwealth.application.process.cash_payment
 
 import scala.concurrent.Future
 
-import BankPaymentMessages._
-import CreditFundCollectionStep._
-import ReserveCashFundOrderStep._
-import ReserveInvestorFundsStep._
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
+import example.bankwealth.application.process.protocol.CreditFundCollectionStep._
+import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep._
+import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import net.imadz.infra.saga.strict.{OperationIdentity, TransactionIdentity}
 
 /** Technical port surface of the payment pipeline invocation face — the one

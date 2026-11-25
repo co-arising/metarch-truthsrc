@@ -8,14 +8,24 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.application.process._
-import example.bankwealth.application.process.BankPaymentMessages._
+import example.bankwealth.application.process.cash_payment._
+import example.bankwealth.infrastructure.process.{BankPaymentHost, BankPaymentHostIO}
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
 import example.bankwealth.infrastructure.persistence.{BankCashPaymentStateCodec, BankPaymentProcessCodecs}
 import net.imadz.infra.saga.strict._
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 
 /** Runtime persistence & actor assembly for `BankPaymentHost` and `BankCashPaymentExecution`. */
 object BankPaymentProcessBootstrap {
+
+  def install(payCashPurchaseHost: ActorRef[BankPaymentHost.Request]): Installed = {
+    require(payCashPurchaseHost != null, "the exact invocation host actor is required")
+    new Installed(payCashPurchaseHost)
+  }
+
+  final class Installed private[BankPaymentProcessBootstrap] (
+    val payCashPurchaseHost: ActorRef[BankPaymentHost.Request],
+  )
 
   def portsFromTechnical(technical: BankPaymentPorts)(implicit ec: ExecutionContext): BankPaymentSagaDefinition.Ports =
     BankPaymentSagaDefinition.fromTechnical(technical, BankPaymentProcessCodecs)
@@ -168,7 +178,7 @@ object BankPaymentProcessBootstrap {
 
   def executionBehavior(
     persistenceId: String,
-    installed: BankCashPaymentExecution.Installed,
+    installed: Installed,
     observer: RunObserver[BankCashPaymentExecution.State],
   )(implicit ec: ExecutionContext): Behavior[PersistentMonarch.Command[BankCashPaymentExecution.State]] =
     Behaviors.setup { context =>

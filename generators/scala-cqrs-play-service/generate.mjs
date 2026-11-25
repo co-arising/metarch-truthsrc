@@ -26,8 +26,14 @@ import { withFlippedServiceRuntime } from '../../lib/derivation/service-runtime-
 import { withFlippedProjectScaffold } from '../../lib/derivation/project-scaffold-emission.mjs';
 import { remapPlanEntries } from '../../lib/layout/layout-strategy.mjs';
 
-const version = id => id === 'artifact-contract' ? '3' : ['saga-host-contract', 'effect-host-contract'].includes(id) ? '2' : null;
-const serviceProducts = ['reference-layout', 'artifact-contract', 'exact-value-types', 'exact-value-codecs'];
+const PRODUCT_VERSIONS = Object.freeze({
+  'artifact-contract': '3',
+  'domain-dependencies': '6',
+  'saga-host-contract': '2',
+  'effect-host-contract': '2',
+});
+const version = id => PRODUCT_VERSIONS[id] ?? null;
+const serviceProducts = ['reference-layout', 'artifact-contract', 'domain-dependencies', 'exact-value-types', 'exact-value-codecs'];
 const serviceFootprint = serviceProducts.map(id => ({ id, version: version(id) ?? '1' }));
 const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).map(([id, implementation]) => [id, {
   version: 'service-1',

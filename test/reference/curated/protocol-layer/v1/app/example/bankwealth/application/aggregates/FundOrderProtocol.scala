@@ -3,8 +3,8 @@ package example.bankwealth.application.aggregates
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.FundOrderEntity.{Event, State}
-import example.bankwealth.application.process.BankPaymentMessages._
-import example.bankwealth.application.process.BankRefundMessages._
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
+import example.bankwealth.application.process.protocol.BankRefundMessages._
 import example.bankwealth.domain.values._
 import example.bankwealth.interfaces.api.ApiCommands._
 import net.imadz.common.CborSerializable

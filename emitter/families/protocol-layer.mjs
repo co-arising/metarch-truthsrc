@@ -198,6 +198,8 @@ function renderCommandCaseClass(className, rows, pkgByContext, ownContext) {
   return oneLine;
 }
 
+const lowerFirst = s => (s ? s[0].toLowerCase() + s.slice(1) : s);
+
 function renderComputations(agg, pkg, pkgByContext) {
   const name = symbol(agg.name);
   const hasHosts = agg.hosts.length > 0;
@@ -215,7 +217,7 @@ function renderComputations(agg, pkg, pkgByContext) {
     'trait ' + name + 'Computations extends DomainService {',
   ];
   for (const h of agg.hosts) {
-    lines.push('  def ' + symbol(h.name) + '(state: State, p: ' + symbol(h.command) + 'Params): ' + renderType(h.outputType, pkgByContext, agg.context));
+    lines.push('  def ' + symbol(lowerFirst(h.name)) + '(state: State, p: ' + symbol(h.command) + 'Params): ' + renderType(h.outputType, pkgByContext, agg.context));
   }
   lines.push('}');
   lines.push('object ' + name + 'Computations {');

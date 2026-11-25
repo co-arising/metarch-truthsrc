@@ -1,13 +1,14 @@
-package example.bankwealth.application.process
+package example.bankwealth.infrastructure.process
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import BankPaymentMessages._
-import CreditFundCollectionStep._
-import ReserveCashFundOrderStep._
-import ReserveInvestorFundsStep._
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
+import example.bankwealth.application.process.protocol.CreditFundCollectionStep._
+import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep._
+import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import BankPaymentHost.ResultKind
-import BankPaymentPorts.CompletionContext
+import example.bankwealth.application.process.cash_payment.BankPaymentPorts
+import example.bankwealth.application.process.cash_payment.BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.TransactionIdentity
 
 /** Input/output wiring of the payment invocation face: the admission gate and

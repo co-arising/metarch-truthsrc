@@ -1,9 +1,7 @@
-package example.bankwealth.application.process
+package example.bankwealth.application.process.sip_dispatch
 
 import scala.concurrent.duration._
 
-import akka.actor.typed.ActorRef
-import example.bankwealth.application.connectors.BankSipDispatchEffectHost
 import example.bankwealth.domain.values.{OccurrenceId, OperationId, SipOccurrence}
 import net.imadz.monarch.{StageError, StageFailedException}
 
@@ -31,14 +29,6 @@ object BankSipDispatchExecution {
   /** Unconfirmed predecessor output is refused — never defaulted. */
   def outputs(state: State): Outputs =
     Outputs(state.operationId.getOrElse(throw new IllegalArgumentException("unconfirmed predecessor output")))
-
-  def install(dispatchCashHost: ActorRef[BankSipDispatchEffectHost.Request]): Installed = {
-    require(dispatchCashHost != null, "the exact effect host actor is required")
-    new Installed(dispatchCashHost)
-  }
-
-  final class Installed private[BankSipDispatchExecution] (val dispatchCashHost: ActorRef[BankSipDispatchEffectHost
-      .Request])
 
   // ----------------------------------------------------------------- knowledge
   val PlanVersion = "bank-v1-1"

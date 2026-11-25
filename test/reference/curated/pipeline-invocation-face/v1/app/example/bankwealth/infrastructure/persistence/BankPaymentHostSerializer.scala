@@ -1,7 +1,7 @@
 package example.bankwealth.infrastructure.persistence
 
 import akka.serialization.SerializerWithStringManifest
-import example.bankwealth.application.process.BankPaymentHost
+import example.bankwealth.infrastructure.process.BankPaymentHost
 import net.imadz.infra.saga.strict.StrictSagaProtoConverters
 import net.imadz.infra.saga.strict.proto.saga_strict.TransactionIdentityPO
 

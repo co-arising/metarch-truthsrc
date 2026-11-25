@@ -7,20 +7,30 @@
     "version": "0.2.1"
   },
   "layers": {
-    "allowedTopLayers": ["domain", "application", "interfaces", "infrastructure"],
+    "allowedTopLayers": ["domain", "application", "interfaces", "infrastructure", "modules"],
     "forbiddenPackages": [
       "application.api",
       "application.integration",
+      "application.projection",
       "application.saga",
       "domain.events",
       "domain.invariant"
     ],
     "allowedSubpackages": {
       "domain": ["values", "entities", "invariants", "services", "policy"],
-      "application": ["aggregates", "connectors", "process", "projection", "queries", "services"],
+      "application": ["aggregates", "connectors", "policies", "process", "queries", "readmodels", "services"],
       "interfaces": ["api"],
-      "infrastructure": ["bootstrap", "connectors", "persistence", "proto", "repositories"]
+      "infrastructure": ["bootstrap", "connectors", "persistence", "process", "proto", "repositories"],
+      "modules": []
     },
+    "requiredConfFiles": [
+      "conf/application.conf",
+      "conf/cluster.conf",
+      "conf/persistence.conf",
+      "conf/projection.conf",
+      "conf/serialization.conf",
+      "conf/service.conf"
+    ],
     "maxFlatDtoFilesPerDir": 5
   },
   "approvedEvolutions": [
@@ -67,7 +77,8 @@
       "layer": "domain",
       "packageRole": "domain.services",
       "requiredImports": ["CommonTypes\\.\\{?[^\\n]*DomainService"],
-      "requiredPatterns": ["\\bextends\\s+DomainService\\b"]
+      "requiredPatterns": ["\\bextends\\s+DomainService\\b"],
+      "forbiddenPatterns": ["\\bdef\\s+[A-Z][A-Za-z0-9_]*\\("]
     },
     "aggregate-protocol": {
       "layer": "application",
@@ -123,7 +134,7 @@
     },
     "projection": {
       "layer": "application",
-      "packageRole": "application.projection",
+      "packageRole": "application.readmodels",
       "fileSuffix": "Projection.scala",
       "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Projection\\b",
       "requiredImports": [
@@ -136,7 +147,7 @@
     },
     "projection-handler": {
       "layer": "application",
-      "packageRole": "application.projection",
+      "packageRole": "application.readmodels",
       "fileSuffix": "ProjectionHandler.scala",
       "requiredDecl": "\\bclass\\s+[A-Z][A-Za-z0-9_]*ProjectionHandler\\b",
       "requiredImports": ["akka\\.projection\\.jdbc\\.scaladsl\\.JdbcHandler", "ScalikeJdbcSession"],
@@ -144,9 +155,24 @@
     },
     "projection-repository-port": {
       "layer": "application",
-      "packageRole": "application.projection.repository",
+      "packageRole": "application.readmodels.repository",
       "fileSuffix": "Repository.scala",
       "requiredDecl": "\\btrait\\s+[A-Z][A-Za-z0-9_]*Repository\\b"
+    },
+    "application-bootstrap": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.bootstrap",
+      "fileSuffix": "ApplicationBootstrap.scala",
+      "requiredDecl": "@Singleton\\s+(?:final\\s+)?class\\s+ApplicationBootstrap\\b",
+      "requiredImports": ["ClusterSharding", "javax\\.inject\\."],
+      "requiredPatterns": ["\\bextends\\s+[A-Z][A-Za-z0-9_]*Bootstrap\\b", "\\binit[A-Z][A-Za-z0-9_]*Aggregate\\("]
+    },
+    "bootstrap-module": {
+      "layer": "modules",
+      "packageRole": "modules",
+      "fileSuffix": "BootstrapModule.scala",
+      "requiredDecl": "\\bclass\\s+BootstrapModule\\s+extends\\s+AbstractModule\\b",
+      "requiredPatterns": ["bind\\(classOf\\[ApplicationBootstrap\\]\\)\\.asEagerSingleton\\(\\)"]
     },
     "projection-bootstrap": {
       "layer": "infrastructure",

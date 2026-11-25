@@ -85,6 +85,7 @@ function renderSerializationConf(ser) {
     '}',
     '',
     'akka.actor.serialization-bindings {',
+    '  "net.imadz.common.CborSerializable" = jackson-cbor',
     '  "com.google.protobuf.Message" = proto',
     `  "scalapb.GeneratedMessage" = ${ser.domainSerializers[0].key}`,
     `  "scalapb.GeneratedOneof" = ${ser.domainSerializers[0].key}`,

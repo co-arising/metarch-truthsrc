@@ -24,7 +24,10 @@ trait CreditBalanceBootstrap {
     sharding.init(Entity(CreditBalanceAggregate.EntityKey)(behaviorFactory))
   }
 
-  def create(persistenceId: String, initial: State, hosts: CreditBalanceComputations, tag: String = CreditBalanceAggregate.tags.head): Behavior[Command] = {
+  def create(persistenceId: String, initial: State, hosts: CreditBalanceComputations): Behavior[Command] =
+    create(persistenceId, initial, hosts, CreditBalanceAggregate.tags.head)
+
+  def create(persistenceId: String, initial: State, hosts: CreditBalanceComputations, tag: String): Behavior[Command] = {
     require(persistenceId != null && persistenceId.nonEmpty && hosts != null, "explicit persistence identity and implementations required")
 
     EventSourcedBehavior[Command, Event, State](

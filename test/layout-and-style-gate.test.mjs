@@ -8,9 +8,9 @@ import path from 'node:path';
 
 const BANK_GENERATED = path.resolve(import.meta.dirname, '../../bank-wealth-demo/generated/current');
 const BASE_REL = 'app/example/bankwealth';
-const ALLOWED_TOP_LAYERS = new Set(['domain', 'application', 'interfaces', 'infrastructure']);
+const ALLOWED_TOP_LAYERS = new Set(['domain', 'application', 'interfaces', 'infrastructure', 'modules']);
 const ALLOWED_DOMAIN_SUBPACKAGES = new Set(['values', 'entities', 'invariants', 'services', 'policy']);
-const ALLOWED_APPLICATION_SUBPACKAGES = new Set(['aggregates', 'connectors', 'process', 'projection', 'queries', 'services']);
+const ALLOWED_APPLICATION_SUBPACKAGES = new Set(['aggregates', 'connectors', 'policies', 'process', 'queries', 'readmodels', 'services']);
 const FORBIDDEN_PROCESS_INTEGRATION_PATTERNS = [
   { label: 'PersistenceId', re: /\bPersistenceId\b/ },
   { label: 'StateCodec', re: /\bStateCodec\b/ },
@@ -18,6 +18,7 @@ const FORBIDDEN_PROCESS_INTEGRATION_PATTERNS = [
   { label: 'DomainConverters', re: /\bDomainConverters\b/ },
   { label: 'EventSourcedBehavior', re: /\bEventSourcedBehavior\b/ },
   { label: 'PersistentMonarch', re: /\bPersistentMonarch\b/ },
+  { label: 'com.google.protobuf', re: /\bcom\.google\.protobuf\./ },
   { label: '.infrastructure.', re: /\.infrastructure\./ },
 ];
 const FORBIDDEN_DOMAIN_PATTERNS = [
@@ -200,10 +201,11 @@ test('layout-and-style Phase 3/B: application.process and application.connectors
   assert.deepEqual(violations, [], 'Phase 3/B application purity violations:\n' + violations.join('\n'));
 });
 
-test('layout-and-style Phase 3/B: conf/serialization.conf binds infrastructure.persistence serializers to process/connectors events', () => {
+test('layout-and-style Phase 3/B: conf/serialization.conf binds CborSerializable and infrastructure host/effect events', () => {
   const conf = fs.readFileSync(path.join(BANK_GENERATED, 'conf/serialization.conf'), 'utf8');
+  assert.match(conf, /"net\.imadz\.common\.CborSerializable"\s*=\s*jackson-cbor/);
   assert.match(conf, /host0\s*=\s*"example\.bankwealth\.infrastructure\.persistence\.BankPaymentHostSerializer"/);
   assert.match(conf, /effect0\s*=\s*"example\.bankwealth\.infrastructure\.persistence\.BankSipDispatchEffectHostSerializer"/);
-  assert.match(conf, /"example\.bankwealth\.application\.process\.BankPaymentHost\$Event"\s*=\s*host0/);
-  assert.match(conf, /"example\.bankwealth\.application\.connectors\.BankSipDispatchEffectHost\$Event"\s*=\s*effect0/);
+  assert.match(conf, /"example\.bankwealth\.infrastructure\.process\.BankPaymentHost\$Event"\s*=\s*host0/);
+  assert.match(conf, /"example\.bankwealth\.infrastructure\.connectors\.BankSipDispatchEffectHost\$Event"\s*=\s*effect0/);
 });

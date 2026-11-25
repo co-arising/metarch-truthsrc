@@ -24,7 +24,10 @@ trait FundOrderBootstrap {
     sharding.init(Entity(FundOrderAggregate.EntityKey)(behaviorFactory))
   }
 
-  def create(persistenceId: String, initial: State, hosts: FundOrderComputations, authority: ExternalAuthority, tag: String = FundOrderAggregate.tags.head): Behavior[Command] = {
+  def create(persistenceId: String, initial: State, hosts: FundOrderComputations, authority: ExternalAuthority): Behavior[Command] =
+    create(persistenceId, initial, hosts, authority, FundOrderAggregate.tags.head)
+
+  def create(persistenceId: String, initial: State, hosts: FundOrderComputations, authority: ExternalAuthority, tag: String): Behavior[Command] = {
     require(persistenceId != null && persistenceId.nonEmpty && hosts != null && authority != null, "explicit persistence identity and implementations required")
 
     EventSourcedBehavior[Command, Event, State](

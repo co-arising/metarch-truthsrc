@@ -36,7 +36,8 @@ export function checkInput(input) {
   checkObject(input, 'input');
   checkNoExtraKeys(input, new Set([
     'schemaVersion', 'package', 'serviceName', 'bootstrap', 'journalConnection',
-    'readSideConnection', 'endpoints', 'pages', 'artifactSource', 'configurationScala', 'readsideFiles',
+    'readSideConnection', 'endpoints', 'pages', 'artifactSource', 'configurationScala',
+    'aggregates', 'readsideProjections', 'readsideFiles',
   ]), 'input');
   if (input.schemaVersion !== SCHEMA) fail('schemaVersion must be ' + SCHEMA);
   if (typeof input.package !== 'string' || !PACKAGE_RE.test(input.package)) fail('package invalid');
@@ -81,6 +82,24 @@ export function checkInput(input) {
       checkNoExtraKeys(a, new Set(['endpointId', 'path']), 'pages.aliases[' + i + ']');
       if (!seenEndpoints.has(a.endpointId)) fail('pages.aliases[' + i + '] unknown endpointId: ' + a.endpointId);
       if (typeof a.path !== 'string' || !a.path.startsWith('/')) fail('pages.aliases[' + i + '].path invalid');
+    }
+  }
+  if (input.aggregates !== undefined) {
+    if (!Array.isArray(input.aggregates)) fail('aggregates must be an array');
+    for (let i = 0; i < input.aggregates.length; i++) {
+      const a = checkObject(input.aggregates[i], 'aggregates[' + i + ']');
+      checkNoExtraKeys(a, new Set(['name', 'authority']), 'aggregates[' + i + ']');
+      if (typeof a.name !== 'string' || !TYPE_NAME_RE.test(a.name)) fail('aggregates[' + i + '].name invalid');
+      if (typeof a.authority !== 'boolean') fail('aggregates[' + i + '].authority must be boolean');
+    }
+  }
+  if (input.readsideProjections !== undefined) {
+    if (!Array.isArray(input.readsideProjections)) fail('readsideProjections must be an array');
+    for (let i = 0; i < input.readsideProjections.length; i++) {
+      const rp = checkObject(input.readsideProjections[i], 'readsideProjections[' + i + ']');
+      checkNoExtraKeys(rp, new Set(['name', 'subpackage']), 'readsideProjections[' + i + ']');
+      if (typeof rp.name !== 'string' || !TYPE_NAME_RE.test(rp.name)) fail('readsideProjections[' + i + '].name invalid');
+      if (typeof rp.subpackage !== 'string' || !PACKAGE_RE.test(rp.subpackage)) fail('readsideProjections[' + i + '].subpackage invalid');
     }
   }
   if (!Array.isArray(input.readsideFiles)) fail('readsideFiles must be an array');
@@ -368,14 +387,111 @@ function renderServiceLoader(input) {
   ].join('\n');
 }
 
+const lowerFirst = s => (s ? s[0].toLowerCase() + s.slice(1) : s);
+
+function renderBootstrapModule(input) {
+  const { package: pkg } = input;
+  return [
+    `package ${pkg}.modules`,
+    '',
+    'import akka.actor.{ActorSystem, ExtendedActorSystem}',
+    'import com.google.inject.{AbstractModule, Provides}',
+    `import ${pkg}.infrastructure.bootstrap.ApplicationBootstrap`,
+    '',
+    'final class BootstrapModule extends AbstractModule {',
+    '  override def configure(): Unit = {',
+    '    bind(classOf[ApplicationBootstrap]).asEagerSingleton()',
+    '  }',
+    '',
+    '  @Provides',
+    '  def provideExtendedSystem(system: ActorSystem): ExtendedActorSystem =',
+    '    system.asInstanceOf[ExtendedActorSystem]',
+    '}',
+    '',
+  ].join('\n');
+}
+
 function renderApplicationBootstrap(input) {
   const { package: pkg, serviceName: name, bootstrap } = input;
+  const aggregates = input.aggregates ?? [];
+  const readsideProjections = input.readsideProjections ?? [];
+  const traits = [
+    ...aggregates.map(a => `${a.name}Bootstrap`),
+    ...readsideProjections.map(rp => `${rp.name}Bootstrap`),
+  ];
+  const extendsClause = traits.length ? ' extends ' + traits.join('\n  with ') : '';
+
+  const aggImports = aggregates.flatMap(a => [
+    `import ${pkg}.application.aggregates.${a.name}Aggregate`,
+    ...(a.authority ? [`import ${pkg}.application.aggregates.${a.name}Protocol`] : []),
+    `import ${pkg}.domain.services.${a.name}Computations`,
+  ]);
+  const projImports = readsideProjections.flatMap(rp => [
+    `import ${pkg}.${rp.subpackage}.${rp.name}ProjectionHandler`,
+    `import ${pkg}.${rp.subpackage}.repository.${rp.name}Repository`,
+  ]);
+
+  const injectedParams = [
+    '  classicSystem: akka.actor.ActorSystem,',
+    '  sharding: ClusterSharding,',
+    ...aggregates.flatMap(a => [
+      `  ${lowerFirst(a.name)}Computations: ${a.name}Computations,`,
+      ...(a.authority ? [`  ${lowerFirst(a.name)}Authority: ${a.name}Protocol.ExternalAuthority,`] : []),
+    ]),
+    ...readsideProjections.flatMap(rp => [
+      `  ${lowerFirst(rp.name)}Repository: ${rp.name}Repository,`,
+      `  ${lowerFirst(rp.name)}Bindings: ${rp.name}ProjectionHandler.Bindings,`,
+    ]),
+  ];
+  if (injectedParams.length) {
+    injectedParams[injectedParams.length - 1] = injectedParams[injectedParams.length - 1].replace(/,$/, '');
+  }
+
+  const initCalls = [
+    ...aggregates.map(a =>
+      a.authority
+        ? `  init${a.name}Aggregate(sharding, ${lowerFirst(a.name)}Computations, ${lowerFirst(a.name)}Authority)`
+        : `  init${a.name}Aggregate(sharding, ${lowerFirst(a.name)}Computations)`
+    ),
+    ...readsideProjections.map(rp => {
+      const tagsExpr = aggregates.length
+        ? aggregates.map(a => `${a.name}Aggregate.tags`).join(' ++ ')
+        : 'Vector.empty[String]';
+      return [
+        `  init${rp.name}Projection(`,
+        '    system = system,',
+        '    readJournalPluginId = classicSystem.settings.config.getString("akka.persistence.query.journal.id"),',
+        `    tags = ${tagsExpr},`,
+        `    repository = ${lowerFirst(rp.name)}Repository,`,
+        `    bindings = ${lowerFirst(rp.name)}Bindings`,
+        '  )',
+      ].join('\n');
+    }),
+  ];
+
   return [
     `package ${pkg}.infrastructure.bootstrap`,
     '',
+    'import akka.actor.typed.ActorSystem',
+    'import akka.actor.typed.scaladsl.adapter._',
+    'import akka.cluster.sharding.typed.scaladsl.ClusterSharding',
+    ...aggImports,
+    ...projImports,
+    'import javax.inject.{Inject, Singleton}',
     'import play.api.{Application, ApplicationLoader}',
+    'import scala.concurrent.ExecutionContext',
     'import scala.util.control.NonFatal',
     `import ${name}Contract._`,
+    '',
+    '/** Guice eager-singleton application bootstrap mounting all CQRS aggregates and projections. */',
+    '@Singleton',
+    'class ApplicationBootstrap @Inject()(',
+    ...injectedParams,
+    `)${extendsClause} {`,
+    '  private implicit val system: ActorSystem[Nothing] = classicSystem.toTyped',
+    '  private implicit val ec: ExecutionContext = system.executionContext',
+    ...(initCalls.length ? ['', ...initCalls] : []),
+    '}',
     '',
     'object ApplicationBootstrap {',
     '  def load(context: ApplicationLoader.Context): Application = {',
@@ -397,20 +513,144 @@ function renderApplicationBootstrap(input) {
   ].join('\n');
 }
 
+function renderClusterConf() {
+  return [
+    'akka {',
+    '  actor {',
+    '    provider = cluster',
+    '  }',
+    '',
+    '  min-nr-of-member = 1',
+    '',
+    '  remote.artery {',
+    '    canonical {',
+    '      hostname = ${clustering.ip}',
+    '      port = ${clustering.port}',
+    '    }',
+    '    bind {',
+    '      hostname = ${clustering.ip}',
+    '      port = ${clustering.port}',
+    '    }',
+    '  }',
+    '',
+    '  cluster {',
+    '    seed-nodes = ["akka://"${clustering.cluster.name}"@"${clustering.seed-ip}":"${clustering.seed-port}]',
+    '    downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"',
+    '    shutdown-after-unsuccessful-join-seed-nodes = 120s',
+    '',
+    '    sharding {',
+    '      remember-entities = on',
+    '      remember-entities-store = eventsourced',
+    '      number-of-shards = 10',
+    '      least-shard-allocation-strategy.rebalance-absolute-limit = 20',
+    '      passivation {',
+    '        strategy = custom-lru-strategy',
+    '        custom-lru-strategy {',
+    '          active-entity-limit = 1000000',
+    '          replacement.policy = least-recently-used',
+    '        }',
+    '      }',
+    '    }',
+    '  }',
+    '}',
+    '',
+    'clustering {',
+    '  ip = "127.0.0.1"',
+    '  ip = ${?CLUSTER_IP}',
+    '  port = 25561',
+    '  port = ${?CLUSTER_PORT}',
+    '  seed-ip = "127.0.0.1"',
+    '  seed-ip = ${?SEED_IP}',
+    '  seed-port = 25561',
+    '  seed-port = ${?SEED_PORT}',
+    '  cluster.name = application',
+    '}',
+    '',
+  ].join('\n');
+}
+
+function renderPersistenceConf(input) {
+  const { journalConnection } = input;
+  return [
+    'akka {',
+    '  persistence {',
+    '    journal.plugin = "akka-contrib-mongodb-persistence-journal"',
+    '    snapshot-store.plugin = "akka-contrib-mongodb-persistence-snapshot"',
+    '    query.journal.id = "akka-contrib-mongodb-persistence-readjournal"',
+    '  }',
+    '',
+    '  contrib.persistence.mongodb.mongo {',
+    `    mongouri = \${service.connections.${q(journalConnection)}}`,
+    '  }',
+    '}',
+    '',
+  ].join('\n');
+}
+
+function renderProjectionConf() {
+  return [
+    'akka {',
+    '  projection {',
+    '    jdbc {',
+    '      blocking-jdbc-dispatcher.thread-pool-executor.fixed-pool-size = 8',
+    '      dialect = mysql-dialect',
+    '    }',
+    '  }',
+    '}',
+    '',
+    'jdbc-connection-settings {',
+    '  driver = ${db.default.driver}',
+    '  url = ${db.default.url}',
+    '  user = ${db.default.username}',
+    '  password = ${db.default.password}',
+    '',
+    '  connection-pool {',
+    '    max-pool-size = 16',
+    '    timeout = 5000ms',
+    '    transactionIsolation = TRANSACTION_READ_COMMITTED',
+    '  }',
+    '}',
+    '',
+    'scalikejdbc.global {',
+    '  loggingSQLAndTime.enabled = false',
+    '  loggingSQLAndTime.singleLineMode = false',
+    '  loggingSQLAndTime.logLevel = debug',
+    '  loggingSQLAndTime.warningEnabled = true',
+    '  loggingSQLAndTime.warningThresholdMillis = 5',
+    '  loggingSQLAndTime.warningLogLevel = warn',
+    '}',
+    '',
+  ].join('\n');
+}
+
 function renderServiceConf(input) {
   const { package: pkg, serviceName: name, journalConnection, readSideConnection } = input;
   return [
+    'include "persistence.conf"',
     `play.application.loader = ${q(pkg + '.infrastructure.bootstrap.' + name + 'Loader')}`,
     'play.http.secret.key = ${PLAY_SECRET}',
     `service.connections.${q(journalConnection)} = \${MONGO_URI}`,
     `service.connections.${q(readSideConnection)} = \${MYSQL_JDBC_URL}`,
-    'akka.persistence.journal.plugin = "akka-contrib-mongodb-persistence-journal"',
-    'akka.persistence.snapshot-store.plugin = "akka-contrib-mongodb-persistence-snapshot"',
-    `akka.contrib.persistence.mongodb.mongo.mongouri = \${service.connections.${q(journalConnection)}}`,
     'db.default.driver = "com.mysql.cj.jdbc.Driver"',
     `db.default.url = \${service.connections.${q(readSideConnection)}}`,
     'db.default.username = ${MYSQL_USER}',
     'db.default.password = ${MYSQL_PASSWORD}',
+    '',
+  ].join('\n');
+}
+
+function renderApplicationConf(input) {
+  const { package: pkg } = input;
+  return [
+    'include "cluster.conf"',
+    'include "persistence.conf"',
+    'include "projection.conf"',
+    'include "serialization.conf"',
+    'include "service.conf"',
+    '',
+    `play.modules.enabled += ${q(pkg + '.modules.BootstrapModule')}`,
+    'play.modules.enabled += "scalikejdbc.PlayModule"',
+    'play.modules.disabled += "play.api.db.DBModule"',
     '',
   ].join('\n');
 }
@@ -424,14 +664,30 @@ export function renderServiceRuntimeFiles(input) {
   const loaderPath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', name + 'Loader.scala');
   const configPath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', name + 'Configuration.scala');
   const bootstrapPath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', 'ApplicationBootstrap.scala');
+  const modulePath = scalaSubpackagePath(pkg, 'modules', 'BootstrapModule.scala');
+  const aggDeps = (input.aggregates ?? []).flatMap(a => [
+    scalaSubpackagePath(pkg, 'infrastructure.bootstrap', `${a.name}Bootstrap.scala`),
+    scalaSubpackagePath(pkg, 'application.aggregates', `${a.name}Aggregate.scala`),
+    ...(a.authority ? [scalaSubpackagePath(pkg, 'application.aggregates', `${a.name}Protocol.scala`)] : []),
+    scalaSubpackagePath(pkg, 'domain.services', `${a.name}Computations.scala`),
+  ]);
+  const projDeps = (input.readsideProjections ?? []).flatMap(rp => [
+    scalaSubpackagePath(pkg, 'infrastructure.bootstrap', `${rp.name}Bootstrap.scala`),
+    scalaSubpackagePath(pkg, rp.subpackage, `${rp.name}ProjectionHandler.scala`),
+    scalaSubpackagePath(pkg, `${rp.subpackage}.repository`, `${rp.name}Repository.scala`),
+  ]);
 
   return [
     { path: servicePath, content: renderServiceContract(input), kind: 'service-port', deps: [], sources: src, codeMappings: [] },
     { path: loaderPath, content: renderServiceLoader(input), kind: 'service-runtime', deps: [bootstrapPath], sources: src, codeMappings: [] },
-    { path: bootstrapPath, content: renderApplicationBootstrap(input), kind: 'service-runtime', deps: [servicePath, loaderPath, configPath], sources: src, codeMappings: [] },
+    { path: bootstrapPath, content: renderApplicationBootstrap(input), kind: 'service-runtime', deps: [servicePath, loaderPath, configPath, ...aggDeps, ...projDeps], sources: src, codeMappings: [] },
+    { path: modulePath, content: renderBootstrapModule(input), kind: 'service-runtime', deps: [bootstrapPath], sources: src, codeMappings: [] },
     { path: configPath, content: input.configurationScala, kind: 'service-runtime', deps: [], sources: src, codeMappings: [] },
-    { path: 'conf/service.conf', content: renderServiceConf(input), kind: 'service-config', deps: [], sources: src, codeMappings: [] },
-    { path: 'conf/application.conf', content: 'include "serialization.conf"\ninclude "service.conf"\n', kind: 'service-config', deps: [], sources: src, codeMappings: [] },
+    { path: 'conf/cluster.conf', content: renderClusterConf(), kind: 'service-config', deps: [], sources: src, codeMappings: [] },
+    { path: 'conf/persistence.conf', content: renderPersistenceConf(input), kind: 'service-config', deps: [], sources: src, codeMappings: [] },
+    { path: 'conf/projection.conf', content: renderProjectionConf(), kind: 'service-config', deps: [], sources: src, codeMappings: [] },
+    { path: 'conf/service.conf', content: renderServiceConf(input), kind: 'service-config', deps: ['conf/persistence.conf'], sources: src, codeMappings: [] },
+    { path: 'conf/application.conf', content: renderApplicationConf(input), kind: 'service-config', deps: ['conf/cluster.conf', 'conf/persistence.conf', 'conf/projection.conf', 'conf/serialization.conf', 'conf/service.conf'], sources: src, codeMappings: [] },
     ...input.readsideFiles.map(rf => ({
       path: rf.path,
       content: rf.content,

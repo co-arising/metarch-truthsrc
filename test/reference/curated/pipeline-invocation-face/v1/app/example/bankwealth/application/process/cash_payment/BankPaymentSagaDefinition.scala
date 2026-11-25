@@ -1,13 +1,13 @@
-package example.bankwealth.application.process
+package example.bankwealth.application.process.cash_payment
 
 import scala.concurrent.{ExecutionContext, Future}
 
 import example.bankwealth.domain.invariants.params.{CreditBalanceRuleParams, FundOrderRuleParams}
 import example.bankwealth.domain.values._
-import BankPaymentMessages._
-import CreditFundCollectionStep._
-import ReserveCashFundOrderStep._
-import ReserveInvestorFundsStep._
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
+import example.bankwealth.application.process.protocol.CreditFundCollectionStep._
+import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep._
+import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import BankPaymentPorts.OperationNotExecuted
 import net.imadz.infra.saga.strict._
 

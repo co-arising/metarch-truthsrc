@@ -27,7 +27,7 @@ import {
   renderGroupedValueImports,
   renderValueWildcardImports,
 } from '../../lib/derivation/value-object-package.mjs';
-import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
+import { scalaDirPath, workflowSubpackageSlug } from '../../lib/layout/layout-strategy.mjs';
 
 const allPhaseTypes = md => md.participants.flatMap(p => p.phases.flatMap(ph => [ph.inputType, ph.queryType, ph.receiptType]));
 const allReceiptTypes = md => md.participants.flatMap(p => p.phases.map(ph => ph.receiptType));
@@ -341,10 +341,13 @@ const model = input => {
     })),
   }));
   const basePkg = basePkgOf(input.supply.domainValuesPackage);
+  const flowSlug = workflowSubpackageSlug(input.saga.id);
   return {
     basePkg,
     rootSeg: basePkg.split('.').pop(),
-    pkg: input.names.package,
+    flowSlug,
+    pkg: basePkg + '.application.process.' + flowSlug,
+    infraProcessPkg: basePkg + '.infrastructure.process',
     persistencePkg: basePkg + '.infrastructure.persistence',
     bootstrapPkg: basePkg + '.infrastructure.bootstrap',
     host: input.names.hostClass,
@@ -409,7 +412,7 @@ function emitPorts(md) {
     '',
     'import scala.concurrent.Future',
     '',
-    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process.' + md.flowSlug),
     'import ' + md.supply.strictRuntimePackage + '.{OperationIdentity, TransactionIdentity}',
     '',
     ...md.docs.ports,
@@ -464,13 +467,14 @@ function emitHostIo(md) {
     }
   }
   const lines = [
-    'package ' + md.pkg,
+    'package ' + md.infraProcessPkg,
     '',
     'import scala.concurrent.{ExecutionContext, Future}',
     '',
-    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'infrastructure.process'),
     'import ' + md.host + '.ResultKind',
-    'import ' + md.ports + '.CompletionContext',
+    'import ' + md.pkg + '.' + md.ports,
+    'import ' + md.pkg + '.' + md.ports + '.CompletionContext',
     'import ' + md.supply.strictRuntimePackage + '.TransactionIdentity',
     '',
     ...md.docs.hostIo,
@@ -532,7 +536,7 @@ function emitSerializer(md) {
     'package ' + md.persistencePkg,
     '',
     'import akka.serialization.SerializerWithStringManifest',
-    'import ' + md.pkg + '.' + md.host,
+    'import ' + md.infraProcessPkg + '.' + md.host,
     'import ' + md.supply.strictRuntimePackage + '.StrictSagaProtoConverters',
     'import ' + md.supply.strictRuntimePackage + '.proto.saga_strict.TransactionIdentityPO',
     '',
@@ -605,7 +609,6 @@ function emitSerializer(md) {
 // ---------- BankCashPaymentExecution.scala ----------
 function emitExecution(md) {
   const stage = md.plan;
-  const camelStage = stage.camelStage;
   const successKind = md.kinds.find(k => k.stageError === null);
   const errorKinds = md.kinds.filter(k => k.stageError !== null);
   const values = [...new Set(md.plan.inputs.map(f => f.type).concat([md.plan.output.type]))]
@@ -621,14 +624,12 @@ function emitExecution(md) {
         '"' + kind.stageError.category + ':' + kind.stageError.label + ':' + kind.stageError.discipline + '"))']));
   }
   const retry = md.runtime.retry;
-  const hostParam = camelStage + 'Host';
   const lines = [
     'package ' + md.pkg,
     '',
     'import scala.concurrent.duration._',
     '',
-    'import akka.actor.typed.ActorRef',
-    ...renderGroupedValueImports(md.basePkg, values, 'application.process'),
+    ...renderGroupedValueImports(md.basePkg, values, 'application.process.' + md.flowSlug),
     'import net.imadz.monarch.{StageError, StageFailedException}',
     '',
     ...md.docs.execution,
@@ -657,14 +658,6 @@ function emitExecution(md) {
     '  def outputs(state: State): Outputs =',
     '    Outputs(state.' + md.plan.output.field + '.getOrElse(throw new IllegalArgumentException("' +
       md.messages.unconfirmedPredecessorOutput + '")))',
-    '',
-    '  def install(' + hostParam + ': ActorRef[' + md.host + '.Request]): Installed = {',
-    '    require(' + hostParam + ' != null, "' + md.messages.exactHostActorRequired + '")',
-    '    new Installed(' + hostParam + ')',
-    '  }',
-    '',
-    ...wrapDef('  final class Installed private[' + md.execution + '] (val ' + hostParam + ': ActorRef[' + md.host,
-      '.Request])', 6),
     '',
     '  // ----------------------------------------------------------------- knowledge',
     '  val PlanVersion = "' + stage.planVersion + '"',
@@ -1012,11 +1005,12 @@ function emitHost(md) {
   completedLines.push('          case ResultKind.' +
     md.nonTerminalKinds.map(k => k.kind).join(' | ResultKind.') + ' => Pending(kind.wire)');
   const lines = [
-    'package ' + md.pkg,
+    'package ' + md.infraProcessPkg,
     '',
     'import akka.actor.typed.ActorRef',
     'import com.google.protobuf.ByteString',
-    ...renderGroupedValueImports(md.basePkg, [md.args, md.original, md.result], 'application.process'),
+    'import ' + md.pkg + '.{' + md.execution + ', ' + md.definition + '}',
+    ...renderGroupedValueImports(md.basePkg, [md.args, md.original, md.result], 'infrastructure.process'),
     'import ' + md.supply.strictRuntimePackage + '._',
     '',
     ...md.docs.host,
@@ -1248,7 +1242,7 @@ function emitDefinition(md) {
     '',
     'import ' + md.supply.domainPackage + '.invariants.params.{' + protocols.map(p => p.replace(/Protocol$/, 'RuleParams')).join(', ') + '}',
     'import ' + md.supply.domainValuesPackage + '._',
-    ...renderValueWildcardImports(md.basePkg, [md.args, ...allPhaseTypes(md)], 'application.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.args, ...allPhaseTypes(md)], 'application.process.' + md.flowSlug),
     'import ' + md.ports + '.OperationNotExecuted',
     'import ' + md.supply.strictRuntimePackage + '._',
     '',
@@ -1426,6 +1420,7 @@ function emitProcessBootstrap(md) {
     'import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}',
     'import com.google.protobuf.ByteString',
     'import ' + md.pkg + '._',
+    'import ' + md.infraProcessPkg + '.{' + md.host + ', ' + md.hostIo + '}',
     ...renderGroupedValueImports(md.basePkg, [md.original, md.result, md.args], 'infrastructure.bootstrap'),
     'import ' + md.persistencePkg + '.{' + md.stateCodec + ', ' + md.processCodecs + '}',
     'import ' + md.supply.strictRuntimePackage + '._',
@@ -1433,6 +1428,15 @@ function emitProcessBootstrap(md) {
     '',
     '/** Runtime persistence & actor assembly for `' + md.host + '` and `' + md.execution + '`. */',
     'object ' + md.processBootstrap + ' {',
+    '',
+    '  def install(' + hostParam + ': ActorRef[' + md.host + '.Request]): Installed = {',
+    '    require(' + hostParam + ' != null, "' + md.messages.exactHostActorRequired + '")',
+    '    new Installed(' + hostParam + ')',
+    '  }',
+    '',
+    '  final class Installed private[' + md.processBootstrap + '] (',
+    '    val ' + hostParam + ': ActorRef[' + md.host + '.Request],',
+    '  )',
     '',
     '  def portsFromTechnical(technical: ' + md.ports + ')(implicit ec: ExecutionContext): ' + md.definition + '.Ports =',
     '    ' + md.definition + '.fromTechnical(technical, ' + md.processCodecs + ')',
@@ -1578,7 +1582,7 @@ function emitProcessBootstrap(md) {
     '',
     '  def executionBehavior(',
     '    persistenceId: String,',
-    '    installed: ' + md.execution + '.Installed,',
+    '    installed: Installed,',
     '    observer: RunObserver[' + md.execution + '.State],',
     '  )(implicit ec: ExecutionContext): Behavior[PersistentMonarch.Command[' + md.execution + '.State]] =',
     '    Behaviors.setup { context =>',
@@ -1643,17 +1647,18 @@ function generate(input) {
   validate(input);
   const md = model(input);
   const processRel = scalaDirPath(md.pkg);
+  const infraProcessRel = scalaDirPath(md.infraProcessPkg);
   const persistenceRel = scalaDirPath(md.persistencePkg);
   const bootstrapRel = scalaDirPath(md.bootstrapPkg);
   return {
     [processRel + '/' + md.ports + '.scala']: emitPorts(md),
-    [processRel + '/' + md.hostIo + '.scala']: emitHostIo(md),
+    [infraProcessRel + '/' + md.hostIo + '.scala']: emitHostIo(md),
     [persistenceRel + '/' + md.serializer + '.scala']: emitSerializer(md),
     [processRel + '/' + md.execution + '.scala']: emitExecution(md),
     [persistenceRel + '/' + md.stateCodec + '.scala']: emitExecutionStateCodec(md),
     [persistenceRel + '/' + md.processCodecs + '.scala']: emitProcessCodecs(md),
     [bootstrapRel + '/' + md.bindings + '.scala']: emitBindings(md),
-    [processRel + '/' + md.host + '.scala']: emitHost(md),
+    [infraProcessRel + '/' + md.host + '.scala']: emitHost(md),
     [processRel + '/' + md.definition + '.scala']: emitDefinition(md),
     [bootstrapRel + '/' + md.processBootstrap + '.scala']: emitProcessBootstrap(md),
   };

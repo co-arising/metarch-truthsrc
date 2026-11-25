@@ -1,9 +1,7 @@
-package example.bankwealth.application.process
+package example.bankwealth.application.process.ta_submission
 
 import scala.concurrent.duration._
 
-import akka.actor.typed.ActorRef
-import example.bankwealth.application.connectors.BankTaEffectHost
 import example.bankwealth.domain.values.{FundOrderId, TaRequestId, TxId}
 import net.imadz.monarch.{StageError, StageFailedException}
 
@@ -31,13 +29,6 @@ object BankTaSubmissionExecution {
   /** Unconfirmed predecessor output is refused — never defaulted. */
   def outputs(state: State): Outputs =
     Outputs(state.taRequestId.getOrElse(throw new IllegalArgumentException("unconfirmed predecessor output")))
-
-  def install(submitTaHost: ActorRef[BankTaEffectHost.Request]): Installed = {
-    require(submitTaHost != null, "the exact effect host actor is required")
-    new Installed(submitTaHost)
-  }
-
-  final class Installed private[BankTaSubmissionExecution] (val submitTaHost: ActorRef[BankTaEffectHost.Request])
 
   // ----------------------------------------------------------------- knowledge
   val PlanVersion = "bank-v1-1"

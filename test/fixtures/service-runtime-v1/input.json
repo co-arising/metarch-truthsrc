@@ -786,5 +786,25 @@
         }
       ]
     }
+  ],
+  "aggregates": [
+    {
+      "name": "CreditBalance",
+      "authority": false
+    },
+    {
+      "name": "FundOrder",
+      "authority": true
+    },
+    {
+      "name": "SipPlan",
+      "authority": false
+    }
+  ],
+  "readsideProjections": [
+    {
+      "name": "BankJournalReadside",
+      "subpackage": "application.readmodels.bank_journal"
+    }
   ]
 }

@@ -6,8 +6,8 @@ import example.bankwealth.domain.values._
 import net.imadz.common.CommonTypes.DomainService
 
 trait FundOrderComputations extends DomainService {
-  def StableRefundOperationId(state: State, p: RequestFundPurchaseRefundParams): OperationId
-  def StableTaRequestId(state: State, p: RegisterFundTASubmissionParams): TaRequestId
+  def stableRefundOperationId(state: State, p: RequestFundPurchaseRefundParams): OperationId
+  def stableTaRequestId(state: State, p: RegisterFundTASubmissionParams): TaRequestId
 }
 object FundOrderComputations {
 }

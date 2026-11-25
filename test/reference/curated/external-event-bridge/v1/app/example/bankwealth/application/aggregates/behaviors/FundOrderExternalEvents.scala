@@ -1,8 +1,8 @@
 package example.bankwealth.application.aggregates.behaviors
 
 import example.bankwealth.domain.entities.FundOrderEntity._
-import example.bankwealth.application.process.BankPaymentMessages._
-import example.bankwealth.application.process.BankRefundMessages._
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
+import example.bankwealth.application.process.protocol.BankRefundMessages._
 import example.bankwealth.domain.values._
 
 object FundOrderExternalEvents {

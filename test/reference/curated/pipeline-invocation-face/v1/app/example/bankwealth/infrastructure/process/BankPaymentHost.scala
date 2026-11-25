@@ -1,8 +1,9 @@
-package example.bankwealth.application.process
+package example.bankwealth.infrastructure.process
 
 import akka.actor.typed.ActorRef
 import com.google.protobuf.ByteString
-import BankPaymentMessages.{BankPaymentArgs, BankPaymentOriginal, BankPaymentResult}
+import example.bankwealth.application.process.cash_payment.{BankCashPaymentExecution, BankPaymentSagaDefinition}
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
 import net.imadz.infra.saga.strict._
 
 /** Pipeline invocation host for the cash purchase payment: owns the durable

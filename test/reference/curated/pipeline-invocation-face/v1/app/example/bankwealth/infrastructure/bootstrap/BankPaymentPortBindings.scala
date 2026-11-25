@@ -2,12 +2,12 @@ package example.bankwealth.infrastructure.bootstrap
 
 import scala.concurrent.Future
 
-import example.bankwealth.application.process._
-import example.bankwealth.application.process.BankPaymentPorts.CompletionContext
-import example.bankwealth.application.process.BankPaymentMessages._
-import example.bankwealth.application.process.CreditFundCollectionStep._
-import example.bankwealth.application.process.ReserveCashFundOrderStep._
-import example.bankwealth.application.process.ReserveInvestorFundsStep._
+import example.bankwealth.application.process.cash_payment._
+import example.bankwealth.application.process.cash_payment.BankPaymentPorts.CompletionContext
+import example.bankwealth.application.process.protocol.BankPaymentMessages._
+import example.bankwealth.application.process.protocol.CreditFundCollectionStep._
+import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep._
+import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import net.imadz.infra.saga.strict.OperationIdentity
 
 /** Exact bindings of the handwritten implementations to the declared ports.

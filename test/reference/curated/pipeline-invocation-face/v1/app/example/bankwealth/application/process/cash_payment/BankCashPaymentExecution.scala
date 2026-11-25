@@ -1,8 +1,7 @@
-package example.bankwealth.application.process
+package example.bankwealth.application.process.cash_payment
 
 import scala.concurrent.duration._
 
-import akka.actor.typed.ActorRef
 import example.bankwealth.domain.values.{AccountId, FundOrderId, Money, OperationId, TxId}
 import net.imadz.monarch.{StageError, StageFailedException}
 
@@ -46,13 +45,6 @@ object BankCashPaymentExecution {
   /** Unconfirmed predecessor output is refused — never defaulted. */
   def outputs(state: State): Outputs =
     Outputs(state.paymentTxid.getOrElse(throw new IllegalArgumentException("unconfirmed predecessor output")))
-
-  def install(payCashPurchaseHost: ActorRef[BankPaymentHost.Request]): Installed = {
-    require(payCashPurchaseHost != null, "the exact invocation host actor is required")
-    new Installed(payCashPurchaseHost)
-  }
-
-  final class Installed private[BankCashPaymentExecution] (val payCashPurchaseHost: ActorRef[BankPaymentHost.Request])
 
   // ----------------------------------------------------------------- knowledge
   val PlanVersion = "bank-v1-1"

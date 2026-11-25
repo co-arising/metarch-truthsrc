@@ -20,7 +20,7 @@
 //   - the identity parts render as the fixed five-row token table
 //   - the observation decode ladder is the fixed 2-row form
 import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
-import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
+import { scalaDirPath, workflowSubpackageSlug } from '../../lib/layout/layout-strategy.mjs';
 
 const basePkgOf = valuesPkg => valuesPkg.replace(/\.domain\.values$/, '');
 
@@ -238,16 +238,20 @@ const caseModel = (input, c, shape) => {
     return rc ? { rc, stageError: rc.stageError.split(':') } : null;
   };
   const basePkg = basePkgOf(shape.domainValuesPackage);
+  const flowSlug = workflowSubpackageSlug(c.effect.sagaId);
   return {
     c,
     basePkg,
     rootSeg: basePkg.split('.').pop(),
-    pkg: c.names.package,
-    executionPkg: basePkg + '.application.process',
+    flowSlug,
+    connectorsPkg: basePkg + '.application.connectors',
+    pkg: basePkg + '.infrastructure.connectors',
+    executionPkg: basePkg + '.application.process.' + flowSlug,
     persistencePkg: basePkg + '.infrastructure.persistence',
     bootstrapPkg: basePkg + '.infrastructure.bootstrap',
     execution: c.names.executionClass,
     stateCodec: c.names.executionClass.replace(/Execution$/, 'StateCodec'),
+    gateway: c.names.effectHostClass.replace(/(?:Effect)?Host$/, 'Gateway'),
     host: c.names.effectHostClass,
     bootstrap: c.names.effectHostClass.replace(/Host$/, 'Bootstrap'),
     serializer: c.names.serializerClass,
@@ -263,10 +267,29 @@ const caseModel = (input, c, shape) => {
   };
 };
 
+// ---------- <Case>Gateway.scala (pure application outbound gateway port) ----------
+function emitGateway(cm) {
+  const eff = cm.effect;
+  const lines = [
+    'package ' + cm.connectorsPkg,
+    '',
+    'import scala.concurrent.Future',
+    '',
+    ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.observationValue, eff.reconcileValue], 'application.connectors'),
+    '',
+    '/** Outbound external-effect gateway port for `' + cm.execution + '`. */',
+    'trait ' + cm.gateway + ' {',
+    '  def execute(input: ' + eff.operationValue + '): Future[' + eff.observationValue + ']',
+    '  def query(input: ' + eff.operationValue + '): Future[Option[' + eff.observationValue + ']]',
+    '  def reconcile(input: ' + eff.reconcileValue + '): Future[Boolean]',
+    '}',
+  ];
+  return assertWidth(lines, cm.gateway).join('\n') + '\n';
+}
+
 // ---------- <Case>Execution.scala (pure integration stage contract) ----------
 function emitExecution(cm, shape) {
-  const { ex, camelStage, pascalStage } = cm;
-  const hostParam = camelStage + 'Host';
+  const { ex, pascalStage } = cm;
   const messages = shape.executionMessages;
   const successCase = cm.success;
   const stageFold = [];
@@ -283,9 +306,7 @@ function emitExecution(cm, shape) {
     '',
     'import scala.concurrent.duration._',
     '',
-    'import akka.actor.typed.ActorRef',
-    'import ' + cm.pkg + '.' + cm.host,
-    ...renderGroupedValueImports(cm.basePkg, values(cm), 'application.process'),
+    ...renderGroupedValueImports(cm.basePkg, values(cm), 'application.process.' + cm.flowSlug),
     'import net.imadz.monarch.{StageError, StageFailedException}',
     '',
     ...cm.docs.execution,
@@ -310,14 +331,6 @@ function emitExecution(cm, shape) {
     '  def outputs(state: State): Outputs =',
     '    Outputs(state.' + successCase.slot + '.getOrElse(throw new IllegalArgumentException("' +
       messages.unconfirmedPredecessorOutput + '")))',
-    '',
-    '  def install(' + hostParam + ': ActorRef[' + cm.host + '.Request]): Installed = {',
-    '    require(' + hostParam + ' != null, "' + messages.exactEffectHostActorRequired + '")',
-    '    new Installed(' + hostParam + ')',
-    '  }',
-    '',
-    ...wrapDef('  final class Installed private[' + cm.execution + '] (val ' + hostParam + ': ActorRef[' +
-      cm.host, '.Request])', 6),
     '',
     '  // ----------------------------------------------------------------- knowledge',
     '  val PlanVersion = "' + ex.planVersion + '"',
@@ -495,8 +508,9 @@ function emitHost(cm, shape) {
     '',
     'import akka.actor.typed.ActorRef',
     'import com.google.protobuf.ByteString',
+    'import ' + cm.connectorsPkg + '.' + cm.gateway,
     'import ' + cm.executionPkg + '.' + cm.execution,
-    ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.observationValue, eff.reconcileValue, eff.requestValue], 'application.connectors'),
+    ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.observationValue, eff.reconcileValue, eff.requestValue], 'infrastructure.connectors'),
     '',
     ...cm.docs.host,
     'object ' + cm.host + ' {',
@@ -559,7 +573,8 @@ function emitHost(cm, shape) {
     '    new Installed(bindings)',
     '  }',
     '',
-    '  final class Installed private[' + cm.host + '] (private val bindings: Bindings) {',
+    ...wrapDef('  final class Installed private[' + cm.host + '] (private val bindings: Bindings)',
+      ' extends ' + cm.gateway + ' {', 6),
     ...installedMethods,
     '  }',
     '',
@@ -651,6 +666,15 @@ function emitBootstrap(cm, shape) {
     '',
     '/** Runtime persistence & actor assembly for `' + cm.host + '` and `' + cm.execution + '`. */',
     'object ' + cm.bootstrap + ' {',
+    '',
+    '  def install(' + hostParam + ': ActorRef[' + cm.host + '.Request]): Installed = {',
+    '    require(' + hostParam + ' != null, "' + messages.exactEffectHostActorRequired + '")',
+    '    new Installed(' + hostParam + ')',
+    '  }',
+    '',
+    '  final class Installed private[' + cm.bootstrap + '] (',
+    '    val ' + hostParam + ': ActorRef[' + cm.host + '.Request],',
+    '  )',
     '',
     '  def hostBehavior(',
     '    persistenceId: String,',
@@ -789,7 +813,7 @@ function emitBootstrap(cm, shape) {
     '',
     '  def executionBehavior(',
     '    persistenceId: String,',
-    '    installed: ' + cm.execution + '.Installed,',
+    '    installed: Installed,',
     '    observer: RunObserver[' + cm.execution + '.State],',
     '  )(implicit ec: ExecutionContext): Behavior[PersistentMonarch.Command[' + cm.execution + '.State]] =',
     '    Behaviors.setup { context =>',
@@ -910,13 +934,15 @@ function generate(input) {
   const files = {};
   for (const c of input.cases) {
     const cm = caseModel(input, c, shape);
-    const connectorsRel = scalaDirPath(cm.pkg);
+    const appConnectorsRel = scalaDirPath(cm.connectorsPkg);
+    const infraConnectorsRel = scalaDirPath(cm.pkg);
     const processRel = scalaDirPath(cm.executionPkg);
     const persistenceRel = scalaDirPath(cm.persistencePkg);
     const bootstrapRel = scalaDirPath(cm.bootstrapPkg);
+    files[appConnectorsRel + '/' + cm.gateway + '.scala'] = emitGateway(cm);
     files[processRel + '/' + cm.execution + '.scala'] = emitExecution(cm, shape);
     files[persistenceRel + '/' + cm.stateCodec + '.scala'] = emitExecutionStateCodec(cm, shape);
-    files[connectorsRel + '/' + cm.host + '.scala'] = emitHost(cm, shape);
+    files[infraConnectorsRel + '/' + cm.host + '.scala'] = emitHost(cm, shape);
     files[bootstrapRel + '/' + cm.bootstrap + '.scala'] = emitBootstrap(cm, shape);
     files[persistenceRel + '/' + cm.serializer + '.scala'] = emitSerializer(cm, shape);
   }

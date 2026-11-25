@@ -1,7 +1,7 @@
 package example.bankwealth.infrastructure.persistence
 
 import com.google.protobuf.ByteString
-import example.bankwealth.application.process.BankTaSubmissionExecution
+import example.bankwealth.application.process.ta_submission.BankTaSubmissionExecution
 import example.bankwealth.application.connectors.BankTaEffectProtocol.BankTaEffectObservation
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import net.imadz.monarch.persistence.StateCodec

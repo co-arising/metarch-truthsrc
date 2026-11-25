@@ -1,4 +1,4 @@
-package example.bankwealth.application.process
+package example.bankwealth.application.process.protocol
 
 import example.bankwealth.domain.values.TxId
 

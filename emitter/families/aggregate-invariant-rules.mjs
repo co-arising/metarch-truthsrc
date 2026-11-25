@@ -240,6 +240,8 @@ function renderLiteral(value, type) {
   return 'Map(' + value.map(r => renderLiteral(r.key, type.key) + ' -> ' + renderLiteral(r.value, type.value)).join(', ') + ')';
 }
 
+const lowerFirst = s => (s ? s[0].toLowerCase() + s.slice(1) : s);
+
 function renderExpr(expr) {
   if (expr.op === 'ref') {
     let prefix = 'p.';
@@ -248,7 +250,7 @@ function renderExpr(expr) {
     return prefix + symbol(expr.name);
   }
   if (expr.op === 'literal') return renderLiteral(expr.value, expr.valueType);
-  if (expr.op === 'host') return 'hosts.' + symbol(expr.name) + '(state, p)';
+  if (expr.op === 'host') return 'hosts.' + symbol(lowerFirst(expr.name)) + '(state, p)';
   if (expr.op === 'member') return '(' + renderExpr(expr.argument) + ').' + symbol(expr.member);
   if (expr.op === 'map-get') return '(' + renderExpr(expr.map) + ').get(' + renderExpr(expr.key) + ')';
   const left = renderExpr(expr.left), right = renderExpr(expr.right);

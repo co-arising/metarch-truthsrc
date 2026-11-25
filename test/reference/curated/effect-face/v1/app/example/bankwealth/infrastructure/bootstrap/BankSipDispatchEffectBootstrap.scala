@@ -9,14 +9,23 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.application.connectors._
-import example.bankwealth.application.process.BankSipDispatchExecution
+import example.bankwealth.infrastructure.connectors._
+import example.bankwealth.application.process.sip_dispatch.BankSipDispatchExecution
 import example.bankwealth.application.connectors.BankSipDispatchProtocol._
 import example.bankwealth.infrastructure.persistence.BankSipDispatchStateCodec
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 
 /** Runtime persistence & actor assembly for `BankSipDispatchEffectHost` and `BankSipDispatchExecution`. */
 object BankSipDispatchEffectBootstrap {
+
+  def install(dispatchCashHost: ActorRef[BankSipDispatchEffectHost.Request]): Installed = {
+    require(dispatchCashHost != null, "the exact effect host actor is required")
+    new Installed(dispatchCashHost)
+  }
+
+  final class Installed private[BankSipDispatchEffectBootstrap] (
+    val dispatchCashHost: ActorRef[BankSipDispatchEffectHost.Request],
+  )
 
   def hostBehavior(
     persistenceId: String,
@@ -155,7 +164,7 @@ object BankSipDispatchEffectBootstrap {
 
   def executionBehavior(
     persistenceId: String,
-    installed: BankSipDispatchExecution.Installed,
+    installed: Installed,
     observer: RunObserver[BankSipDispatchExecution.State],
   )(implicit ec: ExecutionContext): Behavior[PersistentMonarch.Command[BankSipDispatchExecution.State]] =
     Behaviors.setup { context =>
