@@ -73,9 +73,12 @@ export function checkInput(input) {
   }
   if (input.pages !== null) {
     checkObject(input.pages, 'pages');
-    checkNoExtraKeys(input.pages, new Set(['rendererId', 'rendererVersion', 'aliases']), 'pages');
+    checkNoExtraKeys(input.pages, new Set(['rendererId', 'rendererVersion', 'shellPath', 'scriptPath', 'aliases']), 'pages');
     if (typeof input.pages.rendererId !== 'string' || !input.pages.rendererId) fail('pages.rendererId invalid');
     if (typeof input.pages.rendererVersion !== 'string' || !input.pages.rendererVersion) fail('pages.rendererVersion invalid');
+    if (typeof input.pages.shellPath !== 'string' || !input.pages.shellPath.startsWith('/')) fail('pages.shellPath invalid');
+    if (typeof input.pages.scriptPath !== 'string' || !input.pages.scriptPath.startsWith('/')) fail('pages.scriptPath invalid');
+    if (input.pages.shellPath === input.pages.scriptPath) fail('pages.shellPath and pages.scriptPath must be distinct');
     if (!Array.isArray(input.pages.aliases)) fail('pages.aliases must be array');
     for (let i = 0; i < input.pages.aliases.length; i++) {
       const a = checkObject(input.pages.aliases[i], 'pages.aliases[' + i + ']');
@@ -373,10 +376,10 @@ function renderServiceLoader(input) {
     '  }',
     '  override lazy val router: Router = Router.from {',
     ...(pages ? [
-      '    case request if request.method == "GET" && (request.path == "/" || request.path == "/ui" || request.path == "/ui/") =>',
-      '      controllerComponents.actionBuilder(staticPage(script = false))',
-      '    case request if request.method == "GET" && request.path == "/ui/app.js" =>',
-      '      controllerComponents.actionBuilder(staticPage(script = true))',
+      `    case request if request.method == "GET" && request.path == ${q(pages.shellPath)} =>`,
+      '      controllerComponents.actionBuilder(controllerComponents.parsers.empty) { _ => staticPage(script = false) }',
+      `    case request if request.method == "GET" && request.path == ${q(pages.scriptPath)} =>`,
+      '      controllerComponents.actionBuilder(controllerComponents.parsers.empty) { _ => staticPage(script = true) }',
     ] : []),
     '    case request if actions.exists(row => row.method == request.method && row.pattern.findFirstMatchIn(request.path).nonEmpty) =>',
     '      val row = actions.find(r => r.method == request.method && r.pattern.findFirstMatchIn(request.path).nonEmpty).get',
@@ -753,7 +756,9 @@ export function runNegatives(baseInput) {
     ['bad endpoint path', () => { const x = clone(); x.endpoints[0].path = 'no-slash'; return x; }],
     ['empty configurationScala', () => { const x = clone(); x.configurationScala = ''; return x; }],
     ['malformed artifactSource', () => { const x = clone(); x.artifactSource.pointer = 'bad'; return x; }],
-    ['unknown page alias endpoint', () => { const x = clone(); if (x.pages) x.pages.aliases[0].endpointId = 'missing'; else x.pages = { rendererId: 'a', rendererVersion: '1', aliases: [{ endpointId: 'missing', path: '/x' }] }; return x; }],
+    ['unknown page alias endpoint', () => { const x = clone(); if (x.pages) x.pages.aliases[0].endpointId = 'missing'; else x.pages = { rendererId: 'a', rendererVersion: '1', shellPath: '/ui', scriptPath: '/ui/app.js', aliases: [{ endpointId: 'missing', path: '/x' }] }; return x; }],
+    ['bad page shellPath', () => { const x = clone(); if (x.pages) x.pages.shellPath = 'no-slash'; else x.pages = { rendererId: 'a', rendererVersion: '1', shellPath: 'no-slash', scriptPath: '/ui/app.js', aliases: [] }; return x; }],
+    ['duplicate page shellPath and scriptPath', () => { const x = clone(); if (x.pages) x.pages.scriptPath = x.pages.shellPath; else x.pages = { rendererId: 'a', rendererVersion: '1', shellPath: '/ui', scriptPath: '/ui', aliases: [] }; return x; }],
     ['duplicate readside path', () => { const x = clone(); if (x.readsideFiles.length) x.readsideFiles.push(clone().readsideFiles[0]); else x.readsideFiles = [{ path: 'a', kind: 'bad', content: 'x', deps: [], sources: [], codeMappings: [] }]; return x; }],
   ];
   let rejected = 0;

@@ -257,10 +257,10 @@ final class BankServiceComponents(context: ApplicationLoader.Context, compositio
     }
   }
   override lazy val router: Router = Router.from {
-    case request if request.method == "GET" && (request.path == "/" || request.path == "/ui" || request.path == "/ui/") =>
-      controllerComponents.actionBuilder(staticPage(script = false))
-    case request if request.method == "GET" && request.path == "/ui/app.js" =>
-      controllerComponents.actionBuilder(staticPage(script = true))
+    case request if request.method == "GET" && request.path == "/bank/v1" =>
+      controllerComponents.actionBuilder(controllerComponents.parsers.empty) { _ => staticPage(script = false) }
+    case request if request.method == "GET" && request.path == "/bank/v1/client-script" =>
+      controllerComponents.actionBuilder(controllerComponents.parsers.empty) { _ => staticPage(script = true) }
     case request if actions.exists(row => row.method == request.method && row.pattern.findFirstMatchIn(request.path).nonEmpty) =>
       val row = actions.find(r => r.method == request.method && r.pattern.findFirstMatchIn(request.path).nonEmpty).get
       action(row, row.pattern.findFirstMatchIn(request.path).get)
