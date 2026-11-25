@@ -46,4 +46,20 @@ final class GeneratedActorStateSpec extends AnyFunSuite {
       probe.expectMessage(example.bankwealth.domain.entities.SipPlanEntity.empty)
     } finally kit.shutdownTestKit()
   }
+  test("BootstrapModule satisfies all ApplicationBootstrap Guice DI bindings") {
+    val playStub = new com.google.inject.AbstractModule {
+      override def configure(): Unit = {
+        bind(classOf[akka.actor.ActorSystem]).toProvider(new javax.inject.Provider[akka.actor.ActorSystem] {
+          override def get(): akka.actor.ActorSystem = throw new UnsupportedOperationException("Stage.TOOL only")
+        })
+        bind(classOf[play.api.Configuration]).toInstance(play.api.Configuration.empty)
+      }
+    }
+    val injector = com.google.inject.Guice.createInjector(
+      com.google.inject.Stage.TOOL,
+      playStub,
+      new example.bankwealth.modules.BootstrapModule()
+    )
+    assert(injector.getBinding(classOf[example.bankwealth.infrastructure.bootstrap.ApplicationBootstrap]) != null)
+  }
 }

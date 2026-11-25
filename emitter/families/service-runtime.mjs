@@ -391,21 +391,49 @@ const lowerFirst = s => (s ? s[0].toLowerCase() + s.slice(1) : s);
 
 function renderBootstrapModule(input) {
   const { package: pkg } = input;
+  const aggregates = input.aggregates ?? [];
+  const repoImports = aggregates.flatMap(a => [
+    `import ${pkg}.application.aggregates.repository.${a.name}Repository`,
+    `import ${pkg}.infrastructure.repositories.aggregate.${a.name}RepositoryImpl`,
+  ]).sort();
+  const repoBinds = aggregates.map(a =>
+    `    bind(classOf[${a.name}Repository]).to(classOf[${a.name}RepositoryImpl])`
+  );
   return [
     `package ${pkg}.modules`,
     '',
     'import akka.actor.{ActorSystem, ExtendedActorSystem}',
-    'import com.google.inject.{AbstractModule, Provides}',
+    'import akka.actor.typed.scaladsl.adapter._',
+    'import akka.cluster.sharding.typed.scaladsl.ClusterSharding',
+    'import com.google.inject.{AbstractModule, Module, Provides}',
+    ...repoImports,
     `import ${pkg}.infrastructure.bootstrap.ApplicationBootstrap`,
+    'import javax.inject.Singleton',
     '',
     'final class BootstrapModule extends AbstractModule {',
     '  override def configure(): Unit = {',
+    ...repoBinds,
+    `    installOptionalModule(${q(pkg + '.modules.HandwrittenBindingsModule')})`,
     '    bind(classOf[ApplicationBootstrap]).asEagerSingleton()',
     '  }',
     '',
+    '  private def installOptionalModule(className: String): Unit =',
+    '    try {',
+    '      val cls = Class.forName(className)',
+    '      install(cls.getDeclaredConstructor().newInstance().asInstanceOf[Module])',
+    '    } catch {',
+    '      case _: ClassNotFoundException => ()',
+    '    }',
+    '',
     '  @Provides',
+    '  @Singleton',
     '  def provideExtendedSystem(system: ActorSystem): ExtendedActorSystem =',
     '    system.asInstanceOf[ExtendedActorSystem]',
+    '',
+    '  @Provides',
+    '  @Singleton',
+    '  def provideClusterSharding(system: ActorSystem): ClusterSharding =',
+    '    ClusterSharding(system.toTyped)',
     '}',
     '',
   ].join('\n');
@@ -677,11 +705,16 @@ export function renderServiceRuntimeFiles(input) {
     scalaSubpackagePath(pkg, `${rp.subpackage}.repository`, `${rp.name}Repository.scala`),
   ]);
 
+  const repoDeps = (input.aggregates ?? []).flatMap(a => [
+    scalaSubpackagePath(pkg, 'application.aggregates.repository', `${a.name}Repository.scala`),
+    scalaSubpackagePath(pkg, 'infrastructure.repositories.aggregate', `${a.name}RepositoryImpl.scala`),
+  ]);
+
   return [
     { path: servicePath, content: renderServiceContract(input), kind: 'service-port', deps: [], sources: src, codeMappings: [] },
     { path: loaderPath, content: renderServiceLoader(input), kind: 'service-runtime', deps: [bootstrapPath], sources: src, codeMappings: [] },
     { path: bootstrapPath, content: renderApplicationBootstrap(input), kind: 'service-runtime', deps: [servicePath, loaderPath, configPath, ...aggDeps, ...projDeps], sources: src, codeMappings: [] },
-    { path: modulePath, content: renderBootstrapModule(input), kind: 'service-runtime', deps: [bootstrapPath], sources: src, codeMappings: [] },
+    { path: modulePath, content: renderBootstrapModule(input), kind: 'service-runtime', deps: [bootstrapPath, ...repoDeps], sources: src, codeMappings: [] },
     { path: configPath, content: input.configurationScala, kind: 'service-runtime', deps: [], sources: src, codeMappings: [] },
     { path: 'conf/cluster.conf', content: renderClusterConf(), kind: 'service-config', deps: [], sources: src, codeMappings: [] },
     { path: 'conf/persistence.conf', content: renderPersistenceConf(input), kind: 'service-config', deps: [], sources: src, codeMappings: [] },
