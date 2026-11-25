@@ -13,6 +13,7 @@ import example.bankwealth.infrastructure.connectors._
 import example.bankwealth.application.process.sip_dispatch.BankSipDispatchExecution
 import example.bankwealth.application.connectors.BankSipDispatchProtocol._
 import example.bankwealth.infrastructure.persistence.BankSipDispatchStateCodec
+import net.imadz.monarch.StageFailedException
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 
 /** Runtime persistence & actor assembly for `BankSipDispatchEffectHost` and `BankSipDispatchExecution`. */
@@ -208,7 +209,8 @@ object BankSipDispatchEffectBootstrap {
         PersistenceId.ofUniqueId(persistenceId),
         plan,
         (step, state) => step match {
-          case StageId => invokeDispatchCash(state).map(foldResult(state, _))
+          case StageId => invokeDispatchCash(state).flatMap(r =>
+            foldResult(state, r).fold(err => Future.failed(StageFailedException(err)), Future.successful))
           case _ => Future.failed(new IllegalArgumentException("unknown static step"))
         },
         BankSipDispatchStateCodec.codec,

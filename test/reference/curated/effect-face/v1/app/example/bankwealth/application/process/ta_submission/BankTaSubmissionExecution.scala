@@ -3,7 +3,7 @@ package example.bankwealth.application.process.ta_submission
 import scala.concurrent.duration._
 
 import example.bankwealth.domain.values.{FundOrderId, TaRequestId, TxId}
-import net.imadz.monarch.{StageError, StageFailedException}
+import net.imadz.monarch.StageError
 
 /** Durable execution plan of the TA submission pipeline: one stage,
   * `submit-ta`, which hands a paid fund order to the TA effect host and folds
@@ -27,8 +27,9 @@ object BankTaSubmissionExecution {
   final case class Outputs(taRequestId: TaRequestId)
 
   /** Unconfirmed predecessor output is refused — never defaulted. */
-  def outputs(state: State): Outputs =
-    Outputs(state.taRequestId.getOrElse(throw new IllegalArgumentException("unconfirmed predecessor output")))
+  def outputs(state: State): Either[StageError, Outputs] =
+    state.taRequestId.map(Outputs(_)).toRight(
+      StageError(StageId, Some("UnconfirmedOutput"), "predecessor-output", "unconfirmed predecessor output"))
 
   // ----------------------------------------------------------------- knowledge
   val PlanVersion = "bank-v1-1"
@@ -47,13 +48,13 @@ object BankTaSubmissionExecution {
   def backoffMillis(attempt: Int): Long =
     math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, attempt.toDouble)))
 
-  def foldResult(state: State, result: SubmitTaResult): State = result match {
-    case SubmitTaObserved(taRequestId) => state.copy(taRequestId = Some(taRequestId))
-    case SubmitTaRefused => throw StageFailedException(StageError(StageId,
+  def foldResult(state: State, result: SubmitTaResult): Either[StageError, State] = result match {
+    case SubmitTaObserved(taRequestId) => Right(state.copy(taRequestId = Some(taRequestId)))
+    case SubmitTaRefused => Left(StageError(StageId,
         Some("Refused"), "business-rejection", "business-rejection:Refused:stop"))
-    case SubmitTaUnavailable => throw StageFailedException(StageError(StageId,
+    case SubmitTaUnavailable => Left(StageError(StageId,
         Some("Unavailable"), "infrastructure-failure", "infrastructure-failure:Unavailable:manual-recovery"))
-    case SubmitTaUnknown => throw StageFailedException(StageError(StageId,
+    case SubmitTaUnknown => Left(StageError(StageId,
         Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
   }
 }

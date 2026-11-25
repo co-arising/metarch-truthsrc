@@ -319,14 +319,17 @@ function renderAggregateRules(a, pkgByContext) {
     const start = rules.length;
     const parameterName = identifier(c.command + 'Params', 'derived params record name');
     const ruleClassName = identifier(c.command + 'Rule', 'derived rule class name');
-    rules += '  final class ' + ruleClassName + '(hosts: ' + name + 'Computations)\n' +
+    rules += '  // @knowledge ' + knowledgeOf(c.source) + '\n' +
+      '  final class ' + ruleClassName + '(hosts: ' + name + 'Computations)\n' +
       '      extends InvariantRule[Event, State, ' + parameterName + '] {\n' +
       '    override def apply(state: State, p: ' + parameterName + '): Either[iMadzError, List[Event]] = {\n';
     const guards = [];
-    for (const g of c.guards) {
+    for (const [gi, g] of c.guards.entries()) {
       const guardStart = rules.length;
       const codeLit = JSON.stringify(g.outcome.code);
-      rules += '      if (' + renderGuardCondition(g.text) + ') return ' +
+      const branch = gi === 0 ? 'if' : 'else if';
+      rules += '      // @knowledge ' + knowledgeOf(g.source) + '\n' +
+        '      ' + branch + ' (' + renderGuardCondition(g.text) + ') ' +
         (g.outcome.kind === 'reject' ? 'Left(iMadzError(' + codeLit + ', ' + codeLit + '))' : 'Right(Nil)') + '\n';
       guards.push({ source: g.source, span: { start: guardStart, end: rules.length } });
     }
@@ -338,12 +341,13 @@ function renderAggregateRules(a, pkgByContext) {
     const eventsExpr = c.events
       .map(e => symbol(e.name) + '(' + e.slots.map(s => renderExpr(s.producer, hostBindings)).join(', ') + ')')
       .join(', ');
+    const elsePrefix = c.guards.length > 0 ? 'else ' : '';
     if (hostCalls.length > 0) {
-      rules += '      for {\n' +
+      rules += '      ' + elsePrefix + 'for {\n' +
         hostCalls.map(h => '        ' + h.varName + ' <- hosts.' + h.fn + '(state, p)').join('\n') + '\n' +
         '      } yield List(' + eventsExpr + ')\n    }\n  }\n';
     } else {
-      rules += '      Right(List(' + eventsExpr + '))\n    }\n  }\n';
+      rules += '      ' + elsePrefix + 'Right(List(' + eventsExpr + '))\n    }\n  }\n';
     }
     const scope = { start, end: rules.length };
     ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));

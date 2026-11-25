@@ -191,21 +191,42 @@ function renderValueBody(value, packages, subpackageByKey, ownSubpkg, ownMod, cr
     const amount = shape.amountMember;
     const unit = shape.unitMember;
     const fields = amount + ': BigDecimal' + (unit ? ', ' + unit + ': String' : '');
-    const unitCheck = unit ? '\n  require(' + JSON.stringify(shape.units).replace('[', 'Set(').replace(']', ')') + '.contains(' + unit + '), "unsupported exact unit")' : '';
-    const same = unit ? 'require(' + unit + ' == other.' + unit + ', "exact units differ"); ' : '';
-    const create = expr => name + '(' + name + '.checkedAmount(' + expr + ')' + (unit ? ', ' + unit : '') + ')';
-    const normalized = name + '.checkedAmount(' + amount + ')';
-    const otherAmount = name + '.checkedAmount(other.' + amount + ')';
-    return 'final case class ' + name + '(' + fields + ') {\n  ' + name + '.checkedAmount(' + amount + ')' + unitCheck + '\n' +
+    const compareBody = unit
+      ? 'if (' + unit + ' == other.' + unit + ') Right(' + amount + '.compare(other.' + amount + ')) ' +
+        'else Left(iMadzError("EXACT_UNIT_MISMATCH", "exact units differ"))'
+      : 'Right(' + amount + '.compare(other.' + amount + '))';
+    const buildArith = op => {
+      const yieldExpr = unit ? name + '(result, ' + unit + ')' : name + '(result)';
+      const forExpr = 'for {\n      lhs <- ' + name + '.checkedAmount(' + amount + ')\n' +
+        '      rhs <- ' + name + '.checkedAmount(other.' + amount + ')\n' +
+        '      result <- ' + name + '.checkedAmount(lhs ' + op + ' rhs)\n' +
+        '    } yield ' + yieldExpr;
+      return unit
+        ? 'if (' + unit + ' != other.' + unit + ') Left(iMadzError("EXACT_UNIT_MISMATCH", "exact units differ"))\n    else ' + forExpr
+        : forExpr;
+    };
+    const unitSetLiteral = unit ? JSON.stringify(shape.units).replace('[', 'Set(').replace(']', ')') : null;
+    const companionCreate = unit
+      ? '  val SupportedUnits: Set[String] = ' + unitSetLiteral + '\n' +
+        '  def create(' + fields + '): Either[iMadzError, ' + name + '] =\n' +
+        '    if (!SupportedUnits.contains(' + unit + ')) Left(iMadzError("EXACT_UNIT_UNSUPPORTED", "unsupported exact unit"))\n' +
+        '    else checkedAmount(' + amount + ').map(' + name + '(_, ' + unit + '))\n'
+      : '  def create(' + fields + '): Either[iMadzError, ' + name + '] =\n' +
+        '    checkedAmount(' + amount + ').map(' + name + '(_))\n';
+    return 'final case class ' + name + '(' + fields + ') {\n' +
       '  def isPositive: Boolean = ' + amount + ' > 0\n' +
-      '  def compareSameUnit(other: ' + name + '): Int = { ' + same + amount + '.compare(other.' + amount + ') }\n' +
-      '  def plus(other: ' + name + '): ' + name + ' = { ' + same + create(normalized + ' + ' + otherAmount) + ' }\n' +
-      '  def minus(other: ' + name + '): ' + name + ' = { ' + same + create(normalized + ' - ' + otherAmount) + ' }\n' +
-      '}\nobject ' + name + ' {\n  def checkedAmount(value: BigDecimal): BigDecimal = {\n' +
-      '    require(value != null, "exact amount is required")\n' +
-      '    val scaled = value.bigDecimal.setScale(' + shape.scale + ', ' + EXACT_SCALING + ')\n' +
-      '    require(scaled.precision <= ' + shape.precision + ', "exact precision exceeded")\n' +
-      '    new scala.math.BigDecimal(scaled, java.math.MathContext.UNLIMITED)\n  }\n}\n';
+      '  def compareSameUnit(other: ' + name + '): Either[iMadzError, Int] =\n    ' + compareBody + '\n' +
+      '  def plus(other: ' + name + '): Either[iMadzError, ' + name + '] =\n    ' + buildArith('+') + '\n' +
+      '  def minus(other: ' + name + '): Either[iMadzError, ' + name + '] =\n    ' + buildArith('-') + '\n' +
+      '}\nobject ' + name + ' {\n' + companionCreate +
+      '  def checkedAmount(value: BigDecimal): Either[iMadzError, BigDecimal] = {\n' +
+      '    val stripped = value.bigDecimal.stripTrailingZeros()\n' +
+      '    if (stripped.scale() > ' + shape.scale + ') Left(iMadzError("EXACT_SCALE_EXCEEDED", "exact scale exceeded"))\n' +
+      '    else {\n' +
+      '      val scaled = stripped.setScale(' + shape.scale + ', ' + EXACT_SCALING + ')\n' +
+      '      if (scaled.precision() > ' + shape.precision + ') Left(iMadzError("EXACT_PRECISION_EXCEEDED", "exact precision exceeded"))\n' +
+      '      else Right(new scala.math.BigDecimal(scaled, java.math.MathContext.UNLIMITED))\n' +
+      '    }\n  }\n}\n';
   }
   if (shape.kind === 'record') {
     for (const member of shape.members) {
@@ -240,9 +261,10 @@ function renderValue(value, packages, subpackageByKey) {
   const crossImports = new Map();
   const body = renderValueBody(value, packages, subpackageByKey, subpkg, null, crossImports);
   const path = scalaSubpackagePath(pkg, subpkg, value.name + '.scala');
+  const exactImport = value.shape.kind === 'exact' ? 'import net.imadz.common.CommonTypes.iMadzError\n\n' : '';
   return {
     path,
-    content: 'package ' + pkg + '.' + subpkg + '\n\n' + formatImportBlock(pkg, crossImports) + body,
+    content: 'package ' + pkg + '.' + subpkg + '\n\n' + exactImport + formatImportBlock(pkg, crossImports) + body,
     kind: 'value-object',
     sources: [value.source],
     deps: [],
@@ -259,9 +281,10 @@ function renderCompanionModule(context, subpkg, moduleName, group, packages, sub
   });
   const body = `object ${moduleName} {\n${memberBlocks.join('\n')}\n}\n`;
   const path = scalaSubpackagePath(pkg, subpkg, moduleName + '.scala');
+  const exactImport = group.some(v => v.shape.kind === 'exact') ? 'import net.imadz.common.CommonTypes.iMadzError\n\n' : '';
   return {
     path,
-    content: 'package ' + pkg + '.' + subpkg + '\n\n' + formatImportBlock(pkg, crossImports) + body,
+    content: 'package ' + pkg + '.' + subpkg + '\n\n' + exactImport + formatImportBlock(pkg, crossImports) + body,
     kind: 'value-object',
     sources: group.map(v => v.source),
     deps: [],

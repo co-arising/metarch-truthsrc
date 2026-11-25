@@ -293,11 +293,11 @@ function emitExecution(cm, shape) {
   const messages = shape.executionMessages;
   const successCase = cm.success;
   const stageFold = [];
-  stageFold.push('    case ' + successCase.case + '(' + successCase.slot + ') => state.copy(' +
-    successCase.slot + ' = Some(' + successCase.slot + '))');
+  stageFold.push('    case ' + successCase.case + '(' + successCase.slot + ') => Right(state.copy(' +
+    successCase.slot + ' = Some(' + successCase.slot + ')))');
   for (const rc of cm.refusals) {
     const [category, label, discipline] = rc.stageError.split(':');
-    stageFold.push('    case ' + rc.case + ' => throw StageFailedException(StageError(StageId,',
+    stageFold.push('    case ' + rc.case + ' => Left(StageError(StageId,',
       '        Some("' + label + '"), "' + category + '", "' + category + ':' + label + ':' +
       discipline + '"))');
   }
@@ -307,7 +307,7 @@ function emitExecution(cm, shape) {
     'import scala.concurrent.duration._',
     '',
     ...renderGroupedValueImports(cm.basePkg, values(cm), 'application.process.' + cm.flowSlug),
-    'import net.imadz.monarch.{StageError, StageFailedException}',
+    'import net.imadz.monarch.StageError',
     '',
     ...cm.docs.execution,
     'object ' + cm.execution + ' {',
@@ -328,9 +328,10 @@ function emitExecution(cm, shape) {
     '  final case class Outputs(' + successCase.slot + ': ' + ex.codecSlots.find(s => s.optional).type + ')',
     '',
     '  /** Unconfirmed predecessor output is refused — never defaulted. */',
-    '  def outputs(state: State): Outputs =',
-    '    Outputs(state.' + successCase.slot + '.getOrElse(throw new IllegalArgumentException("' +
-      messages.unconfirmedPredecessorOutput + '")))',
+    '  def outputs(state: State): Either[StageError, Outputs] =',
+    '    state.' + successCase.slot + '.map(Outputs(_)).toRight(',
+    '      StageError(StageId, Some("UnconfirmedOutput"), "predecessor-output", "' +
+      messages.unconfirmedPredecessorOutput + '"))',
     '',
     '  // ----------------------------------------------------------------- knowledge',
     '  val PlanVersion = "' + ex.planVersion + '"',
@@ -349,7 +350,7 @@ function emitExecution(cm, shape) {
     '  def backoffMillis(attempt: Int): Long =',
     '    math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, attempt.toDouble)))',
     '',
-    '  def foldResult(state: State, result: ' + pascalStage + 'Result): State = result match {',
+    '  def foldResult(state: State, result: ' + pascalStage + 'Result): Either[StageError, State] = result match {',
     ...stageFold,
     '  }',
     '}',
@@ -662,6 +663,7 @@ function emitBootstrap(cm, shape) {
     'import ' + cm.executionPkg + '.' + cm.execution,
     ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.reconcileValue], 'infrastructure.bootstrap'),
     'import ' + cm.persistencePkg + '.' + cm.stateCodec,
+    'import net.imadz.monarch.StageFailedException',
     'import ' + shape.monarchPersistencePackage + '.{PersistentMonarch, RunObserver}',
     '',
     '/** Runtime persistence & actor assembly for `' + cm.host + '` and `' + cm.execution + '`. */',
@@ -859,7 +861,8 @@ function emitBootstrap(cm, shape) {
     '        PersistenceId.ofUniqueId(persistenceId),',
     '        plan,',
     '        (step, state) => step match {',
-    '          case StageId => invoke' + pascalStage + '(state).map(foldResult(state, _))',
+    '          case StageId => invoke' + pascalStage + '(state).flatMap(r =>',
+    '            foldResult(state, r).fold(err => Future.failed(StageFailedException(err)), Future.successful))',
     '          case _ => Future.failed(new IllegalArgumentException("' + messages.unknownStaticStep + '"))',
     '        },',
     '        ' + cm.stateCodec + '.codec,',

@@ -13,6 +13,7 @@ import example.bankwealth.infrastructure.process.{BankPaymentHost, BankPaymentHo
 import example.bankwealth.application.process.protocol.BankPaymentMessages._
 import example.bankwealth.infrastructure.persistence.{BankCashPaymentStateCodec, BankPaymentProcessCodecs}
 import net.imadz.infra.saga.strict._
+import net.imadz.monarch.StageFailedException
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 
 /** Runtime persistence & actor assembly for `BankPaymentHost` and `BankCashPaymentExecution`. */
@@ -222,7 +223,8 @@ object BankPaymentProcessBootstrap {
         PersistenceId.ofUniqueId(persistenceId),
         plan,
         (step, state) => step match {
-          case StageId => invokePayCashPurchase(state).map(foldResult(state, _))
+          case StageId => invokePayCashPurchase(state).flatMap(r =>
+            foldResult(state, r).fold(err => Future.failed(StageFailedException(err)), Future.successful))
           case _ => Future.failed(new IllegalArgumentException("unknown static step"))
         },
         BankCashPaymentStateCodec.codec,

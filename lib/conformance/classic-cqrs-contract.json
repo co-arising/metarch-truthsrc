@@ -70,8 +70,8 @@
       "layer": "domain",
       "packageRole": "domain.invariants",
       "requiredImports": ["CommonTypes\\.\\{?[^\\n]*InvariantRule", "CommonTypes\\.\\{?[^\\n]*iMadzError"],
-      "requiredPatterns": ["\\bextends\\s+InvariantRule\\["],
-      "forbiddenPatterns": ["Either\\[String,\\s*Vector\\["]
+      "requiredPatterns": ["\\bextends\\s+InvariantRule\\[", "// @knowledge\\s+"],
+      "forbiddenPatterns": ["Either\\[String,\\s*Vector\\[", "\\bthrow\\b", "\\brequire\\s*\\(", "\\breturn\\b"]
     },
     "domain-service": {
       "layer": "domain",

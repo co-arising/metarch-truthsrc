@@ -204,7 +204,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/1/guards/3"
               },
-              "text": "(!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.committedOutgoing).contains(p.txid)) || ((((state.committedOutgoing)(p.txid)).currency == (p.amount).currency) && (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMMITTEDOUTGOING_MATCH"
@@ -215,7 +215,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/1/guards/4"
               },
-              "text": "(!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.compensatedOutgoing).contains(p.txid)) || ((((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency) && (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMPENSATEDOUTGOING_MATCH"
@@ -226,7 +226,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/1/guards/5"
               },
-              "text": "(!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.reservedAmount).contains(p.txid)) || ((((state.reservedAmount)(p.txid)).currency == (p.amount).currency) && (((state.reservedAmount)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_RESERVEDAMOUNT_MATCH"
@@ -267,7 +267,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/1/guards/9"
               },
-              "text": "(state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount) >= 0)",
+              "text": "(state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount).exists(_ >= 0))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_SUFFICIENT"
@@ -390,7 +390,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/2/guards/3"
               },
-              "text": "(!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.committedOutgoing).contains(p.txid)) || ((((state.committedOutgoing)(p.txid)).currency == (p.amount).currency) && (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMMITTEDOUTGOING_MATCH"
@@ -433,7 +433,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/2/guards/7"
               },
-              "text": "(!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.reservedAmount).contains(p.txid)) || ((((state.reservedAmount)(p.txid)).currency == (p.amount).currency) && (((state.reservedAmount)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_RESERVEDAMOUNT_MATCH"
@@ -540,7 +540,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/3/guards/3"
               },
-              "text": "(!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.compensatedOutgoing).contains(p.txid)) || ((((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency) && (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMPENSATEDOUTGOING_MATCH"
@@ -572,7 +572,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/3/guards/6"
               },
-              "text": "(!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.reservedAmount).contains(p.txid)) || ((((state.reservedAmount)(p.txid)).currency == (p.amount).currency) && (((state.reservedAmount)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_RESERVEDAMOUNT_MATCH"
@@ -695,7 +695,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/4/guards/3"
               },
-              "text": "(!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.committedIncoming).contains(p.txid)) || ((((state.committedIncoming)(p.txid)).currency == (p.amount).currency) && (((state.committedIncoming)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMMITTEDINCOMING_MATCH"
@@ -706,7 +706,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/4/guards/4"
               },
-              "text": "(!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.compensatedIncoming).contains(p.txid)) || ((((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency) && (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMPENSATEDINCOMING_MATCH"
@@ -717,7 +717,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/4/guards/5"
               },
-              "text": "(!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.incomingCredits).contains(p.txid)) || ((((state.incomingCredits)(p.txid)).currency == (p.amount).currency) && (((state.incomingCredits)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_INCOMINGCREDITS_MATCH"
@@ -854,7 +854,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/5/guards/3"
               },
-              "text": "(!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.committedIncoming).contains(p.txid)) || ((((state.committedIncoming)(p.txid)).currency == (p.amount).currency) && (((state.committedIncoming)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMMITTEDINCOMING_MATCH"
@@ -897,7 +897,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/5/guards/7"
               },
-              "text": "(!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.incomingCredits).contains(p.txid)) || ((((state.incomingCredits)(p.txid)).currency == (p.amount).currency) && (((state.incomingCredits)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_INCOMINGCREDITS_MATCH"
@@ -1020,7 +1020,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/6/guards/3"
               },
-              "text": "(!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.compensatedIncoming).contains(p.txid)) || ((((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency) && (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_COMPENSATEDINCOMING_MATCH"
@@ -1052,7 +1052,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/0/commands/6/guards/6"
               },
-              "text": "(!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.incomingCredits).contains(p.txid)) || ((((state.incomingCredits)(p.txid)).currency == (p.amount).currency) && (((state.incomingCredits)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "LEDGER_INCOMINGCREDITS_MATCH"
@@ -1161,7 +1161,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/0/guards/0"
               },
-              "text": "((state.cashRequestSource).isEmpty || (((((((state.cashRequestOriginals).contains(\"original\") && (p.operationId == (((state.cashRequestOriginals)(\"original\")).payment).operationId)) && (p.fundOrderId == (((state.cashRequestOriginals)(\"original\")).payment).fundOrderId)) && (p.investorAccountId == (((state.cashRequestOriginals)(\"original\")).payment).investorAccountId)) && (p.fundCollectionAccountId == (((state.cashRequestOriginals)(\"original\")).payment).fundCollectionAccountId)) && (p.fundCode == (((state.cashRequestOriginals)(\"original\")).payment).fundCode)) && { require((p.amount).currency == ((((state.cashRequestOriginals)(\"original\")).payment).amount).currency, \"exact units differ\"); ((p.amount).amount == ((((state.cashRequestOriginals)(\"original\")).payment).amount).amount) }))",
+              "text": "((state.cashRequestSource).isEmpty || (((((((state.cashRequestOriginals).contains(\"original\") && (p.operationId == (((state.cashRequestOriginals)(\"original\")).payment).operationId)) && (p.fundOrderId == (((state.cashRequestOriginals)(\"original\")).payment).fundOrderId)) && (p.investorAccountId == (((state.cashRequestOriginals)(\"original\")).payment).investorAccountId)) && (p.fundCollectionAccountId == (((state.cashRequestOriginals)(\"original\")).payment).fundCollectionAccountId)) && (p.fundCode == (((state.cashRequestOriginals)(\"original\")).payment).fundCode)) && (((p.amount).currency == ((((state.cashRequestOriginals)(\"original\")).payment).amount).currency) && ((p.amount).amount == ((((state.cashRequestOriginals)(\"original\")).payment).amount).amount))))",
               "outcome": {
                 "kind": "reject",
                 "code": "CASH_ADMITTED_PAYMENT_MATCH"
@@ -1183,7 +1183,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/0/guards/2"
               },
-              "text": "((state.status == \"new\") || (((((p.operationId == state.operationId) && (p.investorAccountId == state.investorAccountId)) && (p.fundCollectionAccountId == state.fundCollectionAccountId)) && (p.fundCode == state.fundCode)) && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) }))",
+              "text": "((state.status == \"new\") || (((((p.operationId == state.operationId) && (p.investorAccountId == state.investorAccountId)) && (p.fundCollectionAccountId == state.fundCollectionAccountId)) && (p.fundCode == state.fundCode)) && (((p.amount).currency == (state.amount).currency) && ((p.amount).amount == (state.amount).amount))))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_REPLAY_CONFLICT"
@@ -1343,7 +1343,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/1/guards/2"
               },
-              "text": "(!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.committedSubscriptions).contains(p.txid)) || ((((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_COMMITTEDSUBSCRIPTIONS_MATCH"
@@ -1354,7 +1354,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/1/guards/3"
               },
-              "text": "(!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.compensatedSubscriptions).contains(p.txid)) || ((((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH"
@@ -1365,7 +1365,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/1/guards/4"
               },
-              "text": "(!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.reservedSubscriptions).contains(p.txid)) || ((((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
@@ -1406,7 +1406,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/1/guards/8"
               },
-              "text": "((state.status == \"payment-requested\") && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) })",
+              "text": "((state.status == \"payment-requested\") && (((p.amount).currency == (state.amount).currency) && ((p.amount).amount == (state.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_REQUEST_AMOUNT"
@@ -1502,7 +1502,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/2/guards/2"
               },
-              "text": "(!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.committedSubscriptions).contains(p.txid)) || ((((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_COMMITTEDSUBSCRIPTIONS_MATCH"
@@ -1545,7 +1545,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/2/guards/6"
               },
-              "text": "(!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.reservedSubscriptions).contains(p.txid)) || ((((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
@@ -1556,7 +1556,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/2/guards/7"
               },
-              "text": "{ require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) }",
+              "text": "(((p.amount).currency == (state.amount).currency) && ((p.amount).amount == (state.amount).amount))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_COMMIT_AMOUNT"
@@ -1652,7 +1652,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/3/guards/2"
               },
-              "text": "(!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.compensatedSubscriptions).contains(p.txid)) || ((((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH"
@@ -1684,7 +1684,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/3/guards/5"
               },
-              "text": "(!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+              "text": "(!((state.reservedSubscriptions).contains(p.txid)) || ((((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency) && (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount)))",
               "outcome": {
                 "kind": "reject",
                 "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
@@ -4071,7 +4071,7 @@
                 "document": "bank-v1",
                 "pointer": "/aggregates/1/commands/20/guards/4"
               },
-              "text": "((state.status == \"new\") || (((((((p.original).payment).operationId == state.operationId) && (((p.original).payment).investorAccountId == state.investorAccountId)) && (((p.original).payment).fundCollectionAccountId == state.fundCollectionAccountId)) && (((p.original).payment).fundCode == state.fundCode)) && { require((((p.original).payment).amount).currency == (state.amount).currency, \"exact units differ\"); ((((p.original).payment).amount).amount == (state.amount).amount) }))",
+              "text": "((state.status == \"new\") || (((((((p.original).payment).operationId == state.operationId) && (((p.original).payment).investorAccountId == state.investorAccountId)) && (((p.original).payment).fundCollectionAccountId == state.fundCollectionAccountId)) && (((p.original).payment).fundCode == state.fundCode)) && (((((p.original).payment).amount).currency == (state.amount).currency) && ((((p.original).payment).amount).amount == (state.amount).amount))))",
               "outcome": {
                 "kind": "reject",
                 "code": "CASH_SOURCE_PAYMENT"

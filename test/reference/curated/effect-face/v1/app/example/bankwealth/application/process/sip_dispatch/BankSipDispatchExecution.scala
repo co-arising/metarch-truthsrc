@@ -3,7 +3,7 @@ package example.bankwealth.application.process.sip_dispatch
 import scala.concurrent.duration._
 
 import example.bankwealth.domain.values.{OccurrenceId, OperationId, SipOccurrence}
-import net.imadz.monarch.{StageError, StageFailedException}
+import net.imadz.monarch.StageError
 
 /** Durable execution plan of the SIP dispatch pipeline: one stage,
   * `dispatch-cash`, which hands a durable SIP occurrence to the effect host
@@ -27,8 +27,9 @@ object BankSipDispatchExecution {
   final case class Outputs(operationId: OperationId)
 
   /** Unconfirmed predecessor output is refused — never defaulted. */
-  def outputs(state: State): Outputs =
-    Outputs(state.operationId.getOrElse(throw new IllegalArgumentException("unconfirmed predecessor output")))
+  def outputs(state: State): Either[StageError, Outputs] =
+    state.operationId.map(Outputs(_)).toRight(
+      StageError(StageId, Some("UnconfirmedOutput"), "predecessor-output", "unconfirmed predecessor output"))
 
   // ----------------------------------------------------------------- knowledge
   val PlanVersion = "bank-v1-1"
@@ -47,13 +48,13 @@ object BankSipDispatchExecution {
   def backoffMillis(attempt: Int): Long =
     math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, attempt.toDouble)))
 
-  def foldResult(state: State, result: DispatchCashResult): State = result match {
-    case DispatchCashDispatched(operationId) => state.copy(operationId = Some(operationId))
-    case DispatchCashRefused => throw StageFailedException(StageError(StageId,
+  def foldResult(state: State, result: DispatchCashResult): Either[StageError, State] = result match {
+    case DispatchCashDispatched(operationId) => Right(state.copy(operationId = Some(operationId)))
+    case DispatchCashRefused => Left(StageError(StageId,
         Some("Refused"), "business-rejection", "business-rejection:Refused:stop"))
-    case DispatchCashUnavailable => throw StageFailedException(StageError(StageId,
+    case DispatchCashUnavailable => Left(StageError(StageId,
         Some("Unavailable"), "infrastructure-failure", "infrastructure-failure:Unavailable:manual-recovery"))
-    case DispatchCashUnknown => throw StageFailedException(StageError(StageId,
+    case DispatchCashUnknown => Left(StageError(StageId,
         Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
   }
 }

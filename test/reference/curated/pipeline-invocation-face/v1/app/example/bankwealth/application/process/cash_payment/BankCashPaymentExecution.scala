@@ -3,7 +3,7 @@ package example.bankwealth.application.process.cash_payment
 import scala.concurrent.duration._
 
 import example.bankwealth.domain.values.{AccountId, FundOrderId, Money, OperationId, TxId}
-import net.imadz.monarch.{StageError, StageFailedException}
+import net.imadz.monarch.StageError
 
 /** Durable execution plan of the cash purchase payment pipeline: one stage,
   * `pay-cash-purchase`, which delegates to the invocation host and folds its
@@ -43,8 +43,9 @@ object BankCashPaymentExecution {
   final case class Outputs(paymentTxid: TxId)
 
   /** Unconfirmed predecessor output is refused — never defaulted. */
-  def outputs(state: State): Outputs =
-    Outputs(state.paymentTxid.getOrElse(throw new IllegalArgumentException("unconfirmed predecessor output")))
+  def outputs(state: State): Either[StageError, Outputs] =
+    state.paymentTxid.map(Outputs(_)).toRight(
+      StageError(StageId, Some("UnconfirmedOutput"), "predecessor-output", "unconfirmed predecessor output"))
 
   // ----------------------------------------------------------------- knowledge
   val PlanVersion = "bank-v1-1"
@@ -63,16 +64,16 @@ object BankCashPaymentExecution {
   def backoffMillis(attempt: Int): Long =
     math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, attempt.toDouble)))
 
-  def foldResult(state: State, result: PayCashPurchaseResult): State = result match {
-    case PayCashPurchaseSucceeded(paymentTxid) => state.copy(paymentTxid = Some(paymentTxid))
-    case PayCashPurchaseRejected => throw StageFailedException(StageError(StageId,
+  def foldResult(state: State, result: PayCashPurchaseResult): Either[StageError, State] = result match {
+    case PayCashPurchaseSucceeded(paymentTxid) => Right(state.copy(paymentTxid = Some(paymentTxid)))
+    case PayCashPurchaseRejected => Left(StageError(StageId,
               Some("Rejected"), "business-rejection", "business-rejection:Rejected:stop"))
-    case PayCashPurchaseCompensated => throw StageFailedException(StageError(StageId,
+    case PayCashPurchaseCompensated => Left(StageError(StageId,
               Some("Compensated"), "business-rejection", "business-rejection:Compensated:stop"))
-    case PayCashPurchaseRecoveryRequired => throw StageFailedException(StageError(StageId,
+    case PayCashPurchaseRecoveryRequired => Left(StageError(StageId,
             Some("RecoveryRequired"), "infrastructure-failure",
             "infrastructure-failure:RecoveryRequired:manual-recovery"))
-    case PayCashPurchaseUnknown => throw StageFailedException(StageError(StageId,
+    case PayCashPurchaseUnknown => Left(StageError(StageId,
               Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
   }
 }

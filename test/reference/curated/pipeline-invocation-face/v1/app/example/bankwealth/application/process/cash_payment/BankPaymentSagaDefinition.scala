@@ -66,7 +66,7 @@ object BankPaymentSagaDefinition {
   val CoordinatorCapacity = 32
 
   /** Every receipt must re-state exactly the durable operation it answers. */
-  private def requireReceiptIdentity(
+  private def verifyReceiptIdentity(
     request: OperationRequest[Args],
     txid: String,
     definitionVersion: String,
@@ -75,17 +75,22 @@ object BankPaymentSagaDefinition {
     resource: String,
     step: String,
     phase: String,
-  ): Unit = {
-    require(txid == request.identity.transaction.transactionId, "receipt txid differs from durable operation")
-    require(definitionVersion == request.identity.transaction.definitionVersion.toString,
-        "receipt definition-version differs from durable operation")
-    require(argsDigest == request.identity.transaction.argsDigest, "receipt args-digest differs from durable operation")
-    require(participant == request.identity.participantId, "receipt participant differs from durable operation")
-    require(resource == request.identity.resource, "receipt resource differs from durable operation")
-    require(step == request.identity.stepId, "receipt step differs from durable operation")
-    require(phase == request.identity.phase.toString.toLowerCase(java.util.Locale.ROOT),
-        "receipt phase differs from durable operation")
-  }
+  ): Either[String, Unit] =
+    if (txid != request.identity.transaction.transactionId)
+      Left("receipt txid differs from durable operation")
+    else if (definitionVersion != request.identity.transaction.definitionVersion.toString)
+      Left("receipt definition-version differs from durable operation")
+    else if (argsDigest != request.identity.transaction.argsDigest)
+      Left("receipt args-digest differs from durable operation")
+    else if (participant != request.identity.participantId)
+      Left("receipt participant differs from durable operation")
+    else if (resource != request.identity.resource)
+      Left("receipt resource differs from durable operation")
+    else if (step != request.identity.stepId)
+      Left("receipt step differs from durable operation")
+    else if (phase != request.identity.phase.toString.toLowerCase(java.util.Locale.ROOT))
+      Left("receipt phase differs from durable operation")
+    else Right(())
 
   private def phaseLower(request: OperationRequest[Args]): String =
     request.identity.phase.toString.toLowerCase(java.util.Locale.ROOT)
@@ -93,8 +98,8 @@ object BankPaymentSagaDefinition {
   // ---- reserve-investor-funds (investorCreditBalance, CreditBalance) --------
 
   private def checkReserveInvestorFundsPrepare(request: OperationRequest[Args],
-      receipt: ReserveInvestorFundsPrepareReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: ReserveInvestorFundsPrepareReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveInvestorFundsPrepareCommand(request: OperationRequest[Args]): CreditBalanceRuleParams.ReserveFundsParams =
@@ -102,8 +107,8 @@ object BankPaymentSagaDefinition {
         request.args.investorAccountId, request.args.amount)
 
   private def checkReserveInvestorFundsCommit(request: OperationRequest[Args],
-      receipt: ReserveInvestorFundsCommitReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: ReserveInvestorFundsCommitReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveInvestorFundsCommitCommand(request: OperationRequest[Args]): CreditBalanceRuleParams.DeductFundsParams =
@@ -111,8 +116,8 @@ object BankPaymentSagaDefinition {
         request.args.investorAccountId, request.args.amount)
 
   private def checkReserveInvestorFundsCompensate(request: OperationRequest[Args],
-      receipt: ReserveInvestorFundsCompensateReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: ReserveInvestorFundsCompensateReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveInvestorFundsCompensateCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
@@ -123,8 +128,8 @@ object BankPaymentSagaDefinition {
   // ---- credit-fund-collection (collectionCreditBalance, CreditBalance) ------
 
   private def checkCreditFundCollectionPrepare(request: OperationRequest[Args],
-      receipt: CreditFundCollectionPrepareReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: CreditFundCollectionPrepareReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def creditFundCollectionPrepareCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
@@ -133,8 +138,8 @@ object BankPaymentSagaDefinition {
         request.args.fundCollectionAccountId, request.args.amount)
 
   private def checkCreditFundCollectionCommit(request: OperationRequest[Args],
-      receipt: CreditFundCollectionCommitReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: CreditFundCollectionCommitReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def creditFundCollectionCommitCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
@@ -143,8 +148,8 @@ object BankPaymentSagaDefinition {
         request.args.fundCollectionAccountId, request.args.amount)
 
   private def checkCreditFundCollectionCompensate(request: OperationRequest[Args],
-      receipt: CreditFundCollectionCompensateReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: CreditFundCollectionCompensateReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def creditFundCollectionCompensateCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
@@ -155,8 +160,8 @@ object BankPaymentSagaDefinition {
   // ---- reserve-cash-fund-order (orderFundOrderTCC, FundOrder) ---------------
 
   private def checkReserveCashFundOrderPrepare(request: OperationRequest[Args],
-      receipt: ReserveCashFundOrderPrepareReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: ReserveCashFundOrderPrepareReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveCashFundOrderPrepareCommand(request: OperationRequest[Args]): FundOrderRuleParams
@@ -165,8 +170,8 @@ object BankPaymentSagaDefinition {
         request.args.fundOrderId, request.args.amount)
 
   private def checkReserveCashFundOrderCommit(request: OperationRequest[Args],
-      receipt: ReserveCashFundOrderCommitReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: ReserveCashFundOrderCommitReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveCashFundOrderCommitCommand(request: OperationRequest[Args]): FundOrderRuleParams
@@ -175,8 +180,8 @@ object BankPaymentSagaDefinition {
         request.args.fundOrderId, request.args.amount)
 
   private def checkReserveCashFundOrderCompensate(request: OperationRequest[Args],
-      receipt: ReserveCashFundOrderCompensateReceipt): Unit =
-    requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
+      receipt: ReserveCashFundOrderCompensateReceipt): Either[String, Unit] =
+    verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveCashFundOrderCompensateCommand(request: OperationRequest[Args]): FundOrderRuleParams
@@ -206,31 +211,34 @@ object BankPaymentSagaDefinition {
   private def checkedPhasePort[Receipt](
     underlying: PhasePort[Args, Receipt],
     codec: PayloadCodec[Receipt],
-    receiptCheck: (OperationRequest[Args], Receipt) => Unit,
+    receiptCheck: (OperationRequest[Args], Receipt) => Either[String, Unit],
   )(implicit ec: ExecutionContext): PhasePort[Args, Receipt] = {
-    require(underlying != null && underlying.receiptCodec != null && underlying.receiptCodec.pin == codec.pin &&
-      underlying.querySafety == QuerySafety
-          .DeclaredReadOnly, "required read-only phase port and exact codec implementation")
-    val checked = new PhasePort[Args, Receipt] {
+    val validPort = underlying.receiptCodec.pin == codec.pin &&
+      underlying.querySafety == QuerySafety.DeclaredReadOnly
+    new PhasePort[Args, Receipt] {
       val receiptCodec = codec
       val querySafety = QuerySafety.DeclaredReadOnly
       private def validated(result: Future[PhaseOutcome[Receipt]],
           request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] =
-        result.map {
+        if (!validPort)
+          Future.failed(new IllegalArgumentException("required read-only phase port and exact codec implementation"))
+        else result.flatMap {
           case confirmed @ ConfirmedReceipt(identity, receipt) =>
-            require(identity == request.identity, "operation identity mismatch")
-            receiptCheck(request, receipt)
-            confirmed
+            if (identity != request.identity)
+              Future.failed(new IllegalArgumentException("operation identity mismatch"))
+            else receiptCheck(request, receipt).fold(
+              reason => Future.failed(new IllegalArgumentException(reason)),
+              _ => Future.successful(confirmed))
           case other =>
-            require(other.identity == request.identity, "operation identity mismatch")
-            other
+            if (other.identity != request.identity)
+              Future.failed(new IllegalArgumentException("operation identity mismatch"))
+            else Future.successful(other)
         }
       def execute(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] = validated(underlying
           .execute(request), request)
       def query(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] = validated(underlying.query(request),
           request)
     }
-    checked
   }
 
   private def phasePort[Receipt](
@@ -249,8 +257,7 @@ object BankPaymentSagaDefinition {
 
   // ------------------------------------------------------------------- wiring
 
-  def fromTechnical(technical: BankPaymentPorts, codecs: Codecs)(implicit ec: ExecutionContext): Ports = {
-    require(technical != null && codecs != null, "bound technical ports required")
+  def fromTechnical(technical: BankPaymentPorts, codecs: Codecs)(implicit ec: ExecutionContext): Ports =
     new Ports {
       val declarations: Map[String, (String, String)] = technical.declarations
 
@@ -407,7 +414,6 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, codecs.ReserveCashFundOrderCompensateCodec, checkReserveCashFundOrderCompensate)
     }
-  }
 
   /** The runtime consumes binding-wrapped phase ports; the definition site is
     * the single place the checked ports become runtime bindings. */
@@ -422,8 +428,7 @@ object BankPaymentSagaDefinition {
   )
 
   def definition(ports: Ports, argsCodec: PayloadCodec[Args])
-      (implicit ec: ExecutionContext): StrictSagaDefinition[Args] = {
-    require(ports != null && argsCodec != null, "bound phase ports required")
+      (implicit ec: ExecutionContext): StrictSagaDefinition[Args] =
     StrictSagaDefinition(SagaId, SagaDefinitionVersion, SagaDefinitionDigest, argsCodec, args => Vector(
       StrictParticipant[Args]("reserve-investor-funds",
           "investorCreditBalance", args.investorAccountId.value, phaseBindings(ports.reserveInvestorFundsPrepare,
@@ -436,5 +441,4 @@ object BankPaymentSagaDefinition {
           "orderFundOrderTCC", args.fundOrderId.value, phaseBindings(ports.reserveCashFundOrderPrepare,
               ports.reserveCashFundOrderCommit, ports.reserveCashFundOrderCompensate)),
     ))
-  }
 }

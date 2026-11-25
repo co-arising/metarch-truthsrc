@@ -13,6 +13,7 @@ import example.bankwealth.infrastructure.connectors._
 import example.bankwealth.application.process.ta_submission.BankTaSubmissionExecution
 import example.bankwealth.application.connectors.BankTaEffectProtocol._
 import example.bankwealth.infrastructure.persistence.BankTaSubmissionStateCodec
+import net.imadz.monarch.StageFailedException
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 
 /** Runtime persistence & actor assembly for `BankTaEffectHost` and `BankTaSubmissionExecution`. */
@@ -208,7 +209,8 @@ object BankTaEffectBootstrap {
         PersistenceId.ofUniqueId(persistenceId),
         plan,
         (step, state) => step match {
-          case StageId => invokeSubmitTa(state).map(foldResult(state, _))
+          case StageId => invokeSubmitTa(state).flatMap(r =>
+            foldResult(state, r).fold(err => Future.failed(StageFailedException(err)), Future.successful))
           case _ => Future.failed(new IllegalArgumentException("unknown static step"))
         },
         BankTaSubmissionStateCodec.codec,
