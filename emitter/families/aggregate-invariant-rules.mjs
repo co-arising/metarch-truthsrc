@@ -242,7 +242,30 @@ function renderLiteral(value, type) {
 
 const lowerFirst = s => (s ? s[0].toLowerCase() + s.slice(1) : s);
 
-function renderExpr(expr) {
+function collectHosts(expr, hostBindings, hostCalls) {
+  if (expr.op === 'host') {
+    if (!hostBindings.has(expr.name)) {
+      const fn = symbol(lowerFirst(expr.name));
+      const raw = lowerFirst(expr.name);
+      const varName = (raw === 'state' || raw === 'p' || raw === 'hosts') ? raw + 'Result' : symbol(raw);
+      hostBindings.set(expr.name, varName);
+      hostCalls.push({ varName, fn });
+    }
+    return;
+  }
+  if (expr.op === 'member') { collectHosts(expr.argument, hostBindings, hostCalls); return; }
+  if (expr.op === 'map-get') {
+    collectHosts(expr.map, hostBindings, hostCalls);
+    collectHosts(expr.key, hostBindings, hostCalls);
+    return;
+  }
+  if (expr.op === 'add' || expr.op === 'subtract') {
+    collectHosts(expr.left, hostBindings, hostCalls);
+    collectHosts(expr.right, hostBindings, hostCalls);
+  }
+}
+
+function renderExpr(expr, hostBindings = null) {
   if (expr.op === 'ref') {
     let prefix = 'p.';
     if (expr.scope === 'state-field') prefix = 'state.';
@@ -250,10 +273,13 @@ function renderExpr(expr) {
     return prefix + symbol(expr.name);
   }
   if (expr.op === 'literal') return renderLiteral(expr.value, expr.valueType);
-  if (expr.op === 'host') return 'hosts.' + symbol(lowerFirst(expr.name)) + '(state, p)';
-  if (expr.op === 'member') return '(' + renderExpr(expr.argument) + ').' + symbol(expr.member);
-  if (expr.op === 'map-get') return '(' + renderExpr(expr.map) + ').get(' + renderExpr(expr.key) + ')';
-  const left = renderExpr(expr.left), right = renderExpr(expr.right);
+  if (expr.op === 'host') {
+    if (hostBindings && hostBindings.has(expr.name)) return hostBindings.get(expr.name);
+    return 'hosts.' + symbol(lowerFirst(expr.name)) + '(state, p)';
+  }
+  if (expr.op === 'member') return '(' + renderExpr(expr.argument, hostBindings) + ').' + symbol(expr.member);
+  if (expr.op === 'map-get') return '(' + renderExpr(expr.map, hostBindings) + ').get(' + renderExpr(expr.key, hostBindings) + ')';
+  const left = renderExpr(expr.left, hostBindings), right = renderExpr(expr.right, hostBindings);
   if (expr.arithmetic === 'primitive') {
     return 'java.lang.Math.' + (expr.op === 'add' ? 'addExact' : 'subtractExact') + '(' + left + ', ' + right + ')';
   }
@@ -304,10 +330,21 @@ function renderAggregateRules(a, pkgByContext) {
         (g.outcome.kind === 'reject' ? 'Left(iMadzError(' + codeLit + ', ' + codeLit + '))' : 'Right(Nil)') + '\n';
       guards.push({ source: g.source, span: { start: guardStart, end: rules.length } });
     }
+    const hostBindings = new Map();
+    const hostCalls = [];
+    for (const e of c.events) {
+      for (const s of e.slots) collectHosts(s.producer, hostBindings, hostCalls);
+    }
     const eventsExpr = c.events
-      .map(e => symbol(e.name) + '(' + e.slots.map(s => renderExpr(s.producer)).join(', ') + ')')
+      .map(e => symbol(e.name) + '(' + e.slots.map(s => renderExpr(s.producer, hostBindings)).join(', ') + ')')
       .join(', ');
-    rules += '      Right(List(' + eventsExpr + '))\n    }\n  }\n';
+    if (hostCalls.length > 0) {
+      rules += '      for {\n' +
+        hostCalls.map(h => '        ' + h.varName + ' <- hosts.' + h.fn + '(state, p)').join('\n') + '\n' +
+        '      } yield List(' + eventsExpr + ')\n    }\n  }\n';
+    } else {
+      rules += '      Right(List(' + eventsExpr + '))\n    }\n  }\n';
+    }
     const scope = { start, end: rules.length };
     ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));
   }

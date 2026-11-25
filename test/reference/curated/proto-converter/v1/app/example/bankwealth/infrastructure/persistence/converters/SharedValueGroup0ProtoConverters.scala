@@ -12,7 +12,6 @@ import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep.
 import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import example.bankwealth.application.readmodels.ReadModelViews._
 import example.bankwealth.domain.values._
-import example.bankwealth.infrastructure.persistence._
 import example.bankwealth.interfaces.api.ApiAcknowledgements._
 import example.bankwealth.interfaces.api.ApiCommands._
 import example.bankwealth.interfaces.api.ApiKeys._
@@ -49,29 +48,23 @@ trait SharedValueGroup0ProtoConverters extends PrimitiveConverter {
 
   def AmountDecimalToWire(value: AmountDecimal): AmountDecimalWire = { val encoded = encodeAmountDecimalPO(value); AmountDecimalWire(encoded.value) }
   def AmountDecimalFromWire(value: AmountDecimalWire): AmountDecimal = decodeAmountDecimalPO(pb.AmountDecimalPO(value = value.value))
-  def AmountDecimalToPO(value: AmountDecimal): AmountDecimalPO = { val encoded = encodeAmountDecimalPO(value); AmountDecimalPO(encoded.value) }
-  def AmountDecimalFromPO(value: AmountDecimalPO): AmountDecimal = decodeAmountDecimalPO(pb.AmountDecimalPO(value = value.value))
+  def AmountDecimalToPO(value: AmountDecimal): pb.AmountDecimalPO = encodeAmountDecimalPO(value)
+  def AmountDecimalFromPO(value: pb.AmountDecimalPO): AmountDecimal = decodeAmountDecimalPO(value)
   def encodeAmountDecimalPO(value: AmountDecimal): pb.AmountDecimalPO = pb.AmountDecimalPO(value = value.value.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString)
   def decodeAmountDecimalPO(value: pb.AmountDecimalPO): AmountDecimal = AmountDecimal(readExact(value.value, 2, true))
 
   def encodeAmountDecimalWirePO(value: AmountDecimalWire): pb.AmountDecimalWirePO = pb.AmountDecimalWirePO(value = value.value)
   def decodeAmountDecimalWirePO(value: pb.AmountDecimalWirePO): AmountDecimalWire = AmountDecimalWire(value = value.value)
 
-  def encodeAmountDecimalStoragePO(value: AmountDecimalPO): pb.AmountDecimalStoragePO = pb.AmountDecimalStoragePO(value = value.value)
-  def decodeAmountDecimalStoragePO(value: pb.AmountDecimalStoragePO): AmountDecimalPO = AmountDecimalPO(value = value.value)
-
   def MoneyToWire(value: Money): MoneyWire = { val encoded = encodeMoneyPO(value); MoneyWire(encoded.amount, encoded.currency) }
   def MoneyFromWire(value: MoneyWire): Money = decodeMoneyPO(pb.MoneyPO(amount = value.minorUnits, currency = value.currency))
-  def MoneyToPO(value: Money): MoneyPO = { val encoded = encodeMoneyPO(value); MoneyPO(encoded.amount, encoded.currency) }
-  def MoneyFromPO(value: MoneyPO): Money = decodeMoneyPO(pb.MoneyPO(amount = value.minorUnits, currency = value.currency))
+  def MoneyToPO(value: Money): pb.MoneyPO = encodeMoneyPO(value)
+  def MoneyFromPO(value: pb.MoneyPO): Money = decodeMoneyPO(value)
   def encodeMoneyPO(value: Money): pb.MoneyPO = pb.MoneyPO(amount = value.amount.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString, currency = value.currency)
   def decodeMoneyPO(value: pb.MoneyPO): Money = Money(readExact(value.amount, 2, true), value.currency)
 
   def encodeMoneyWirePO(value: MoneyWire): pb.MoneyWirePO = pb.MoneyWirePO(minorUnits = value.minorUnits, currency = value.currency)
   def decodeMoneyWirePO(value: pb.MoneyWirePO): MoneyWire = MoneyWire(minorUnits = value.minorUnits, currency = value.currency)
-
-  def encodeMoneyStoragePO(value: MoneyPO): pb.MoneyStoragePO = pb.MoneyStoragePO(minorUnits = value.minorUnits, currency = value.currency)
-  def decodeMoneyStoragePO(value: pb.MoneyStoragePO): MoneyPO = MoneyPO(minorUnits = value.minorUnits, currency = value.currency)
 
   def encodeFundSharePO(value: FundShare): pb.FundSharePO = pb.FundSharePO(fundCode = value.fundCode, shares = Some(encodeTaExactTextPO(value.shares)), nav = Some(encodeTaExactTextPO(value.nav)))
   def decodeFundSharePO(value: pb.FundSharePO): FundShare = FundShare(fundCode = value.fundCode, shares = decodeTaExactTextPO(req(value.shares)), nav = decodeTaExactTextPO(req(value.nav)))
@@ -789,5 +782,30 @@ trait SharedValueGroup0ProtoConverters extends PrimitiveConverter {
 
   def encodeCreditOriginalInvestorPrepareInputPO(value: CreditOriginalInvestorPrepareInput): pb.CreditOriginalInvestorPrepareInputPO = pb.CreditOriginalInvestorPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
   def decodeCreditOriginalInvestorPrepareInputPO(value: pb.CreditOriginalInvestorPrepareInputPO): CreditOriginalInvestorPrepareInput = CreditOriginalInvestorPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeCreditOriginalInvestorPrepareReceiptPO(value: CreditOriginalInvestorPrepareReceipt): pb.CreditOriginalInvestorPrepareReceiptPO = pb.CreditOriginalInvestorPrepareReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeCreditOriginalInvestorPrepareReceiptPO(value: pb.CreditOriginalInvestorPrepareReceiptPO): CreditOriginalInvestorPrepareReceipt = CreditOriginalInvestorPrepareReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
 
 }

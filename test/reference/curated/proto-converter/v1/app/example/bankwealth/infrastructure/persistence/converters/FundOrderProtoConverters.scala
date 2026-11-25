@@ -12,7 +12,6 @@ import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep.
 import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import example.bankwealth.application.readmodels.ReadModelViews._
 import example.bankwealth.domain.values._
-import example.bankwealth.infrastructure.persistence._
 import example.bankwealth.interfaces.api.ApiAcknowledgements._
 import example.bankwealth.interfaces.api.ApiCommands._
 import example.bankwealth.interfaces.api.ApiKeys._

@@ -212,12 +212,14 @@ function renderComputations(agg, pkg, pkgByContext) {
       `import ${pkg}.domain.invariants.params.${name}RuleParams._`,
     ] : []),
     ...(importValues ? ['import ' + pkg + '.domain.values._'] : []),
-    'import net.imadz.common.CommonTypes.DomainService',
+    hasHosts
+      ? 'import net.imadz.common.CommonTypes.{DomainService, iMadzError}'
+      : 'import net.imadz.common.CommonTypes.DomainService',
     '',
     'trait ' + name + 'Computations extends DomainService {',
   ];
   for (const h of agg.hosts) {
-    lines.push('  def ' + symbol(lowerFirst(h.name)) + '(state: State, p: ' + symbol(h.command) + 'Params): ' + renderType(h.outputType, pkgByContext, agg.context));
+    lines.push('  def ' + symbol(lowerFirst(h.name)) + '(state: State, p: ' + symbol(h.command) + 'Params): Either[iMadzError, ' + renderType(h.outputType, pkgByContext, agg.context) + ']');
   }
   lines.push('}');
   lines.push('object ' + name + 'Computations {');

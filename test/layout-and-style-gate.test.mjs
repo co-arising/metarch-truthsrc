@@ -90,10 +90,12 @@ test('layout-and-style §2: generated Scala tests declare an explicit package (z
   assert.deepEqual(servicePkg, [], 'tests in forbidden .service package: ' + servicePkg.join(', '));
 });
 
-test('layout-and-style §3 N1: zero duplicate technical suffixes in generated filenames', () => {
+test('layout-and-style §3 N1: zero duplicate technical suffixes and zero codegen *PO.scala files under app/', () => {
   const allScala = walkScala(path.join(BANK_GENERATED, BASE_REL));
   const bad = allScala.filter(f => DUPLICATE_SUFFIX_RE.test(f)).map(f => path.relative(BANK_GENERATED, f));
   assert.deepEqual(bad, [], 'duplicate technical suffixes: ' + bad.join(', '));
+  const codegenPos = allScala.filter(f => path.basename(f).endsWith('PO.scala')).map(f => path.relative(BANK_GENERATED, f));
+  assert.deepEqual(codegenPos, [], 'codegen *PO.scala files must be retired in favor of ScalaPB: ' + codegenPos.join(', '));
 });
 
 test('layout-and-style S12/Phase 4: domain.values contains zero HTTP API DTOs, wire types, commands, CQRS views, saga triplets, or PO carriers', () => {

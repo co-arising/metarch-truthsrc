@@ -46,21 +46,12 @@ message AmountDecimalWirePO {
   string value = 1;
 }
 
-message AmountDecimalStoragePO {
-  string value = 1;
-}
-
 message MoneyPO {
   string amount = 1;
   string currency = 2;
 }
 
 message MoneyWirePO {
-  string minorUnits = 1;
-  string currency = 2;
-}
-
-message MoneyStoragePO {
   string minorUnits = 1;
   string currency = 2;
 }

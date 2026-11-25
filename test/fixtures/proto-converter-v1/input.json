@@ -24,10 +24,8 @@
         "app/example/bankwealth/domain/values/TaExactText.scala",
         "app/example/bankwealth/domain/values/AmountDecimal.scala",
         "app/example/bankwealth/domain/values/AmountDecimalWire.scala",
-        "app/example/bankwealth/domain/values/AmountDecimalPO.scala",
         "app/example/bankwealth/domain/values/Money.scala",
         "app/example/bankwealth/domain/values/MoneyWire.scala",
-        "app/example/bankwealth/domain/values/MoneyPO.scala",
         "app/example/bankwealth/domain/values/FundShare.scala",
         "app/example/bankwealth/domain/values/TaRequestId.scala",
         "app/example/bankwealth/domain/values/SipRevisionConfig.scala",
@@ -353,6 +351,10 @@
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/10"
             }
           ],
           "exact": {
@@ -402,30 +404,6 @@
           ]
         },
         {
-          "kind": "wrapper",
-          "typeId": "AmountDecimalPO",
-          "poName": "AmountDecimalStoragePO",
-          "fields": [
-            {
-              "name": "value",
-              "protoName": "value",
-              "number": 1,
-              "typeInfo": {
-                "kind": "primitive",
-                "primitive": "string",
-                "protoType": "string",
-                "modifier": ""
-              }
-            }
-          ],
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/valueObjects/10"
-            }
-          ]
-        },
-        {
           "kind": "exact",
           "typeId": "Money",
           "poName": "MoneyPO",
@@ -457,6 +435,18 @@
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/11"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/13"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/13/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/13/fields/1"
             }
           ],
           "exact": {
@@ -529,57 +519,6 @@
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/12/fields/1"
-            }
-          ]
-        },
-        {
-          "kind": "record",
-          "typeId": "MoneyPO",
-          "poName": "MoneyStoragePO",
-          "fields": [
-            {
-              "name": "minorUnits",
-              "protoName": "minorUnits",
-              "number": 1,
-              "typeInfo": {
-                "kind": "primitive",
-                "primitive": "string",
-                "protoType": "string",
-                "modifier": ""
-              },
-              "source": {
-                "document": "bank-v1",
-                "pointer": "/valueObjects/13/fields/0"
-              }
-            },
-            {
-              "name": "currency",
-              "protoName": "currency",
-              "number": 2,
-              "typeInfo": {
-                "kind": "primitive",
-                "primitive": "string",
-                "protoType": "string",
-                "modifier": ""
-              },
-              "source": {
-                "document": "bank-v1",
-                "pointer": "/valueObjects/13/fields/1"
-              }
-            }
-          ],
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/valueObjects/13"
-            },
-            {
-              "document": "bank-v1",
-              "pointer": "/valueObjects/13/fields/0"
-            },
-            {
-              "document": "bank-v1",
-              "pointer": "/valueObjects/13/fields/1"
             }
           ]
         },

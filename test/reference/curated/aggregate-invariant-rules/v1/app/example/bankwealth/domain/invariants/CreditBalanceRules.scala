@@ -30,7 +30,9 @@ object CreditBalanceRules {
       if (((state.compensatedOutgoing).contains(p.txid))) return Right(Nil)
       if (((state.reservedAmount).contains(p.txid))) return Right(Nil)
       if (!((state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount) >= 0))) return Left(iMadzError("LEDGER_SUFFICIENT", "LEDGER_SUFFICIENT"))
-      Right(List(ReserveFundsConfirmed(p.txid, p.resource, p.amount, "CNY", hosts.balanceAfterReserveFunds(state, p))))
+      for {
+        balanceAfterReserveFunds <- hosts.balanceAfterReserveFunds(state, p)
+      } yield List(ReserveFundsConfirmed(p.txid, p.resource, p.amount, "CNY", balanceAfterReserveFunds))
     }
   }
   final class DeductFundsRule(hosts: CreditBalanceComputations)
@@ -57,7 +59,9 @@ object CreditBalanceRules {
       if (((state.compensatedOutgoing).contains(p.txid))) return Right(Nil)
       if (((state.committedOutgoing).contains(p.txid))) return Left(iMadzError("LEDGER_NOT_COMMITTED", "LEDGER_NOT_COMMITTED"))
       if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, "exact units differ"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(iMadzError("LEDGER_RESERVEDAMOUNT_MATCH", "LEDGER_RESERVEDAMOUNT_MATCH"))
-      Right(List(ReleaseReservedFundsConfirmed(p.txid, p.resource, p.amount, "CNY", hosts.balanceAfterReleaseReservedFunds(state, p))))
+      for {
+        balanceAfterReleaseReservedFunds <- hosts.balanceAfterReleaseReservedFunds(state, p)
+      } yield List(ReleaseReservedFundsConfirmed(p.txid, p.resource, p.amount, "CNY", balanceAfterReleaseReservedFunds))
     }
   }
   final class RecordIncomingCreditsRule(hosts: CreditBalanceComputations)
@@ -86,7 +90,9 @@ object CreditBalanceRules {
       if (((state.compensatedIncoming).contains(p.txid))) return Left(iMadzError("LEDGER_NOT_COMPENSATED", "LEDGER_NOT_COMPENSATED"))
       if (!((state.incomingCredits).contains(p.txid))) return Left(iMadzError("LEDGER_PREPARED", "LEDGER_PREPARED"))
       if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, "exact units differ"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(iMadzError("LEDGER_INCOMINGCREDITS_MATCH", "LEDGER_INCOMINGCREDITS_MATCH"))
-      Right(List(CommitIncomingCreditsConfirmed(p.txid, p.resource, p.amount, "CNY", hosts.balanceAfterCommitIncomingCredits(state, p))))
+      for {
+        balanceAfterCommitIncomingCredits <- hosts.balanceAfterCommitIncomingCredits(state, p)
+      } yield List(CommitIncomingCreditsConfirmed(p.txid, p.resource, p.amount, "CNY", balanceAfterCommitIncomingCredits))
     }
   }
   final class CancelIncomingCreditRule(hosts: CreditBalanceComputations)

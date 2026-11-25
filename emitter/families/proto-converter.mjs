@@ -149,14 +149,19 @@ function renderValueObjectMethods(vo) {
       : `fixed(${amount}, ${ex.scale})`;
     const lines = [];
     for (const rep of ex.representations) {
-      const record = rep.amountField
-        ? `${rep.typeName}(encoded.${ex.amountField}, encoded.${ex.unitField})`
-        : `${rep.typeName}(encoded.${ex.amountField})`;
-      const fromArgs = rep.amountField
-        ? `${ex.amountField} = value.${rep.amountField}, ${ex.unitField} = value.${rep.unitField}`
-        : `${ex.amountField} = value.value`;
-      lines.push(`  def ${ex.domainName}To${rep.capital}(value: ${vo.typeId}): ${rep.typeName} = { val encoded = encode${vo.poName}(value); ${record} }`);
-      lines.push(`  def ${ex.domainName}From${rep.capital}(value: ${rep.typeName}): ${vo.typeId} = decode${vo.poName}(pb.${vo.poName}(${fromArgs}))`);
+      if (rep.capital === 'PO') {
+        lines.push(`  def ${ex.domainName}ToPO(value: ${vo.typeId}): pb.${vo.poName} = encode${vo.poName}(value)`);
+        lines.push(`  def ${ex.domainName}FromPO(value: pb.${vo.poName}): ${vo.typeId} = decode${vo.poName}(value)`);
+      } else {
+        const record = rep.amountField
+          ? `${rep.typeName}(encoded.${ex.amountField}, encoded.${ex.unitField})`
+          : `${rep.typeName}(encoded.${ex.amountField})`;
+        const fromArgs = rep.amountField
+          ? `${ex.amountField} = value.${rep.amountField}, ${ex.unitField} = value.${rep.unitField}`
+          : `${ex.amountField} = value.value`;
+        lines.push(`  def ${ex.domainName}To${rep.capital}(value: ${vo.typeId}): ${rep.typeName} = { val encoded = encode${vo.poName}(value); ${record} }`);
+        lines.push(`  def ${ex.domainName}From${rep.capital}(value: ${rep.typeName}): ${vo.typeId} = decode${vo.poName}(pb.${vo.poName}(${fromArgs}))`);
+      }
     }
     const encArgs = `${ex.amountField} = ${packed}` + (unit ? `, ${ex.unitField} = ${unit}` : '');
     const decArgs = `readExact(value.${ex.amountField}, ${ex.scale}, ${ex.minor})` + (unit ? `, value.${ex.unitField}` : '');

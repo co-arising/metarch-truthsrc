@@ -11,9 +11,9 @@ final class GeneratedActorStateSpec extends AnyFunSuite {
     val kit = ActorTestKit(ConfigFactory.parseString("akka.actor.provider = local").withFallback(PersistenceTestKitPlugin.config).withFallback(ConfigFactory.load()))
     try {
       val hosts = new example.bankwealth.domain.services.CreditBalanceComputations {
-        def BalanceAfterCommitIncomingCredits(state: example.bankwealth.domain.entities.CreditBalanceEntity.State, p: example.bankwealth.domain.invariants.params.CreditBalanceRuleParams.CommitIncomingCreditsParams): example.bankwealth.domain.values.Money = throw new UnsupportedOperationException("query-only test port")
-        def BalanceAfterReleaseReservedFunds(state: example.bankwealth.domain.entities.CreditBalanceEntity.State, p: example.bankwealth.domain.invariants.params.CreditBalanceRuleParams.ReleaseReservedFundsParams): example.bankwealth.domain.values.Money = throw new UnsupportedOperationException("query-only test port")
-        def BalanceAfterReserveFunds(state: example.bankwealth.domain.entities.CreditBalanceEntity.State, p: example.bankwealth.domain.invariants.params.CreditBalanceRuleParams.ReserveFundsParams): example.bankwealth.domain.values.Money = throw new UnsupportedOperationException("query-only test port")
+        def balanceAfterCommitIncomingCredits(state: example.bankwealth.domain.entities.CreditBalanceEntity.State, p: example.bankwealth.domain.invariants.params.CreditBalanceRuleParams.CommitIncomingCreditsParams): Either[net.imadz.common.CommonTypes.iMadzError, example.bankwealth.domain.values.Money] = Left(net.imadz.common.CommonTypes.iMadzError("UNSUPPORTED", "query-only test port"))
+        def balanceAfterReleaseReservedFunds(state: example.bankwealth.domain.entities.CreditBalanceEntity.State, p: example.bankwealth.domain.invariants.params.CreditBalanceRuleParams.ReleaseReservedFundsParams): Either[net.imadz.common.CommonTypes.iMadzError, example.bankwealth.domain.values.Money] = Left(net.imadz.common.CommonTypes.iMadzError("UNSUPPORTED", "query-only test port"))
+        def balanceAfterReserveFunds(state: example.bankwealth.domain.entities.CreditBalanceEntity.State, p: example.bankwealth.domain.invariants.params.CreditBalanceRuleParams.ReserveFundsParams): Either[net.imadz.common.CommonTypes.iMadzError, example.bankwealth.domain.values.Money] = Left(net.imadz.common.CommonTypes.iMadzError("UNSUPPORTED", "query-only test port"))
       }
       val ref = kit.spawn(example.bankwealth.infrastructure.bootstrap.CreditBalanceBootstrap.create("generated-CreditBalance", example.bankwealth.domain.entities.CreditBalanceEntity.empty, hosts))
       val probe = kit.createTestProbe[example.bankwealth.domain.entities.CreditBalanceEntity.State]()
@@ -25,8 +25,8 @@ final class GeneratedActorStateSpec extends AnyFunSuite {
     val kit = ActorTestKit(ConfigFactory.parseString("akka.actor.provider = local").withFallback(PersistenceTestKitPlugin.config).withFallback(ConfigFactory.load()))
     try {
       val hosts = new example.bankwealth.domain.services.FundOrderComputations {
-        def StableRefundOperationId(state: example.bankwealth.domain.entities.FundOrderEntity.State, p: example.bankwealth.domain.invariants.params.FundOrderRuleParams.RequestFundPurchaseRefundParams): example.bankwealth.domain.values.OperationId = throw new UnsupportedOperationException("query-only test port")
-        def StableTaRequestId(state: example.bankwealth.domain.entities.FundOrderEntity.State, p: example.bankwealth.domain.invariants.params.FundOrderRuleParams.RegisterFundTASubmissionParams): example.bankwealth.domain.values.TaRequestId = throw new UnsupportedOperationException("query-only test port")
+        def stableRefundOperationId(state: example.bankwealth.domain.entities.FundOrderEntity.State, p: example.bankwealth.domain.invariants.params.FundOrderRuleParams.RequestFundPurchaseRefundParams): Either[net.imadz.common.CommonTypes.iMadzError, example.bankwealth.domain.values.OperationId] = Left(net.imadz.common.CommonTypes.iMadzError("UNSUPPORTED", "query-only test port"))
+        def stableTaRequestId(state: example.bankwealth.domain.entities.FundOrderEntity.State, p: example.bankwealth.domain.invariants.params.FundOrderRuleParams.RegisterFundTASubmissionParams): Either[net.imadz.common.CommonTypes.iMadzError, example.bankwealth.domain.values.TaRequestId] = Left(net.imadz.common.CommonTypes.iMadzError("UNSUPPORTED", "query-only test port"))
       }
       val ref = kit.spawn(example.bankwealth.infrastructure.bootstrap.FundOrderBootstrap.create("generated-FundOrder", example.bankwealth.domain.entities.FundOrderEntity.empty, hosts, new example.bankwealth.application.aggregates.FundOrderProtocol.ExternalAuthority { def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean = false }))
       val probe = kit.createTestProbe[example.bankwealth.domain.entities.FundOrderEntity.State]()
@@ -38,7 +38,7 @@ final class GeneratedActorStateSpec extends AnyFunSuite {
     val kit = ActorTestKit(ConfigFactory.parseString("akka.actor.provider = local").withFallback(PersistenceTestKitPlugin.config).withFallback(ConfigFactory.load()))
     try {
       val hosts = new example.bankwealth.domain.services.SipPlanComputations {
-        def StableSipOccurrence(state: example.bankwealth.domain.entities.SipPlanEntity.State, p: example.bankwealth.domain.invariants.params.SipPlanRuleParams.TriggerSipInstallmentParams): example.bankwealth.domain.values.SipOccurrence = throw new UnsupportedOperationException("query-only test port")
+        def stableSipOccurrence(state: example.bankwealth.domain.entities.SipPlanEntity.State, p: example.bankwealth.domain.invariants.params.SipPlanRuleParams.TriggerSipInstallmentParams): Either[net.imadz.common.CommonTypes.iMadzError, example.bankwealth.domain.values.SipOccurrence] = Left(net.imadz.common.CommonTypes.iMadzError("UNSUPPORTED", "query-only test port"))
       }
       val ref = kit.spawn(example.bankwealth.infrastructure.bootstrap.SipPlanBootstrap.create("generated-SipPlan", example.bankwealth.domain.entities.SipPlanEntity.empty, hosts))
       val probe = kit.createTestProbe[example.bankwealth.domain.entities.SipPlanEntity.State]()

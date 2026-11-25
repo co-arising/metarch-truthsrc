@@ -78,7 +78,10 @@
       "packageRole": "domain.services",
       "requiredImports": ["CommonTypes\\.\\{?[^\\n]*DomainService"],
       "requiredPatterns": ["\\bextends\\s+DomainService\\b"],
-      "forbiddenPatterns": ["\\bdef\\s+[A-Z][A-Za-z0-9_]*\\("]
+      "forbiddenPatterns": [
+        "\\bdef\\s+[A-Z][A-Za-z0-9_]*\\(",
+        "\\bdef\\s+[a-z][A-Za-z0-9_]*\\([^)]*\\)\\s*:[ \\t]*(?!Either\\[iMadzError,)[A-Za-z]"
+      ]
     },
     "aggregate-protocol": {
       "layer": "application",
