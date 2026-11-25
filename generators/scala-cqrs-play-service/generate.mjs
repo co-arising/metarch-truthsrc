@@ -1,3 +1,5 @@
+import { isAbsolute, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createEffectRegistry } from '../scala-cqrs-application/produce-effect.mjs';
 import { planProductSet } from '../../src/core/product-plan.mjs';
 import { requireApplicationArtifact } from '../scala-cqrs-application/generate.mjs';
@@ -99,9 +101,47 @@ export const registry = Object.freeze({ ...inherited,
     ...renderConfiguration(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint)
   ], context), context) }
 });
-export function generate(input) {
+function sbtRelativeFileExpr(outDir, absPath) {
+  if (!outDir || typeof absPath !== 'string' || !isAbsolute(absPath)) {
+    return 'file(' + JSON.stringify(absPath) + ')';
+  }
+  const rel = relative(outDir, absPath);
+  if (!rel || isAbsolute(rel)) return 'file(' + JSON.stringify(absPath) + ')';
+  const segments = rel.split(sep).filter(Boolean).map(p => JSON.stringify(p));
+  return '(baseDirectory.value / ' + segments.join(' / ') + ').getCanonicalFile';
+}
+
+function portableBuildSbt(content, outDir, options) {
+  let out = content;
+  const repo = options?.runtimeArtifact?.repository;
+  if (outDir && typeof repo === 'string' && repo.startsWith('file:///')) {
+    const repoExpr = '(' + sbtRelativeFileExpr(outDir, fileURLToPath(repo)) + '.toURI.toString)';
+    out = out.replace(
+      'resolvers += "explicit-frozen-runtime" at ' + JSON.stringify(repo),
+      'resolvers += "explicit-frozen-runtime" at ' + repoExpr
+    );
+  }
+  const roots = options?.service?.externalSourceRoots ?? [];
+  for (const root of roots) {
+    if (outDir && typeof root === 'string' && isAbsolute(root)) {
+      out = out.replaceAll('file(' + JSON.stringify(root) + ')', sbtRelativeFileExpr(outDir, root));
+    }
+  }
+  return out;
+}
+
+export function generate(input, extra = {}) {
   if (input.manifest?.targetProfile !== 'scala-cqrs-play-service@1') fail('SERVICE_PROFILE', 'explicit service generation profile required');
   requireApplicationArtifact(input);
   const plan = planProductSet(input, registry);
-  return input.options?.fileLayout ? remapPlanEntries(plan, input.options.fileLayout) : plan;
+  const remapped = input.options?.fileLayout ? remapPlanEntries(plan, input.options.fileLayout) : plan;
+  if (!extra?.outDir || !remapped?.plan?.entries) return remapped;
+  return {
+    ...remapped,
+    plan: {
+      ...remapped.plan,
+      entries: remapped.plan.entries.map(e =>
+        e.path === 'build.sbt' ? { ...e, content: portableBuildSbt(e.content, extra.outDir, input.options) } : e),
+    },
+  };
 }

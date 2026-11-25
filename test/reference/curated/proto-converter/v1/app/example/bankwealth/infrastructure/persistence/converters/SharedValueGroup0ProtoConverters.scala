@@ -51,7 +51,7 @@ trait SharedValueGroup0ProtoConverters extends PrimitiveConverter {
   def AmountDecimalToPO(value: AmountDecimal): pb.AmountDecimalPO = encodeAmountDecimalPO(value)
   def AmountDecimalFromPO(value: pb.AmountDecimalPO): AmountDecimal = decodeAmountDecimalPO(value)
   def encodeAmountDecimalPO(value: AmountDecimal): pb.AmountDecimalPO = pb.AmountDecimalPO(value = value.value.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString)
-  def decodeAmountDecimalPO(value: pb.AmountDecimalPO): AmountDecimal = AmountDecimal(readExact(value.value, 2, true))
+  def decodeAmountDecimalPO(value: pb.AmountDecimalPO): AmountDecimal = AmountDecimal.create(readExact(value.value, 2, true)).fold(err => throw new IllegalArgumentException(err.message), identity)
 
   def encodeAmountDecimalWirePO(value: AmountDecimalWire): pb.AmountDecimalWirePO = pb.AmountDecimalWirePO(value = value.value)
   def decodeAmountDecimalWirePO(value: pb.AmountDecimalWirePO): AmountDecimalWire = AmountDecimalWire(value = value.value)
@@ -61,7 +61,7 @@ trait SharedValueGroup0ProtoConverters extends PrimitiveConverter {
   def MoneyToPO(value: Money): pb.MoneyPO = encodeMoneyPO(value)
   def MoneyFromPO(value: pb.MoneyPO): Money = decodeMoneyPO(value)
   def encodeMoneyPO(value: Money): pb.MoneyPO = pb.MoneyPO(amount = value.amount.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString, currency = value.currency)
-  def decodeMoneyPO(value: pb.MoneyPO): Money = Money(readExact(value.amount, 2, true), value.currency)
+  def decodeMoneyPO(value: pb.MoneyPO): Money = Money.create(readExact(value.amount, 2, true), value.currency).fold(err => throw new IllegalArgumentException(err.message), identity)
 
   def encodeMoneyWirePO(value: MoneyWire): pb.MoneyWirePO = pb.MoneyWirePO(minorUnits = value.minorUnits, currency = value.currency)
   def decodeMoneyWirePO(value: pb.MoneyWirePO): MoneyWire = MoneyWire(minorUnits = value.minorUnits, currency = value.currency)
@@ -782,30 +782,5 @@ trait SharedValueGroup0ProtoConverters extends PrimitiveConverter {
 
   def encodeCreditOriginalInvestorPrepareInputPO(value: CreditOriginalInvestorPrepareInput): pb.CreditOriginalInvestorPrepareInputPO = pb.CreditOriginalInvestorPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
   def decodeCreditOriginalInvestorPrepareInputPO(value: pb.CreditOriginalInvestorPrepareInputPO): CreditOriginalInvestorPrepareInput = CreditOriginalInvestorPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
-
-  def encodeCreditOriginalInvestorPrepareReceiptPO(value: CreditOriginalInvestorPrepareReceipt): pb.CreditOriginalInvestorPrepareReceiptPO = pb.CreditOriginalInvestorPrepareReceiptPO(
-    transaction = Some(encodeTxIdPO(value.transaction)),
-    definitionVersion = value.definitionVersion,
-    argsDigest = value.argsDigest,
-    participant = value.participant,
-    resource = Some(encodeAccountIdPO(value.resource)),
-    step = value.step,
-    phase = value.phase,
-    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
-    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
-    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
-  )
-  def decodeCreditOriginalInvestorPrepareReceiptPO(value: pb.CreditOriginalInvestorPrepareReceiptPO): CreditOriginalInvestorPrepareReceipt = CreditOriginalInvestorPrepareReceipt(
-    transaction = decodeTxIdPO(req(value.transaction)),
-    definitionVersion = value.definitionVersion,
-    argsDigest = value.argsDigest,
-    participant = value.participant,
-    resource = decodeAccountIdPO(req(value.resource)),
-    step = value.step,
-    phase = value.phase,
-    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
-    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
-    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
-  )
 
 }

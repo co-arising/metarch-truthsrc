@@ -166,7 +166,7 @@ function renderValueObjectMethods(vo) {
     const encArgs = `${ex.amountField} = ${packed}` + (unit ? `, ${ex.unitField} = ${unit}` : '');
     const decArgs = `readExact(value.${ex.amountField}, ${ex.scale}, ${ex.minor})` + (unit ? `, value.${ex.unitField}` : '');
     lines.push(`  def encode${vo.poName}(value: ${vo.typeId}): pb.${vo.poName} = pb.${vo.poName}(${encArgs})`);
-    lines.push(`  def decode${vo.poName}(value: pb.${vo.poName}): ${vo.typeId} = ${vo.typeId}(${decArgs})`);
+    lines.push(`  def decode${vo.poName}(value: pb.${vo.poName}): ${vo.typeId} = ${vo.typeId}.create(${decArgs}).fold(err => throw new IllegalArgumentException(err.message), identity)`);
     return lines.join('\n') + '\n';
   }
   return renderFieldsCodec(vo.poName, vo.typeId, vo.fields);

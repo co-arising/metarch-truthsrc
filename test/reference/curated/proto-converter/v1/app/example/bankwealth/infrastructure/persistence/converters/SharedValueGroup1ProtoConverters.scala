@@ -22,6 +22,31 @@ import net.imadz.common.serialization.PrimitiveConverter
 trait SharedValueGroup1ProtoConverters extends PrimitiveConverter {
   self: SharedValueProtoConverters =>
 
+  def encodeCreditOriginalInvestorPrepareReceiptPO(value: CreditOriginalInvestorPrepareReceipt): pb.CreditOriginalInvestorPrepareReceiptPO = pb.CreditOriginalInvestorPrepareReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeCreditOriginalInvestorPrepareReceiptPO(value: pb.CreditOriginalInvestorPrepareReceiptPO): CreditOriginalInvestorPrepareReceipt = CreditOriginalInvestorPrepareReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
   def encodeCreditOriginalInvestorPrepareQueryPO(value: CreditOriginalInvestorPrepareQuery): pb.CreditOriginalInvestorPrepareQueryPO = pb.CreditOriginalInvestorPrepareQueryPO(
     transaction = Some(encodeTxIdPO(value.transaction)),
     definitionVersion = value.definitionVersion,

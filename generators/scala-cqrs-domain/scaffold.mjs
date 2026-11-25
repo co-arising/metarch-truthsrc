@@ -20,7 +20,7 @@ export function renderScaffold({ products, options }, footprint, externalIngress
   for (const d of products['exact-value-types']) {
     const pkg = packageFor(d.domain.context, options), name = typeName({ form: 'nominal', ref: d.domain }, options);
     const amount = d.scale ? '0.' + '0'.repeat(d.scale - 1) + '1' : '1';
-    const value = name + '(BigDecimal(' + JSON.stringify(amount) + ')' + (d.unitMember ? ', ' + JSON.stringify(d.units[0]) : '') + ')';
+    const value = name + '.create(BigDecimal(' + JSON.stringify(amount) + ')' + (d.unitMember ? ', ' + JSON.stringify(d.units[0]) : '') + ').fold(err => fail(err.message), identity)';
     spec += '  test(' + JSON.stringify(d.domain.context + '/' + d.domain.id + ' exact domain wire PO and protobuf roundtrip') + ') {\n' +
       '    val value = ' + value + '\n    val c = ' + pkg + '.infrastructure.serialization.DomainConverters\n' +
       '    assert(c.' + symbol(d.domain.id + 'FromWire') + '(c.' + symbol(d.domain.id + 'ToWire') + '(value)) == value)\n' +

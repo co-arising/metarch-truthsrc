@@ -196,7 +196,7 @@ function renderValueBody(value, packages, subpackageByKey, ownSubpkg, ownMod, cr
         'else Left(iMadzError("EXACT_UNIT_MISMATCH", "exact units differ"))'
       : 'Right(' + amount + '.compare(other.' + amount + '))';
     const buildArith = op => {
-      const yieldExpr = unit ? name + '(result, ' + unit + ')' : name + '(result)';
+      const yieldExpr = unit ? 'new ' + name + '(result, ' + unit + ') {}' : 'new ' + name + '(result) {}';
       const forExpr = 'for {\n      lhs <- ' + name + '.checkedAmount(' + amount + ')\n' +
         '      rhs <- ' + name + '.checkedAmount(other.' + amount + ')\n' +
         '      result <- ' + name + '.checkedAmount(lhs ' + op + ' rhs)\n' +
@@ -205,15 +205,18 @@ function renderValueBody(value, packages, subpackageByKey, ownSubpkg, ownMod, cr
         ? 'if (' + unit + ' != other.' + unit + ') Left(iMadzError("EXACT_UNIT_MISMATCH", "exact units differ"))\n    else ' + forExpr
         : forExpr;
     };
+    const zeroLiteral = shape.scale > 0 ? '0.' + '0'.repeat(shape.scale) : '0';
     const unitSetLiteral = unit ? JSON.stringify(shape.units).replace('[', 'Set(').replace(']', ')') : null;
     const companionCreate = unit
       ? '  val SupportedUnits: Set[String] = ' + unitSetLiteral + '\n' +
+        '  val Zero: ' + name + ' = new ' + name + '(BigDecimal(' + JSON.stringify(zeroLiteral) + '), ' + JSON.stringify(shape.units[0]) + ') {}\n' +
         '  def create(' + fields + '): Either[iMadzError, ' + name + '] =\n' +
         '    if (!SupportedUnits.contains(' + unit + ')) Left(iMadzError("EXACT_UNIT_UNSUPPORTED", "unsupported exact unit"))\n' +
-        '    else checkedAmount(' + amount + ').map(' + name + '(_, ' + unit + '))\n'
-      : '  def create(' + fields + '): Either[iMadzError, ' + name + '] =\n' +
-        '    checkedAmount(' + amount + ').map(' + name + '(_))\n';
-    return 'final case class ' + name + '(' + fields + ') {\n' +
+        '    else checkedAmount(' + amount + ').map(a => new ' + name + '(a, ' + unit + ') {})\n'
+      : '  val Zero: ' + name + ' = new ' + name + '(BigDecimal(' + JSON.stringify(zeroLiteral) + ')) {}\n' +
+        '  def create(' + fields + '): Either[iMadzError, ' + name + '] =\n' +
+        '    checkedAmount(' + amount + ').map(a => new ' + name + '(a) {})\n';
+    return 'sealed abstract case class ' + name + ' private (' + fields + ') {\n' +
       '  def isPositive: Boolean = ' + amount + ' > 0\n' +
       '  def compareSameUnit(other: ' + name + '): Either[iMadzError, Int] =\n    ' + compareBody + '\n' +
       '  def plus(other: ' + name + '): Either[iMadzError, ' + name + '] =\n    ' + buildArith('+') + '\n' +

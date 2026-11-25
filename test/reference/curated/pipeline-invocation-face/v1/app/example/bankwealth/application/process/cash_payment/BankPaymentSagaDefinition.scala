@@ -1,6 +1,6 @@
 package example.bankwealth.application.process.cash_payment
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 import example.bankwealth.domain.invariants.params.{CreditBalanceRuleParams, FundOrderRuleParams}
 import example.bankwealth.domain.values._
@@ -8,7 +8,6 @@ import example.bankwealth.application.process.protocol.BankPaymentMessages._
 import example.bankwealth.application.process.protocol.CreditFundCollectionStep._
 import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep._
 import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
-import BankPaymentPorts.OperationNotExecuted
 import net.imadz.infra.saga.strict._
 
 /** Strict-saga definition of the cash purchase payment: the args codec, the
@@ -92,12 +91,9 @@ object BankPaymentSagaDefinition {
       Left("receipt phase differs from durable operation")
     else Right(())
 
-  private def phaseLower(request: OperationRequest[Args]): String =
-    request.identity.phase.toString.toLowerCase(java.util.Locale.ROOT)
-
   // ---- reserve-investor-funds (investorCreditBalance, CreditBalance) --------
 
-  private def checkReserveInvestorFundsPrepare(request: OperationRequest[Args],
+  def checkReserveInvestorFundsPrepare(request: OperationRequest[Args],
       receipt: ReserveInvestorFundsPrepareReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -106,7 +102,7 @@ object BankPaymentSagaDefinition {
     CreditBalanceRuleParams.ReserveFundsParams(TxId(request.identity.transaction.transactionId),
         request.args.investorAccountId, request.args.amount)
 
-  private def checkReserveInvestorFundsCommit(request: OperationRequest[Args],
+  def checkReserveInvestorFundsCommit(request: OperationRequest[Args],
       receipt: ReserveInvestorFundsCommitReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -115,7 +111,7 @@ object BankPaymentSagaDefinition {
     CreditBalanceRuleParams.DeductFundsParams(TxId(request.identity.transaction.transactionId),
         request.args.investorAccountId, request.args.amount)
 
-  private def checkReserveInvestorFundsCompensate(request: OperationRequest[Args],
+  def checkReserveInvestorFundsCompensate(request: OperationRequest[Args],
       receipt: ReserveInvestorFundsCompensateReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -127,7 +123,7 @@ object BankPaymentSagaDefinition {
 
   // ---- credit-fund-collection (collectionCreditBalance, CreditBalance) ------
 
-  private def checkCreditFundCollectionPrepare(request: OperationRequest[Args],
+  def checkCreditFundCollectionPrepare(request: OperationRequest[Args],
       receipt: CreditFundCollectionPrepareReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -137,7 +133,7 @@ object BankPaymentSagaDefinition {
     CreditBalanceRuleParams.RecordIncomingCreditsParams(TxId(request.identity.transaction.transactionId),
         request.args.fundCollectionAccountId, request.args.amount)
 
-  private def checkCreditFundCollectionCommit(request: OperationRequest[Args],
+  def checkCreditFundCollectionCommit(request: OperationRequest[Args],
       receipt: CreditFundCollectionCommitReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -147,7 +143,7 @@ object BankPaymentSagaDefinition {
     CreditBalanceRuleParams.CommitIncomingCreditsParams(TxId(request.identity.transaction.transactionId),
         request.args.fundCollectionAccountId, request.args.amount)
 
-  private def checkCreditFundCollectionCompensate(request: OperationRequest[Args],
+  def checkCreditFundCollectionCompensate(request: OperationRequest[Args],
       receipt: CreditFundCollectionCompensateReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -159,7 +155,7 @@ object BankPaymentSagaDefinition {
 
   // ---- reserve-cash-fund-order (orderFundOrderTCC, FundOrder) ---------------
 
-  private def checkReserveCashFundOrderPrepare(request: OperationRequest[Args],
+  def checkReserveCashFundOrderPrepare(request: OperationRequest[Args],
       receipt: ReserveCashFundOrderPrepareReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -169,7 +165,7 @@ object BankPaymentSagaDefinition {
     FundOrderRuleParams.ReserveFundSubscriptionParams(TxId(request.identity.transaction.transactionId),
         request.args.fundOrderId, request.args.amount)
 
-  private def checkReserveCashFundOrderCommit(request: OperationRequest[Args],
+  def checkReserveCashFundOrderCommit(request: OperationRequest[Args],
       receipt: ReserveCashFundOrderCommitReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -179,7 +175,7 @@ object BankPaymentSagaDefinition {
     FundOrderRuleParams.ConfirmFundSubscriptionPaymentParams(TxId(request.identity.transaction.transactionId),
         request.args.fundOrderId, request.args.amount)
 
-  private def checkReserveCashFundOrderCompensate(request: OperationRequest[Args],
+  def checkReserveCashFundOrderCompensate(request: OperationRequest[Args],
       receipt: ReserveCashFundOrderCompensateReceipt): Either[String, Unit] =
     verifyReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
@@ -189,231 +185,7 @@ object BankPaymentSagaDefinition {
     FundOrderRuleParams.CancelCashFundSubscriptionParams(TxId(request.identity.transaction.transactionId),
         request.args.fundOrderId, request.args.amount)
 
-  // ------------------------------------------------------- once-written mechanics
-
-  /** A technical failure surfaces as an unknown outcome with the cause —
-    * never an implicit retry; only a provably-not-executed receipt folds into
-    * the not-executed outcome. */
-  private def safeOutcome[Receipt](
-    result: Future[PhaseOutcome[Receipt]],
-    request: OperationRequest[Args],
-    face: String,
-  )(implicit ec: ExecutionContext): Future[PhaseOutcome[Receipt]] =
-    result.recover {
-      case ex: OperationNotExecuted
-          if ex.identity == request.identity && ex.evidence != null && ex.evidence.nonEmpty =>
-        NotExecuted(request.identity, ex.evidence, ex.safeToRetry)
-      case ex => Unknown(request.identity, s"technical $face failed: " + ex.getMessage)
-    }
-
-  /** Wrap a phase port so every confirmed receipt is checked against the
-    * durable operation before the runtime sees it. */
-  private def checkedPhasePort[Receipt](
-    underlying: PhasePort[Args, Receipt],
-    codec: PayloadCodec[Receipt],
-    receiptCheck: (OperationRequest[Args], Receipt) => Either[String, Unit],
-  )(implicit ec: ExecutionContext): PhasePort[Args, Receipt] = {
-    val validPort = underlying.receiptCodec.pin == codec.pin &&
-      underlying.querySafety == QuerySafety.DeclaredReadOnly
-    new PhasePort[Args, Receipt] {
-      val receiptCodec = codec
-      val querySafety = QuerySafety.DeclaredReadOnly
-      private def validated(result: Future[PhaseOutcome[Receipt]],
-          request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] =
-        if (!validPort)
-          Future.failed(new IllegalArgumentException("required read-only phase port and exact codec implementation"))
-        else result.flatMap {
-          case confirmed @ ConfirmedReceipt(identity, receipt) =>
-            if (identity != request.identity)
-              Future.failed(new IllegalArgumentException("operation identity mismatch"))
-            else receiptCheck(request, receipt).fold(
-              reason => Future.failed(new IllegalArgumentException(reason)),
-              _ => Future.successful(confirmed))
-          case other =>
-            if (other.identity != request.identity)
-              Future.failed(new IllegalArgumentException("operation identity mismatch"))
-            else Future.successful(other)
-        }
-      def execute(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] = validated(underlying
-          .execute(request), request)
-      def query(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] = validated(underlying.query(request),
-          request)
-    }
-  }
-
-  private def phasePort[Receipt](
-    ports: BankPaymentPorts,
-    codec: PayloadCodec[Receipt],
-  )(exec: (BankPaymentPorts, OperationRequest[Args]) => Future[PhaseOutcome[Receipt]])
-   (probe: (BankPaymentPorts, OperationRequest[Args]) => Future[PhaseOutcome[Receipt]])
-   (implicit ec: ExecutionContext): PhasePort[Args, Receipt] = new PhasePort[Args, Receipt] {
-    val receiptCodec = codec
-    val querySafety = QuerySafety.DeclaredReadOnly
-    def execute(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] =
-      safeOutcome(exec(ports, request), request, "execute")
-    def query(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] =
-      safeOutcome(probe(ports, request), request, "query")
-  }
-
   // ------------------------------------------------------------------- wiring
-
-  def fromTechnical(technical: BankPaymentPorts, codecs: Codecs)(implicit ec: ExecutionContext): Ports =
-    new Ports {
-      val declarations: Map[String, (String, String)] = technical.declarations
-
-      val reserveInvestorFundsPrepare: PhasePort[Args, ReserveInvestorFundsPrepareReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.ReserveInvestorFundsPrepareCodec) { (ports, request) =>
-          val command = reserveInvestorFundsPrepareCommand(request)
-          ports.reserveInvestorFundsPrepareExecute(
-            ReserveInvestorFundsPrepareInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.reserveInvestorFundsPrepareQuery(
-            ReserveInvestorFundsPrepareQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.ReserveInvestorFundsPrepareCodec, checkReserveInvestorFundsPrepare)
-
-      val reserveInvestorFundsCommit: PhasePort[Args, ReserveInvestorFundsCommitReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.ReserveInvestorFundsCommitCodec) { (ports, request) =>
-          val command = reserveInvestorFundsCommitCommand(request)
-          ports.reserveInvestorFundsCommitExecute(
-            ReserveInvestorFundsCommitInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.reserveInvestorFundsCommitQuery(
-            ReserveInvestorFundsCommitQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.ReserveInvestorFundsCommitCodec, checkReserveInvestorFundsCommit)
-
-      val reserveInvestorFundsCompensate: PhasePort[Args, ReserveInvestorFundsCompensateReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.ReserveInvestorFundsCompensateCodec) { (ports, request) =>
-          val command = reserveInvestorFundsCompensateCommand(request)
-          ports.reserveInvestorFundsCompensateExecute(
-            ReserveInvestorFundsCompensateInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.reserveInvestorFundsCompensateQuery(
-            ReserveInvestorFundsCompensateQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.ReserveInvestorFundsCompensateCodec, checkReserveInvestorFundsCompensate)
-
-      val creditFundCollectionPrepare: PhasePort[Args, CreditFundCollectionPrepareReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.CreditFundCollectionPrepareCodec) { (ports, request) =>
-          val command = creditFundCollectionPrepareCommand(request)
-          ports.creditFundCollectionPrepareExecute(
-            CreditFundCollectionPrepareInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.creditFundCollectionPrepareQuery(
-            CreditFundCollectionPrepareQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.CreditFundCollectionPrepareCodec, checkCreditFundCollectionPrepare)
-
-      val creditFundCollectionCommit: PhasePort[Args, CreditFundCollectionCommitReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.CreditFundCollectionCommitCodec) { (ports, request) =>
-          val command = creditFundCollectionCommitCommand(request)
-          ports.creditFundCollectionCommitExecute(
-            CreditFundCollectionCommitInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.creditFundCollectionCommitQuery(
-            CreditFundCollectionCommitQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.CreditFundCollectionCommitCodec, checkCreditFundCollectionCommit)
-
-      val creditFundCollectionCompensate: PhasePort[Args, CreditFundCollectionCompensateReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.CreditFundCollectionCompensateCodec) { (ports, request) =>
-          val command = creditFundCollectionCompensateCommand(request)
-          ports.creditFundCollectionCompensateExecute(
-            CreditFundCollectionCompensateInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.creditFundCollectionCompensateQuery(
-            CreditFundCollectionCompensateQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.CreditFundCollectionCompensateCodec, checkCreditFundCollectionCompensate)
-
-      val reserveCashFundOrderPrepare: PhasePort[Args, ReserveCashFundOrderPrepareReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.ReserveCashFundOrderPrepareCodec) { (ports, request) =>
-          val command = reserveCashFundOrderPrepareCommand(request)
-          ports.reserveCashFundOrderPrepareExecute(
-            ReserveCashFundOrderPrepareInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.reserveCashFundOrderPrepareQuery(
-            ReserveCashFundOrderPrepareQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, FundOrderId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.ReserveCashFundOrderPrepareCodec, checkReserveCashFundOrderPrepare)
-
-      val reserveCashFundOrderCommit: PhasePort[Args, ReserveCashFundOrderCommitReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.ReserveCashFundOrderCommitCodec) { (ports, request) =>
-          val command = reserveCashFundOrderCommitCommand(request)
-          ports.reserveCashFundOrderCommitExecute(
-            ReserveCashFundOrderCommitInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.reserveCashFundOrderCommitQuery(
-            ReserveCashFundOrderCommitQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, FundOrderId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.ReserveCashFundOrderCommitCodec, checkReserveCashFundOrderCommit)
-
-      val reserveCashFundOrderCompensate: PhasePort[Args, ReserveCashFundOrderCompensateReceipt] =
-        checkedPhasePort(phasePort(technical, codecs.ReserveCashFundOrderCompensateCodec) { (ports, request) =>
-          val command = reserveCashFundOrderCompensateCommand(request)
-          ports.reserveCashFundOrderCompensateExecute(
-            ReserveCashFundOrderCompensateInput(command.txid, command.resource, command.amount), request.identity)
-            .map(r => ConfirmedReceipt(request.identity, r))
-        } { (ports, request) =>
-          ports.reserveCashFundOrderCompensateQuery(
-            ReserveCashFundOrderCompensateQuery(TxId(request.identity.transaction.transactionId),
-              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
-              request.identity
-                  .participantId, FundOrderId(request.identity.resource), request.identity.stepId, phaseLower(request)),
-            request.identity)
-            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)
-                   case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
-        }, codecs.ReserveCashFundOrderCompensateCodec, checkReserveCashFundOrderCompensate)
-    }
 
   /** The runtime consumes binding-wrapped phase ports; the definition site is
     * the single place the checked ports become runtime bindings. */

@@ -2,7 +2,7 @@ package example.bankwealth.domain.values
 
 import net.imadz.common.CommonTypes.iMadzError
 
-final case class AmountDecimal(value: BigDecimal) {
+sealed abstract case class AmountDecimal private (value: BigDecimal) {
   def isPositive: Boolean = value > 0
   def compareSameUnit(other: AmountDecimal): Either[iMadzError, Int] =
     Right(value.compare(other.value))
@@ -11,17 +11,18 @@ final case class AmountDecimal(value: BigDecimal) {
       lhs <- AmountDecimal.checkedAmount(value)
       rhs <- AmountDecimal.checkedAmount(other.value)
       result <- AmountDecimal.checkedAmount(lhs + rhs)
-    } yield AmountDecimal(result)
+    } yield new AmountDecimal(result) {}
   def minus(other: AmountDecimal): Either[iMadzError, AmountDecimal] =
     for {
       lhs <- AmountDecimal.checkedAmount(value)
       rhs <- AmountDecimal.checkedAmount(other.value)
       result <- AmountDecimal.checkedAmount(lhs - rhs)
-    } yield AmountDecimal(result)
+    } yield new AmountDecimal(result) {}
 }
 object AmountDecimal {
+  val Zero: AmountDecimal = new AmountDecimal(BigDecimal("0.00")) {}
   def create(value: BigDecimal): Either[iMadzError, AmountDecimal] =
-    checkedAmount(value).map(AmountDecimal(_))
+    checkedAmount(value).map(a => new AmountDecimal(a) {})
   def checkedAmount(value: BigDecimal): Either[iMadzError, BigDecimal] = {
     val stripped = value.bigDecimal.stripTrailingZeros()
     if (stripped.scale() > 2) Left(iMadzError("EXACT_SCALE_EXCEEDED", "exact scale exceeded"))

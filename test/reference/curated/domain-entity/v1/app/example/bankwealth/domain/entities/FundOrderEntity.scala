@@ -44,7 +44,7 @@ object FundOrderEntity {
     investorAccountId = AccountId(""),
     fundCollectionAccountId = AccountId(""),
     fundCode = "",
-    amount = Money(BigDecimal("0.00"), "CNY"),
+    amount = Money.create(BigDecimal("0.00"), "CNY").getOrElse(Money.Zero),
     reservedSubscriptions = Map(),
     committedSubscriptions = Map(),
     compensatedSubscriptions = Map(),
