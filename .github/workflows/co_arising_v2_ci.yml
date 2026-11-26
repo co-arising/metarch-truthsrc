@@ -11,6 +11,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        scala_binary: ["2.12", "2.13"]
+        exclude:
+          - os: macos-latest
+            scala_binary: "2.13"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -29,14 +33,20 @@ jobs:
       - name: Install dependencies (npm ci)
         run: npm ci
 
-      - name: Install Z3 & Coursier / Scala 2.12 (Linux)
+      - name: Install Z3 & Coursier / Scala ${{ matrix.scala_binary }} (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y z3 scala
+          sudo apt-get install -y z3
           curl -fL https://github.com/coursier/coursier/releases/latest/download/cs-x86_64-pc-linux.gz | gzip -d > /usr/local/bin/cs
           chmod +x /usr/local/bin/cs
-          SCALA_CP=$(cs fetch -p org.scalatest:scalatest-funsuite_2.12:3.2.19)
+          if [ "${{ matrix.scala_binary }}" = "2.13" ]; then
+            cs install scala:2.13.14 scalac:2.13.14
+            echo "$HOME/.local/share/coursier/bin" >> "$GITHUB_PATH"
+          else
+            sudo apt-get install -y scala
+          fi
+          SCALA_CP=$(cs fetch -p "org.scalatest:scalatest-funsuite_${{ matrix.scala_binary }}:3.2.19")
           echo "COARISING_SCALA_CP=$SCALA_CP" >> "$GITHUB_ENV"
 
       - name: Install Z3 & Coursier / Scala 2.12 (macOS)
@@ -50,13 +60,13 @@ jobs:
       - name: Tier 1 architectural + ESLint check
         run: npm run lint
 
-      - name: Run EARS 1.0 & co-arising 2.0 full suites (TS + Scala + JVM TCK + LSP)
+      - name: Run EARS 1.0 & co-arising 2.0 full suites (TS + Scala + JVM TCK + Mutation + Authz Matrix)
         run: |
           npm run test:ears
           npm run test:v2
 
-      - name: Smoke test init-v2 + check-v2 --strict across TS + Scala
+      - name: Smoke test init-v2 + check-v2 --strict --mutation-gate across TS + Scala
         run: |
           TMP_PROJ="$(mktemp -d)/ci-starter"
           node bin/truthsrc.js init-v2 "$TMP_PROJ" --target typescript,scala --package example.ci
-          node bin/truthsrc.js check-v2 --root "$TMP_PROJ" --strict --format human
+          node bin/truthsrc.js check-v2 --root "$TMP_PROJ" --strict --mutation-gate --format human
