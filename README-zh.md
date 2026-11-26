@@ -7,8 +7,21 @@
 文件是唯一作者入口；本地知识图和生成代码都可以从它重建。先用一个 Counter
 完成「编辑 → 生成 → 查回来源」，再学习系统、上下文和银行业务，不必先理解所有产品协议。
 
-**推荐入口：[完成你的第一个 Counter](TUTORIAL.md)**。需要 Node、npm 和完整工具；
-第一次练习不需要 Java、数据库服务、银行材料或独立知识服务。
+**推荐入口：[完成你的第一个 Counter](TUTORIAL.md)**（v1），或直接体验 **[co-arising 2.0 EARS-Native 快速上手](knowledge_base/guides/co_arising_v2_quickstart.md)**：
+
+```bash
+# 1. 一键生成标准限界上下文（structures / behaviors/{domain,application} / bindings + Hooks）
+truthsrc init-v2 my-service --target typescript,scala --package example.service
+
+# 2. 单命令聚合门禁（compile-v2 + verify-v2 --strict + audit-coverage-v2）
+truthsrc check-v2 --root my-service --strict --format human
+
+# 3. 查看由 knowledge.sqlite 自动派生的 @cloze 任务队列（支持 AGY / Claude Code）
+truthsrc tasks-v2 --root my-service --format human
+```
+
+- **v2 文档与规范**：[v2 Quickstart](knowledge_base/guides/co_arising_v2_quickstart.md) · [EARS v2 双语语法参考](knowledge_base/reference/ears_v2_grammar_reference.md) · [错误码手册](knowledge_base/reference/v2_diagnostics_error_codes.md) · [全域治理规范](knowledge_base/architecture/co_arising_v2_full_coverage_governance.md) · [v2.0.0 Release Notes](knowledge_base/releases/v2_0_0_release_notes.md)
+- **Agent 与编辑器配套**：[coarising-distill Skill](skills/coarising_distill/SKILL.md)（PRD → 真源）· [coarising-cloze-worker Skill](skills/coarising_cloze_worker/SKILL.md)（隔离区 `@cloze` 填空 + 盲审）· [AGY 并行编排模板](workflows/coarising_cloze_pipeline.py) · [VS Code `.ears` 高亮与 LSP (`truthsrc lsp-ears`)](editor/ears-vscode/package.json) · `truthsrc mcp`（含 5 个 v2 MCP 工具）
 
 ```text
 真实作者文件 → 编译、校验 → 本地知识图导出的 AST → 生成代码

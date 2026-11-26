@@ -291,6 +291,8 @@ const inputSchema = (t) => ({
   additionalProperties: true,
 });
 
+const PKG_VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
+
 async function handle(req) {
   const { id, method, params = {} } = req;
   const ok = (result) => ({ jsonrpc: '2.0', id, result });
@@ -301,7 +303,7 @@ async function handle(req) {
       return ok({
         protocolVersion: '2024-11-05',
         capabilities: { tools: {} },
-        serverInfo: { name: 'truthsrc', version: '0.5.0' },
+        serverInfo: { name: 'truthsrc', version: PKG_VERSION },
       });
     }
     if (method === 'notifications/initialized' || method.startsWith('notifications/')) {

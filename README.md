@@ -19,7 +19,25 @@ or go straight to the [10-minute tutorial](TUTORIAL.md).
 
 > 中文版 README 见 [README-zh.md](README-zh.md)。
 
-## What it does
+## co-arising 2.0 (EARS-Native) Quickstart
+
+co-arising 2.0 separates static nouns (`structures/*.yaml`) from dynamic behaviors (`behaviors/{domain,application}/*.ears`) and solution-space effect contracts (`bindings/*-effects.yaml`), gated by Z3 SMT proofs, dual-stack TypeScript + Scala codegen, SHA-256 locked BDD oracles, and 100% full-coverage governance:
+
+```bash
+# 1. Scaffold a bounded context (structures + behaviors + bindings + hooks + coverage manifest)
+truthsrc init-v2 my-service --target typescript,scala --package example.service
+
+# 2. Run the single-command GA gate (compile-v2 + verify-v2 --strict + audit-coverage-v2)
+truthsrc check-v2 --root my-service --strict --format human
+
+# 3. Inspect derived Channel 4B @cloze tasks & Sandwich Context Packs (AGY / Claude Code)
+truthsrc tasks-v2 --root my-service --format human
+```
+
+- **Guides & Reference**: [v2 Quickstart](knowledge_base/guides/co_arising_v2_quickstart.md) · [EARS v2 Grammar](knowledge_base/reference/ears_v2_grammar_reference.md) · [Diagnostics & Error Codes](knowledge_base/reference/v2_diagnostics_error_codes.md) · [Full-Coverage Governance](knowledge_base/architecture/co_arising_v2_full_coverage_governance.md) · [v2.0.0 Release Notes](knowledge_base/releases/v2_0_0_release_notes.md)
+- **Agent & IDE Ecosystem**: [coarising-distill Skill](skills/coarising_distill/SKILL.md) (PRD → truth) · [coarising-cloze-worker Skill](skills/coarising_cloze_worker/SKILL.md) (`@cloze` TDD + blind review) · [AGY Parallel Workflow](workflows/coarising_cloze_pipeline.py) · [VS Code `.ears` Extension & LSP (`truthsrc lsp-ears`)](editor/ears-vscode/package.json) · `truthsrc mcp` (`v2_compile`, `v2_query_graph`, `v2_tasks`, `v2_context_pack`, `v2_verify`)
+
+## What it does (v1 & v2)
 
 | Capability | Command |
 |---|---|
