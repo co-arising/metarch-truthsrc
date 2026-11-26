@@ -81,13 +81,26 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
   truthsrc emit-tests --in <file-or-dir> [--project <config>] [--types <file>] [--solver z3|cvc5]
                       [--out-features <dir>] [--out-scala <dir>] [--package <pkg>] [--manifest <file>]
                                                            compile TestIR to locked Gherkin & ScalaTest oracles + SHA-256 manifest
+  truthsrc compile-v2 --structures <dir> --specs <dir> [--out <canonical-v2.json>] [--db <knowledge.sqlite>]
+                      [--solver z3|cvc5] [--bmc-steps <k>] [--no-gap-check] [--format human|json]
+                                                           co-arising 2.0 EARS-native compiler + SMT hard gate (exit 2 if blocked)
+  truthsrc generate-v2 --in <canonical-v2.json> --out <dir> [--target typescript,scala] [--package <pkg>]
+                       [--overwrite-cloze]
+                                                           direct EARS-IR codegen: L1 deterministic + L2/L3/app @cloze skeletons
+  truthsrc emit-tests-v2 --in <canonical-v2.json> --out <dir> [--target typescript,scala] [--package <pkg>]
+                                                           emit locked executable BDD oracles + Gherkin + SHA-256 manifest
+  truthsrc context-pack-v2 --in <canonical-v2.json> --slot <slot-id> [--db <knowledge.sqlite>]
+                           [--workspace <dir>] [--out-md <file>] [--out-json <file>]
+                                                           export Sandwich Context Pack for a Channel 4B @cloze slot
+  truthsrc verify-v2 --root <dir> [--target typescript,scala] [--canonical <file>] [--db <knowledge.sqlite>]
+                                                           Stop Hook triple gate: manifest tamper + live BDD oracles + provenance
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
                                                        "command": "truthsrc", "args": ["mcp"])
 `;
 
 const die = (msg) => { console.error(msg); process.exit(2); };
-const commands = new Set([...USAGE.matchAll(/^  truthsrc ([a-z][a-z-]*)/gm)].map(match => match[1]));
+const commands = new Set([...USAGE.matchAll(/^  truthsrc ([a-z][a-z0-9-]*)/gm)].map(match => match[1]));
 commands.delete('help');
 function help(command) {
   if (!command) return USAGE;
@@ -121,7 +134,7 @@ if (args.includes('--help') || args.includes('-h')) {
 try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
 
 // Legacy tree defaults are intentionally retained, but evaluated only after preflight.
-const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests'].includes(cmd);
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -345,6 +358,45 @@ switch (cmd) {
     try {
       const { emitTestsCli } = await import('../lib/ears/cli.mjs');
       console.log(JSON.stringify(emitTestsCli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'compile-v2': {
+    try {
+      const { compileV2Cli, renderCompileV2Human } = await import('../lib/v2/cli.mjs');
+      const result = compileV2Cli(process.argv.slice(3));
+      console.log(result.format === 'human' ? renderCompileV2Human(result) : JSON.stringify(result, null, 2));
+      if (!result.passed) process.exitCode = 2;
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'generate-v2': {
+    try {
+      const { generateV2Cli } = await import('../lib/v2/cli.mjs');
+      console.log(JSON.stringify(generateV2Cli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'emit-tests-v2': {
+    try {
+      const { emitTestsV2Cli } = await import('../lib/v2/cli.mjs');
+      console.log(JSON.stringify(emitTestsV2Cli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'context-pack-v2': {
+    try {
+      const { contextPackV2Cli } = await import('../lib/v2/cli.mjs');
+      console.log(JSON.stringify(contextPackV2Cli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'verify-v2': {
+    try {
+      const { verifyV2Cli } = await import('../lib/v2/cli.mjs');
+      const result = verifyV2Cli(process.argv.slice(3));
+      console.log(JSON.stringify(result, null, 2));
+      if (!result.passed) process.exitCode = 2;
     } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }

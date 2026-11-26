@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://co-arising.github.io/schemas/canonical-v2.schema.json",
+  "title": "co-arising Canonical Model v2 (EARS-Native)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "system",
+    "context",
+    "canonicalSha256",
+    "structures",
+    "behaviors",
+    "eventFolds",
+    "clozeSlots",
+    "verificationSummary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "co-arising.canonical/v2" },
+    "system": { "type": "string", "minLength": 1 },
+    "context": { "type": "string", "minLength": 1 },
+    "canonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "structures": {
+      "type": "object",
+      "required": ["exactTypes", "valueObjects", "aggregates", "sagas", "readModels", "ports", "stories"],
+      "properties": {
+        "exactTypes": { "type": "array" },
+        "valueObjects": { "type": "array" },
+        "aggregates": { "type": "array" },
+        "sagas": { "type": "array" },
+        "readModels": { "type": "array" },
+        "ports": { "type": "array" },
+        "stories": { "type": "array" }
+      }
+    },
+    "behaviors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "kind",
+          "layer",
+          "target",
+          "sourceFile",
+          "hitPolicy",
+          "theory",
+          "verification",
+          "axioms",
+          "externs",
+          "rules",
+          "eventPropagations",
+          "testIr"
+        ],
+        "properties": {
+          "schemaVersion": { "const": "co-arising.ears-ir/v2" },
+          "kind": { "enum": ["slice", "story"] },
+          "layer": { "enum": ["domain", "application"] },
+          "target": { "type": "string", "minLength": 1 },
+          "sourceFile": { "type": "string" },
+          "hitPolicy": { "const": "FIRST" },
+          "theory": {
+            "type": "object",
+            "required": ["tier", "logic", "codegenChannel"],
+            "properties": {
+              "tier": { "enum": ["L1", "L2", "L3"] },
+              "logic": { "enum": ["QF_AUFLIA", "QF_NIA"] },
+              "codegenChannel": { "enum": ["deterministic", "cloze-tdd"] }
+            }
+          },
+          "verification": {
+            "type": "object",
+            "required": ["solver", "passed", "bmcSteps", "canonicalSha256"],
+            "properties": {
+              "solver": { "type": "string" },
+              "passed": { "const": true },
+              "bmcSteps": { "type": "integer", "minimum": 0 },
+              "canonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          },
+          "axioms": { "type": "array" },
+          "externs": { "type": "array" },
+          "rules": { "type": "array" },
+          "eventPropagations": { "type": "array" },
+          "testIr": {
+            "type": "object",
+            "required": ["schemaVersion", "meta", "scenarios", "sha256"],
+            "properties": {
+              "schemaVersion": { "const": "co-arising.test-ir/v2" },
+              "meta": { "type": "object" },
+              "scenarios": { "type": "array" },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      }
+    },
+    "eventFolds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["aggregate", "event", "assignments", "foldSha256", "sourceRuleIds"]
+      }
+    },
+    "clozeSlots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slotId", "target", "kind", "layer", "tier", "ruleIds"]
+      }
+    },
+    "verificationSummary": {
+      "type": "object",
+      "required": ["solver", "passed", "behaviorCount", "deterministicCount", "clozeCount"],
+      "properties": {
+        "solver": { "type": "string" },
+        "passed": { "const": true },
+        "behaviorCount": { "type": "integer", "minimum": 0 },
+        "deterministicCount": { "type": "integer", "minimum": 0 },
+        "clozeCount": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}
