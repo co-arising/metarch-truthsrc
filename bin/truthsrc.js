@@ -121,6 +121,12 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
   truthsrc view-v2 --out <workshop.html> [--root <dir>] [--project <truthsrc.v2.json>] [--db <knowledge.sqlite>]
                    [--path-prefix <prefix>] [--title <text>] [--subtitle <text>] [--chapters <json>]
                                                            export self-contained strict-CSP offline visual workbench (truth <-> Onion code <-> tests)
+  truthsrc event-matrix-v2 (--canonical <file> | --v1-tree <dir> | --ingest <file.json>)
+                           [--out-md <event-matrix.md>] [--out-yaml <event-flow.yaml>] [--out-json <matrix.json>]
+                                                           compute 2D EventStorming Event Matrix + Hotspots (also recovers moved event-es-* from v1 aggregates/*/notes/)
+  truthsrc atlas-v2 (--canonical <file> | --canonicals <a.json,b.json> | --v1-tree <dir> | --ingest <file.json>)
+                    [--domain-map <domain-map.yaml>] --out <atlas.html> [--out-dir <diagrams-dir>] [--title <text>]
+                                                           export unified offline HTML Atlas viewer covering ALL Problem-Space & Solution-Space diagrams (+ Mermaid/CSV/CML)
   truthsrc lsp-ears                                        LSP 3.17 stdio server for .ears (live diagnostics, go-to-definition, hover)
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
@@ -507,6 +513,20 @@ switch (cmd) {
     try {
       const { viewV2Cli } = await import('../lib/v2/cli.mjs');
       console.log(JSON.stringify(viewV2Cli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'event-matrix-v2': {
+    try {
+      const { eventMatrixV2Cli } = await import('../lib/v2/cli.mjs');
+      console.log(JSON.stringify(eventMatrixV2Cli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'atlas-v2': {
+    try {
+      const { atlasV2Cli } = await import('../lib/v2/cli.mjs');
+      console.log(JSON.stringify(atlasV2Cli(process.argv.slice(3)), null, 2));
     } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }

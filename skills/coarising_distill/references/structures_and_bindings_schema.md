@@ -440,3 +440,29 @@ integrations:
       - from: score
         to: examScore
 ```
+
+### 3.5 Problem-Space Event Flow & 2D Event Matrix (`eventFlow:` in `structures/*.yaml`)
+
+Completes Stage #01 (`01-event-flow`) with zero double-source duplication (references aggregate events by name; fields stay owned by `aggregates[].events[]`). Compiled into `signoff/event-matrix.md` and the unified offline `signoff/atlas.html` viewer (`truthsrc atlas-v2`):
+
+```yaml
+eventFlow:
+  timelines:
+    - id: registration
+      name: 报名与开考
+      events:
+        - event: ExamRegistered
+          sequence: 0
+          step: 0
+          pivotal: true
+        - event: ExamSubmitted
+          sequence: 1
+          step: 0
+  hotspots:
+    - id: HS-retake-limit
+      question: 补考超过三次是否需要人工复核？
+      linkedEvents: [ExamRegistered]
+      status: resolved            # open | resolved | dismissed
+      blocking: false             # true + status:open blocks compile (V2_EVENTFLOW_BLOCKING_HOTSPOT)
+      resolution: 规则 R2 明确 3 次失败后转人工审批。
+```

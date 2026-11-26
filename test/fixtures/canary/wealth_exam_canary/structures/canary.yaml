@@ -199,6 +199,35 @@ journeys:
     release: R1
     stages:
       - name: PublishAndGovern
+        channel: AdminWeb
+        emotionScore: 4
+        painPoints: ["Manual fee cap double-checking before launch"]
         stories: [BatchLifecycle]
         useCases: [PublishAndWithdrawBatch]
         screens: [BatchListScreen, BatchDetailScreen]
+
+eventFlow:
+  timelines:
+    - id: batch-publication
+      name: 批次发布
+      events:
+        - event: ExamBatch.BatchPublished
+          sequence: 0
+          step: 0
+          pivotal: true
+          description: 讲师发布考次并进入开放状态
+    - id: batch-withdrawal
+      name: 审批撤回
+      events:
+        - event: ExamBatch.BatchWithdrawn
+          sequence: 1
+          step: 0
+          pivotal: true
+          description: 组织审批人经外部 PDP 鉴权撤回考次
+  hotspots:
+    - id: HS-withdraw-authority
+      question: 撤回考次是否必须经组织级动态 PDP 审批？
+      linkedEvents: [BatchWithdrawn]
+      status: resolved
+      blocking: false
+      resolution: 已裁决：通过 BatchAdminPort.approveWithdraw 的 external-pdp 契约校验组织汇报链。
