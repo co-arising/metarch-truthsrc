@@ -90,8 +90,8 @@ stage-3-generated  【完全毕业（Channel 4A）】彻底移出 handwritten/�
 contexts/<context>/
 ├── structures/          # 静态结构（名词：类型/枚举/聚合/读模型/端口/extern 签名）
 ├── behaviors/           # 动态行为（动词：问题空间 EARS，按架构分层）
-│   ├── domain/          #   仅允许领域聚合 behavior/slice（layer domain）
-│   └── application/     #   仅允许应用层用户故事 story（layer application）
+│   ├── domain/          #   仅允许领域聚合 behavior/slice（*.ears）
+│   └── application/     #   应用层：用户故事（*.story.ears）与系统集成裁决（*.integration.ears）
 └── bindings/            # 解决方案空间绑定（如 S1 外部资源效果协议 YAML）
 ```
 
