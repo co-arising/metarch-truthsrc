@@ -72,6 +72,15 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
                                                            concern scope selects are rewritten (engine: core;
                                                            presets: project-level registry, default ./concerns.json)
   truthsrc init-generator <dir>                            scaffold a custom generator
+  truthsrc check-spec --in <file-or-dir> [--project <config>] [--types <file>] [--solver z3|cvc5]
+                      [--bmc-steps <k>] [--no-gap-check] [--strict-rules] [--format human|json]
+                                                           co-arising EARS 1.0 parse, bind & SMT-LIB 2 check (exit 2 on findings)
+  truthsrc project-spec --in <file-or-dir> [--project <config>] [--types <file>]
+                        [--out-ac <dir>] [--out-tables <dir>] [--lang zh|en]
+                                                           deterministic read-only Style E AC & Style B DMN table projections
+  truthsrc emit-tests --in <file-or-dir> [--project <config>] [--types <file>] [--solver z3|cvc5]
+                      [--out-features <dir>] [--out-scala <dir>] [--package <pkg>] [--manifest <file>]
+                                                           compile TestIR to locked Gherkin & ScalaTest oracles + SHA-256 manifest
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
                                                        "command": "truthsrc", "args": ["mcp"])
@@ -112,7 +121,7 @@ if (args.includes('--help') || args.includes('-h')) {
 try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
 
 // Legacy tree defaults are intentionally retained, but evaluated only after preflight.
-const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -314,6 +323,29 @@ switch (cmd) {
     writeFileSync(join(root, 'generator.json'),
       readFileSync(join(root, 'generator.json'), 'utf8').replace('"name": "_template"', `"name": "${root.split('/').pop()}"`));
     console.log(`✅ generator scaffolded at ${root} — edit generate.mjs, then: truthsrc generate --generator ${root} --in <canonical> --out <dir>`);
+    break;
+  }
+  case 'check-spec': {
+    try {
+      const { checkSpecCli, renderCheckSpecHuman } = await import('../lib/ears/cli.mjs');
+      const result = checkSpecCli(process.argv.slice(3));
+      console.log(result.format === 'human' ? renderCheckSpecHuman(result) : JSON.stringify(result, null, 2));
+      if (!result.passed) process.exitCode = 2;
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'project-spec': {
+    try {
+      const { projectSpecCli } = await import('../lib/ears/cli.mjs');
+      console.log(JSON.stringify(projectSpecCli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'emit-tests': {
+    try {
+      const { emitTestsCli } = await import('../lib/ears/cli.mjs');
+      console.log(JSON.stringify(emitTestsCli(process.argv.slice(3)), null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }
   case 'mcp': {

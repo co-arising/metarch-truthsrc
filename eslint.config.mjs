@@ -76,6 +76,7 @@ export default [
   {
     files: [
       'emitter/**/*.mjs',
+      'lib/ears/**/*.mjs',
       'lib/layout/**/*.mjs',
       'lib/derivation/value-object-package.mjs',
       'tools/lint.mjs',
