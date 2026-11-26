@@ -69,6 +69,8 @@ aggregates:
       - name: ApproveBatch
         parameters:
           - nowMs: Int
+          - actor: ActorId
+          - reqId: RequestId
         produces: [BatchApproved]
     events:
       - name: BatchApproved
