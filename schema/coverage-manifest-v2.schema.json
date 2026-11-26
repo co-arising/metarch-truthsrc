@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://co-arising.github.io/schemas/coverage-manifest-v2.schema.json",
+  "title": "co-arising 2.0 Full-Coverage & Evidence Ledger Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "system", "context", "governedRoots", "files"],
+  "properties": {
+    "schemaVersion": { "const": "co-arising.coverage-manifest/v2" },
+    "system": { "type": "string", "minLength": 1 },
+    "context": { "type": "string", "minLength": 1 },
+    "effectBindingFile": { "type": ["string", "null"] },
+    "governedRoots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["root", "extensions"],
+        "properties": {
+          "root": { "type": "string", "minLength": 1 },
+          "extensions": { "type": "array", "items": { "type": "string" } },
+          "ignore": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "branch", "tier", "stage", "evidenceTier", "rationale"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "branch": { "enum": ["problem", "solution"] },
+          "tier": { "enum": ["D1", "D2", "S1", "S2", "S3"] },
+          "stage": { "enum": ["stage-0-raw", "stage-1-shadow", "stage-2-cloze", "stage-3-generated"] },
+          "evidenceTier": { "enum": ["E1", "E2", "E3", "E4"] },
+          "contractRef": { "type": ["string", "null"] },
+          "shadowMode": { "enum": ["sidecar", "inline-marker", "none"] },
+          "rationale": { "type": "string", "minLength": 1 },
+          "automatedEvidence": { "type": ["string", "null"] },
+          "humanSignoff": {
+            "type": ["object", "null"],
+            "required": ["reviewer", "fileSha256", "signedAt", "checklist"],
+            "properties": {
+              "reviewer": { "type": "string", "minLength": 1 },
+              "fileSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "signedAt": { "type": "string", "minLength": 1 },
+              "checklist": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

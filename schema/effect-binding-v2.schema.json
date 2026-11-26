@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://co-arising.github.io/schemas/effect-binding-v2.schema.json",
+  "title": "co-arising 2.0 Architecture Style & Effect Binding Specification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "system", "context", "architectureStyle", "effects"],
+  "properties": {
+    "schemaVersion": { "const": "co-arising.effect-binding/v2" },
+    "system": { "type": "string", "minLength": 1 },
+    "context": { "type": "string", "minLength": 1 },
+    "architectureStyle": {
+      "type": "string",
+      "enum": ["cqrs-es-three-phase-effect", "outbox-event-driven", "workflow-orchestrated"]
+    },
+    "forbiddenImports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "scopePrefix", "forbidPattern", "reason"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "scopePrefix": { "type": "string", "minLength": 1 },
+          "forbidPattern": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "effects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "protocol", "idempotencyKey", "timeoutMs", "maxRetries", "compensationRequiresAbsenceProof"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "protocol": { "enum": ["three-phase-reconcile", "idempotent-pin-dispatch", "read-projection"] },
+          "idempotencyKey": { "type": "string", "minLength": 1 },
+          "timeoutMs": { "type": "integer", "minimum": 1 },
+          "maxRetries": { "type": "integer", "minimum": 0 },
+          "compensationRequiresAbsenceProof": { "type": "boolean" },
+          "crashRecoveryZeroNewAuth": { "type": "boolean" },
+          "earsContractRef": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

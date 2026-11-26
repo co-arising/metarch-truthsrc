@@ -94,6 +94,11 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
                                                            export Sandwich Context Pack for a Channel 4B @cloze slot
   truthsrc verify-v2 --root <dir> [--target typescript,scala] [--canonical <file>] [--db <knowledge.sqlite>]
                                                            Stop Hook triple gate: manifest tamper + live BDD oracles + provenance
+  truthsrc audit-coverage-v2 --root <dir> --manifest <coverage-manifest.json> [--binding <effect-binding.yaml>]
+                             [--db <knowledge.sqlite>]
+                                                           100% full-coverage & E1-E4 evidence ledger audit (exit 2 on gray-zone/stale signoff)
+  truthsrc run-tck-v2 --adapter <module.ts|mjs> [--export createEffectAdapter]
+                                                           run 8-scenario S1 fault-injection TCK (timeout/replay/recovery/absence proof)
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
                                                        "command": "truthsrc", "args": ["mcp"])
@@ -134,7 +139,7 @@ if (args.includes('--help') || args.includes('-h')) {
 try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
 
 // Legacy tree defaults are intentionally retained, but evaluated only after preflight.
-const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2'].includes(cmd);
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'run-tck-v2'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -395,6 +400,24 @@ switch (cmd) {
     try {
       const { verifyV2Cli } = await import('../lib/v2/cli.mjs');
       const result = verifyV2Cli(process.argv.slice(3));
+      console.log(JSON.stringify(result, null, 2));
+      if (!result.passed) process.exitCode = 2;
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'audit-coverage-v2': {
+    try {
+      const { auditCoverageV2Cli } = await import('../lib/v2/cli.mjs');
+      const result = auditCoverageV2Cli(process.argv.slice(3));
+      console.log(JSON.stringify(result, null, 2));
+      if (!result.passed) process.exitCode = 2;
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'run-tck-v2': {
+    try {
+      const { runTckV2Cli } = await import('../lib/v2/cli.mjs');
+      const result = await runTckV2Cli(process.argv.slice(3));
       console.log(JSON.stringify(result, null, 2));
       if (!result.passed) process.exitCode = 2;
     } catch (error) { die(`[FAIL] ${error.message}`); }
