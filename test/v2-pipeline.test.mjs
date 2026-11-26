@@ -70,6 +70,7 @@ aggregates:
         produces: [UnitsConfirmed]
     events:
       - name: UnitsConfirmed
+        waiveLineage: audit-only
         fields:
           - units: Int
           - unitPrice: RateDecimal

@@ -367,6 +367,7 @@ aggregates:
         fields:
           - name: withdrawnAtMs
             type: Int
+            waiveLineage: audit-only
 `;
 
   const publishEars = `
@@ -551,10 +552,12 @@ aggregates:
             type: Optional[Int]
           - name: withdrawnAtMs
             type: Int
+            waiveLineage: audit-only
       - name: BatchCleared
         fields:
           - name: withdrawnAtMs
             type: Int
+            waiveLineage: audit-only
 `;
 
   const withdrawEars = `

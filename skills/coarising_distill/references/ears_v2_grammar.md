@@ -147,5 +147,12 @@ Key application syntax rules:
 | `V2_SMT_GATE_FAILED` | Z3 found a logic gap, conflict, or invariant violation | **NEVER guess** — present the A/B Clarification Card to the user and apply their choice |
 | `V2_BILINGUAL_DRIFT` | Sibling `.zh.ears` AST hash differs from `.ears` | Keep EN/ZH clauses structurally isomorphic |
 | `V2_STATE_CHANGE_WITHOUT_EVENT` | Domain rule mutates state (`transition`/`post:`) without `SHALL emit <Event>` | Add `SHALL emit <Event>` so Event Sourcing replay updates state |
-| `V2_UNPROPAGATED_EVENT_FIELD` | Deterministic (L1) event declares a field absent from command parameters | Add the field to command parameters or align parameter/event field names |
-| `V2_POST_EVENT_FIELD_MISSING` | `post:` references a command parameter not carried by the emitted event | Add the field to the emitted event's `fields:` (or use `none` to clear an `Optional[T]` field) |
+| `V2_UNPROPAGATED_EVENT_FIELD` | Deterministic (L1) event declares a field absent from command parameters and state | Add the field to command parameters, declare `source: state.<f>`/`const:<v>`, or align names |
+| `V2_EVENT_FIELD_TYPE_MISMATCH` | Event field type is incompatible with command parameter / state / constant source | Align types in `structures/*.yaml` |
+| `V2_POST_EVENT_FIELD_MISSING` | `post:` references a variable not carried by the emitted event | Add the field to the emitted event's `fields:` (or use `none` to clear `Optional[T]`) |
+| `V2_POST_EVENT_TYPE_MISMATCH` | `post:` expression evaluated against emitted event types mismatches state target | Align event field and state field types |
+| `V2_LINEAGE_UNCONSUMED_NUMERIC_FIELD` | Emitted numeric/exact event field is never folded or read (fail-closed error!) | Fold it in `post:`, consume it in a story/readModel, or add typed `waiveLineage` |
+| `V2_LINEAGE_WRITE_ONLY_STATE_FIELD` / `V2_LINEAGE_UNWRITTEN_STATE_FIELD` | State field is written-only or read-only without waiver | Read/write it or declare `waiveLineage` (`immutable-config`, `seed-only`, `audit-log`, `external-read`) |
+| `V2_LINEAGE_UNSOURCED_READMODEL_FIELD` | Logical readModel field omits machine-checkable `source:` | Add `source: stateField:...`, `eventField:...`, `aggregateIdentity`, or `derived:<reason>` |
+| `V2_AUTHZ_UNDECLARED_OPERATION` / `V2_AUTHZ_UNKNOWN_ROLE` / `V2_AUTHZ_UNKNOWN_CONTEXT_PARAM` | Port operation missing `authz` PEP contract or references undeclared role/param | Declare `authz:` (`auth-core`, `static-roles`, `external-pdp`, `public`, `internal-only`) |
+| `V2_READSIDE_COLUMN_TYPE_CONFLICT` / `V2_READSIDE_UNKNOWN_READMODEL` | Physical `bindings/*-readside.yaml` conflicts with logical `readModels` | Align shared materialized view columns and served readModels |

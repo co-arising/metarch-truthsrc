@@ -193,6 +193,7 @@ aggregates:
         produces: [Passed]
     events:
       - name: Passed
+        waiveLineage: audit-only
         fields:
           - n: Int
 `, 'utf8');

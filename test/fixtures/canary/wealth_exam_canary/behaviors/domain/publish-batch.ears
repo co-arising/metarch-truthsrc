@@ -1,0 +1,14 @@
+slice ExamBatch.PublishBatch
+
+rules:
+  [NOT_DRAFT]   IF batch.status != "draft" THEN SHALL reject request with NOT_DRAFT
+  [FEE_INVALID] IF fee <= 0.00 or fee > batch.feeLimit THEN SHALL reject request with FEE_INVALID
+  [INVALID_TIME] IF nowMs <= 0 THEN SHALL reject request with INVALID_TIME
+  [PUBLISHED]   WHILE batch.status == "draft" and fee > 0.00 and fee <= batch.feeLimit and nowMs > 0
+                WHEN PublishBatch
+                SHALL transition batch.status -> "published"
+                  AND emit BatchPublished
+                post:
+                  batch.publishedAtMs' = nowMs
+                  batch.totalFee' = fee
+                  batch.version' = batch.version + 1

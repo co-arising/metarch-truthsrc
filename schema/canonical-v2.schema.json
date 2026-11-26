@@ -24,13 +24,19 @@
       "type": "object",
       "required": ["exactTypes", "valueObjects", "aggregates", "sagas", "readModels", "ports", "stories"],
       "properties": {
+        "nominalTypes": { "type": "array" },
+        "roles": { "type": "array" },
         "exactTypes": { "type": "array" },
         "valueObjects": { "type": "array" },
         "aggregates": { "type": "array" },
         "sagas": { "type": "array" },
+        "pipelines": { "type": "array" },
         "readModels": { "type": "array" },
         "ports": { "type": "array" },
-        "stories": { "type": "array" }
+        "stories": { "type": "array" },
+        "useCases": { "type": "array" },
+        "journeys": { "type": "array" },
+        "externContracts": { "type": "array" }
       }
     },
     "behaviors": {
@@ -101,6 +107,12 @@
         "type": "object",
         "required": ["aggregate", "event", "assignments", "foldSha256", "sourceRuleIds"]
       }
+    },
+    "lineage": {
+      "type": "object"
+    },
+    "readside": {
+      "type": "object"
     },
     "clozeSlots": {
       "type": "array",

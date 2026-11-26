@@ -1,0 +1,23 @@
+story BatchLifecycle layer application
+
+where:
+  extern sessionValid(actor)
+
+rules:
+  [BL-01] IF not sessionValid(actor)
+          WHEN BatchAdminPort.publish
+          THEN SHALL reject request with UNAUTHORIZED
+
+  [BL-02] WHILE sessionValid(actor)
+          WHEN BatchAdminPort.publish
+          SHALL dispatch ExamBatch.PublishBatch
+            AND respond BatchAck with ack.accepted == true and ack.replayed == false
+
+  [BL-03] IF not sessionValid(actor)
+          WHEN BatchAdminPort.approveWithdraw
+          THEN SHALL reject request with UNAUTHORIZED
+
+  [BL-04] WHILE sessionValid(actor)
+          WHEN BatchAdminPort.approveWithdraw
+          SHALL dispatch ExamBatch.WithdrawBatch
+            AND respond BatchAck with ack.accepted == true and ack.replayed == false

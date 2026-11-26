@@ -1,0 +1,13 @@
+slice ExamBatch.WithdrawBatch
+
+rules:
+  [NOT_PUBLISHED] IF batch.status != "published" or batch.publishedAtMs is none
+                  THEN SHALL reject request with NOT_PUBLISHED
+  [INVALID_TIME]  IF withdrawnAtMs <= 0 THEN SHALL reject request with INVALID_TIME
+  [WITHDRAWN]     WHILE batch.status == "published" and batch.publishedAtMs is some and withdrawnAtMs > 0
+                  WHEN WithdrawBatch
+                  SHALL transition batch.status -> "withdrawn"
+                    AND emit BatchWithdrawn
+                  post:
+                    batch.publishedAtMs' = none
+                    batch.version' = batch.version + 1

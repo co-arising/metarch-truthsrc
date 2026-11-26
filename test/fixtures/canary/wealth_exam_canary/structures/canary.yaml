@@ -1,0 +1,204 @@
+system: wealth-canary
+context: canary
+
+roles:
+  - name: Instructor
+    kind: human
+    scope: tenant
+  - name: OrgApprover
+    kind: human
+    scope: org
+  - name: SettlementCron
+    kind: scheduler
+
+exactTypes:
+  - name: AmountDecimal
+    form: decimal
+    scale: 2
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    amountField: amount
+    unitField: currency
+    units: ["CNY"]
+
+valueObjects:
+  - name: BatchAck
+    fields:
+      - accepted: Bool
+      - replayed: Bool
+
+aggregates:
+  - name: ExamBatch
+    idField: batchId
+    aliases: [batch, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "draft"
+        enum: ["draft", "published", "withdrawn"]
+      - name: feeLimit
+        type: AmountDecimal
+        default: "500.00"
+        waiveLineage: immutable-config
+      - name: publishedAtMs
+        type: Optional[Int]
+      - name: totalFee
+        type: AmountDecimal
+        default: "0.00"
+      - name: version
+        type: Int
+        default: 0
+    commands:
+      - name: PublishBatch
+        parameters:
+          - fee: AmountDecimal
+          - nowMs: Int
+        produces: [BatchPublished]
+      - name: WithdrawBatch
+        parameters:
+          - withdrawnAtMs: Int
+        produces: [BatchWithdrawn]
+    events:
+      - name: BatchPublished
+        fields:
+          - fee: AmountDecimal
+          - nowMs: Int
+      - name: BatchWithdrawn
+        fields:
+          - name: withdrawnAtMs
+            type: Int
+            waiveLineage: audit-only
+    ruleRefs:
+      NOT_DRAFT: "batch must be draft"
+      FEE_INVALID: "fee must be within (0, feeLimit]"
+      INVALID_TIME: "timestamp must be positive"
+      NOT_PUBLISHED: "batch must be published"
+
+readModels:
+  - name: batch-summary-view
+    sourceAggregate: ExamBatch
+    sourceEvents: [BatchPublished, BatchWithdrawn]
+    fields:
+      - name: batchId
+        type: BatchId
+        source: aggregateIdentity
+      - name: status
+        type: String
+        enum: ["draft", "published", "withdrawn"]
+        source: stateField:status
+      - name: totalFee
+        type: AmountDecimal
+        source: stateField:totalFee
+  - name: batch-detail-view
+    sourceAggregate: ExamBatch
+    sourceEvents: [BatchPublished, BatchWithdrawn]
+    fields:
+      - name: batchId
+        type: BatchId
+        source: aggregateIdentity
+      - name: status
+        type: String
+        enum: ["draft", "published", "withdrawn"]
+        source: stateField:status
+      - name: publishedAtMs
+        type: Optional[Int]
+        source: stateField:publishedAtMs
+      - name: version
+        type: Int
+        source: stateField:version
+
+ports:
+  - name: BatchAdminPort
+    operations:
+      - name: publish
+        callerKind: human
+        authz:
+          mode: auth-core
+          scope: tenant
+          action: "exam:batch:publish"
+          allowedRoles: [Instructor]
+        parameters:
+          - actor: ActorId
+          - fee: AmountDecimal
+          - nowMs: Int
+        returns: BatchAck
+      - name: approveWithdraw
+        callerKind: human
+        authz:
+          mode: external-pdp
+          policyRef: "org-rbac.withdraw-batch"
+          action: "exam:batch:withdraw"
+          contextParams:
+            - orgUnitId: param.orgUnitId
+            - tenantId: token.tenantId
+        parameters:
+          - actor: ActorId
+          - orgUnitId: OrgUnitId
+          - withdrawnAtMs: Int
+        returns: BatchAck
+  - name: BatchCronPort
+    operations:
+      - name: sweepExpired
+        callerKind: scheduler
+        authz:
+          mode: internal-only
+          action: "exam:batch:sweep"
+        parameters:
+          - withdrawnAtMs: Int
+        returns: Unit
+
+externContracts:
+  - name: sessionValid
+    ownerPort: BatchAdminPort
+    params:
+      - actor: ActorId
+
+stories:
+  - name: BatchLifecycle
+    role: Instructor
+    goal: "Publish and withdraw exam batches safely"
+    soThat: "Students see only valid active batches"
+    release: R1
+    coversUseCases: [PublishAndWithdrawBatch]
+    responses: [BatchAck]
+    views: [batch-summary-view, batch-detail-view]
+
+useCases:
+  - id: publish-and-withdraw-batch
+    name: PublishAndWithdrawBatch
+    actor: Instructor
+    intent: "Publish a draft exam batch and allow org-authorized withdrawal"
+    prdRefs: ["PRD-1.1", "PRD-1.2"]
+    readEvidence: [batch-summary-view, batch-detail-view]
+    steps:
+      - id: publish-step
+        actor: Instructor
+        port: BatchAdminPort.publish
+        aggregate: ExamBatch
+        command: PublishBatch
+        emissions: [BatchPublished]
+        updatesViews: [batch-summary-view, batch-detail-view]
+      - id: withdraw-step
+        actor: OrgApprover
+        port: BatchAdminPort.approveWithdraw
+        readsView: batch-detail-view
+        aggregate: ExamBatch
+        command: WithdrawBatch
+        emissions: [BatchWithdrawn]
+        updatesViews: [batch-summary-view, batch-detail-view]
+    extensions:
+      - condition: "Fee exceeds limit or batch is not draft"
+        behavior: "Reject with deterministic error code and zero state mutation"
+
+journeys:
+  - id: exam-batch-journey
+    name: ExamBatchJourney
+    persona: Instructor
+    goal: "Manage end-to-end exam batch lifecycle"
+    release: R1
+    stages:
+      - name: PublishAndGovern
+        stories: [BatchLifecycle]
+        useCases: [PublishAndWithdrawBatch]
+        screens: [BatchListScreen, BatchDetailScreen]

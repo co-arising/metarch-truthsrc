@@ -1,6 +1,6 @@
-# co-arising 2.0 YAML Schema Reference (`structures/*.yaml` & `bindings/*-effects.yaml`)
+# co-arising 2.0 YAML Schema Reference (`structures/*.yaml` & `bindings/*.yaml`)
 
-> Self-contained schema reference bundled with `coarising-distill` (derived directly from `lib/v2/structure-loader.mjs`, `lib/v2/coverage-audit.mjs`, and `schema/effect-binding-v2.schema.json`). Read this completely BEFORE authoring any YAML file.
+> Self-contained schema reference bundled with `coarising-distill` (derived directly from `lib/v2/structure-loader.mjs`, `lib/v2/lineage.mjs`, `lib/v2/readside-binding.mjs`, `lib/v2/coverage-audit.mjs`, and `schema/effect-binding-v2.schema.json`). Read this completely BEFORE authoring any YAML file.
 
 ---
 
@@ -22,77 +22,130 @@ NEVER put behavioral or v1 guard keys anywhere inside `structures/*.yaml`:
 | :--- | :--- | :---: | :--- |
 | `system` | `string` | yes | System identifier (kebab-case), e.g. `order-hub` |
 | `context` | `string` | yes | Bounded Context identifier (kebab-case), e.g. `orders` |
+| `nominalTypes` | `array` | optional | Closed list of nominal ID types; when present, unregistered PascalCase IDs fail with `V2_UNKNOWN_TYPE` |
+| `roles` | `array` | optional | Declared human and non-human actors/callers (`kind: human \| system \| scheduler \| webhook \| ai-agent`) |
 | `exactTypes` | `array` | optional | Fixed-point decimal and unit-decimal (money) types (no floating point) |
 | `valueObjects` | `array` | optional | Structured DTOs / responses (`respond <VO>`) |
-| `readModels` | `array` | optional | Query projections (`expose <ReadModel>`) |
-| `ports` | `array` | optional | Inbound application ports (`WHEN <Port>.<op>`) |
-| `externContracts` | `array` | optional | Declared external host predicates (`extern fn(a, b)`) with exact arity |
-| `aggregates` | `array` | yes | Domain aggregates with `stateFields`, `commands`, `events`, `ruleRefs` |
-| `stories` | `array` | optional | Application story metadata (`pins`, `responses`, `views`, `callerContract`) |
+| `aggregates` | `array` | yes | Write-model domain aggregates with `stateFields`, `commands`, `events`, `ruleRefs` |
+| `sagas` | `array` | optional | Multi-aggregate sagas (`triggers`, `invokes`/`dispatches`, `stateFields`) |
+| `pipelines` | `array` | optional | Durable execution pipelines orchestrating sagas/commands (`kind: pipeline` also supported as standalone file) |
+| `readModels` | `array` | optional | **Logical** query views (CQRS Read Model) with `sourceAggregate`, `sourceEvents`, and per-field `source:` |
+| `ports` | `array` | optional | Inbound application ports (`WHEN <Port>.<op>`) with `callerKind` and `authz` PEP contracts |
+| `externContracts` | `array` | optional | Declared external host predicates (`extern fn(a, b)`) with exact `params` and `ownerPort` |
+| `stories` | `array` | optional | Application stories + User Story narrative (`role`, `goal`, `soThat`, `release`, `coversUseCases`, `pins`, `responses`, `views`, `callerContract`) |
+| `useCases` | `array` | optional | End-to-end causal business flows (`actor`, `beneficiary`, `intent`, `prdRefs`, `readEvidence`, `steps`, `extensions`; `kind: use-cases` also supported) |
+| `journeys` | `array` | optional | Story-Mapping journeys (`persona`, `goal`, `release`, `stages: [{ name, stories, useCases, screens }]`) |
 
 ### 2.2 Supported Type Expressions (`parseTypeExpr`)
 
 | Syntax | Meaning |
 | :--- | :--- |
-| `Int` / `Integer` / `Long` | 64-bit integer |
+| `Int` / `Integer` / `Long` | 64-bit integer (never use `int`, `long`, `Lng`, `Float`, `Double`) |
 | `Bool` / `Boolean` | Boolean |
 | `String` | Unbounded string (or closed string when `enum: [...]` is specified) |
 | `Decimal` / `Decimal(N)` | Fixed-point decimal with scale `2` or `N` |
 | `<ExactTypeName>` | Reference to an entry in `exactTypes` (e.g. `AmountDecimal`, `Money`) |
 | `<ValueObjectName>` | Reference to an entry in `valueObjects` |
 | `Map[KeyType, ValueType]` | Total map / ledger (e.g. `Map[AccountId, AmountDecimal]`) |
-| `Optional[ElemType]` | Nullable / optional value (`x is some`, `x is none`) |
-| `Seq[ElemType]` | Ordered sequence (`forall`, `exists`, `count`, `len`, `sum`) |
-| `<NominalId>` (e.g. `AccountId`, `OrderId`, `FundCode`) | Nominal string identifier |
+| `Optional[ElemType]` | Nullable / optional value (`x is some`, `x is none`; never use `Option[T]`) |
+| `Seq[ElemType]` | Ordered sequence (`forall`, `exists`, `count`, `len`, `sum`; never use `List[T]`/`Array[T]`) |
+| `<NominalId>` (e.g. `AccountId`, `OrderId`) | Nominal PascalCase string identifier |
 
-### 2.3 Field Declaration Forms (Allowed in `stateFields`, `parameters`, `fields`)
+### 2.3 Field Declaration Forms & Lineage Attributes
 
-Three forms are accepted by the parser:
+Three forms are accepted by `parseFieldSpec`:
 
-1. **Concise mapping shorthand (most common)**:
-   ```yaml
-   - qty: QtyDecimal
-   - usedQty: QtyDecimal = "0.00"
-   - reservedByTx: Map[TxId, AmountDecimal] = []
-   ```
-2. **String shorthand**:
-   ```yaml
-   - "maxSingleLimit: AmountDecimal = \"50000.00\""
-   ```
-3. **Explicit object form (REQUIRED whenever declaring a closed `enum: [...]`)**:
+1. **Concise mapping shorthand**: `- qty: QtyDecimal`, `- usedQty: QtyDecimal = "0.00"`, `- reservedByTx: Map[TxId, AmountDecimal] = []`
+2. **String shorthand**: `- "maxSingleLimit: AmountDecimal = \"50000.00\""`
+3. **Explicit object form** (REQUIRED when declaring `enum:`, `source:`, or `waiveLineage:`):
    ```yaml
    - name: paymentOutcome
      type: String
      default: "pending"
      enum: ["pending", "succeeded", "failed"]
+     source: cmd.outcome              # Event field only: cmd.<p> | state.<s> | const:<v> | derived | context
+     waiveLineage: audit-only         # Optional typed lineage waiver
    ```
 
-### 2.4 `exactTypes` Item Schema
+#### Machine-Checkable `source:` Formats
+- **On `events[*].fields[*]`**: `cmd.<paramName>`, `state.<stateField>`, `const:<literal>`, `derived`, `context`
+- **On `readModels[*].fields[*]`**:
+  - `stateField:<Agg>.<field>` (or `stateField:<field>` when `sourceAggregate` is set on the readModel)
+  - `eventField:<Agg>.<Event>.<field>` (or `eventField:<Event>.<field>` when `sourceAggregate` is set)
+  - `aggregateIdentity`
+  - `derived` or `derived:<reason>`
+  - NEVER write free prose like `"Documentation only: ..."`; the compiler fails with `V2_READMODEL_INVALID_SOURCE`.
 
-Two forms:
+#### Machine-Checkable `waiveLineage:` Reasons
+- **On `events[*]` or `events[*].fields[*]`** (unconsumed numeric event fields FAIL compilation by default unless consumed or waived!):
+  - `routing-id` | `redundant-param` | `redundant-param:<cmdParam>` | `saga-trigger` | `audit-only` | `notification-only`
+- **On `aggregates[*].stateFields[*]`**:
+  - `immutable-config` | `seed-only` (waives `V2_LINEAGE_UNWRITTEN_STATE_FIELD`, e.g. `singleCap`)
+  - `audit-log` | `external-read` (waives `V2_LINEAGE_WRITE_ONLY_STATE_FIELD`)
+- **On `readModels[*].fields[*]`**:
+  - `derived` | `computed-at-query` | `external-enrichment`
 
-- **Plain fixed-point decimal**:
-  ```yaml
-  - name: AmountDecimal
-    form: decimal
-    scale: 2
-  ```
-- **Unit-bearing fixed-point decimal (e.g., Money)**:
-  ```yaml
-  - name: Money
-    form: unit-decimal
-    scale: 2
-    amountField: amount
-    unitField: currency
-    units: ["CNY"]
-  ```
-  > Every currency literal compared against `amount.currency` in `.ears` MUST be listed in `units: [...]` (closed-vocabulary gate).
+### 2.4 Authz PEP Contracts (`roles` & `ports[*].operations[*].authz`)
+
+Truth declares the **PEP (Policy Enforcement Point) contract** — leaving dynamic policy evaluation to `auth-core` or an external PDP (`AuthorizationPort`) in Solution Space:
+
+```yaml
+roles:
+  - name: Customer
+    kind: human            # human | system | scheduler | webhook | ai-agent
+    scope: tenant
+  - name: SettlementCron
+    kind: scheduler
+  - name: TaWebhook
+    kind: webhook
+
+ports:
+  - name: TransferSubmitPort
+    operations:
+      - name: submit
+        callerKind: human  # human | system | scheduler | webhook | anonymous
+        authz:
+          mode: auth-core  # auth-core | static-roles | external-pdp | public | internal-only
+          scope: tenant    # global | tenant | workgroup | project | workshop | org | custom
+          action: "wallet:transfer:submit"
+          allowedRoles: [Customer]
+        parameters:
+          - actor: ActorId
+          - clientRequestId: RequestId
+          - amount: Money
+        returns: TransferAck
+
+  - name: ExpenseApprovalPort
+    operations:
+      - name: approve
+        callerKind: human
+        authz:
+          mode: external-pdp                 # Workday Org-Role / OPA / OpenFGA dynamic PDP
+          policyRef: "org-rbac.approve-expense"
+          action: "expense:approve"
+          contextParams:                     # param.<p> checked against operation parameters!
+            - orgUnitId: param.orgUnitId
+            - amount: param.amount
+            - tenantId: token.tenantId
+        parameters:
+          - actor: ActorId
+          - orgUnitId: OrgUnitId
+          - amount: Money
+        returns: ApprovalAck
+```
+
+> Operations with `callerKind: system | scheduler` or `authz.mode: internal-only` (and pure `WHEN event` integration stories) are **never exposed as public HTTP routes**.
 
 ### 2.5 Complete Valid `structures/<context>.yaml` Example
 
 ```yaml
 system: wallet-app
 context: wallet
+
+roles:
+  - name: Customer
+    kind: human
+    scope: tenant
 
 exactTypes:
   - name: AmountDecimal
@@ -111,59 +164,22 @@ valueObjects:
       - replayed: Bool
       - accepted: Bool
 
-readModels:
-  - name: wallet-order-view
-    fields:
-      - settled: Bool
-      - name: status
-        type: String
-        enum: ["pending", "settled", "rejected"]
-
-ports:
-  - name: TransferSubmitPort
-    operations:
-      - name: submit
-        parameters:
-          - actor: ActorId
-          - clientRequestId: RequestId
-          - amount: Money
-        returns: TransferAck
-  - name: WalletQueryPort
-    operations:
-      - name: get
-        parameters:
-          - orderId: OrderId
-        returns: wallet-order-view
-
-externContracts:
-  - name: sessionAuthenticated
-    ownerPort: TransferSubmitPort
-    params:
-      - actor: ActorId
-  - name: requestExists
-    ownerPort: TransferSubmitPort
-    params:
-      - actor: ActorId
-      - clientRequestId: RequestId
-  - name: payloadMatchesOriginal
-    ownerPort: TransferSubmitPort
-    params:
-      - actor: ActorId
-      - clientRequestId: RequestId
-      - amount: Money
-
 aggregates:
   - name: WalletLedger
     aliases: [ledger, state, walletledger]
     stateFields:
       - availableAmount: AmountDecimal = "0.00"
       - reservedTotal: AmountDecimal = "0.00"
-      - singleCap: AmountDecimal = "50000.00"
+      - name: singleCap
+        type: AmountDecimal
+        default: "50000.00"
+        waiveLineage: immutable-config
       - reservedByTx: Map[TxId, AmountDecimal] = []
       - name: status
         type: String
         default: "active"
         enum: ["active", "frozen"]
+        waiveLineage: immutable-config
     commands:
       - name: ReserveFunds
         parameters:
@@ -182,8 +198,61 @@ aggregates:
       TX_ALREADY_RESERVED: "txId must not be reserved twice"
       LEDGER_FROZEN: "frozen ledger rejects reservations"
 
+readModels:
+  - name: wallet-order-view
+    sourceAggregate: WalletLedger
+    sourceEvents: [FundsReserved]
+    fields:
+      - name: availableAmount
+        type: AmountDecimal
+        source: stateField:availableAmount
+      - name: reservedTotal
+        type: AmountDecimal
+        source: stateField:reservedTotal
+      - name: status
+        type: String
+        enum: ["active", "frozen"]
+        source: stateField:status
+
+ports:
+  - name: TransferSubmitPort
+    operations:
+      - name: submit
+        callerKind: human
+        authz:
+          mode: auth-core
+          scope: tenant
+          action: "wallet:transfer:submit"
+          allowedRoles: [Customer]
+        parameters:
+          - actor: ActorId
+          - clientRequestId: RequestId
+          - amount: Money
+        returns: TransferAck
+
+externContracts:
+  - name: sessionAuthenticated
+    ownerPort: TransferSubmitPort
+    params:
+      - actor: ActorId
+  - name: requestExists
+    ownerPort: TransferSubmitPort
+    params:
+      - actor: ActorId
+      - clientRequestId: RequestId
+  - name: payloadMatchesOriginal
+    ownerPort: TransferSubmitPort
+    params:
+      - actor: ActorId
+      - clientRequestId: RequestId
+      - amount: Money
+
 stories:
   - name: WalletTransfer
+    role: Customer
+    goal: "Reserve funds safely with idempotent replay"
+    soThat: "Retries never double-debit my wallet"
+    coversUseCases: [ReserveWalletFunds]
     pins: [TransferOriginal]
     responses: [TransferAck]
     views: [wallet-order-view]
@@ -191,31 +260,43 @@ stories:
       idempotencyKey: "(actor, clientRequestId)"
       retryPolicy: "at-least-once safe; identical replay must never re-dispatch"
       forbiddenUntrustedFields: ["internalAccountId", "operationId"]
+
+useCases:
+  - id: reserve-wallet-funds
+    name: ReserveWalletFunds
+    actor: Customer
+    intent: "Submit a transfer reservation and observe updated wallet balance"
+    prdRefs: ["PRD-1.1"]
+    readEvidence: [wallet-order-view]
+    steps:
+      - id: submit-reserve
+        actor: Customer
+        port: TransferSubmitPort.submit
+        aggregate: WalletLedger
+        command: ReserveFunds
+        emissions: [FundsReserved]
+        updatesViews: [wallet-order-view]
+
+journeys:
+  - id: wallet-core-journey
+    name: WalletCoreJourney
+    persona: Customer
+    goal: "Safely reserve and monitor wallet funds"
+    release: R1
+    stages:
+      - name: SubmitTransfer
+        stories: [WalletTransfer]
+        useCases: [ReserveWalletFunds]
 ```
 
 ---
 
-## 3. `truth/<context>/bindings/<context>-effects.yaml` Schema
+## 3. Solution-Space Bindings (`truth/<context>/bindings/*.yaml`)
+
+### 3.1 `bindings/<context>-effects.yaml` (`co-arising.effect-binding/v2`)
 
 Required top-level fields (`schema/effect-binding-v2.schema.json`):
-
-| Key | Type | Allowed Values |
-| :--- | :--- | :--- |
-| `schemaVersion` | `string` | MUST be `"co-arising.effect-binding/v2"` |
-| `system` | `string` | Matches `structures/<context>.yaml` `system` |
-| `context` | `string` | Matches `structures/<context>.yaml` `context` |
-| `architectureStyle` | `enum` | `"cqrs-es-three-phase-effect"` \| `"outbox-event-driven"` \| `"workflow-orchestrated"` |
-| `forbiddenImports` | `array` (optional) | Objects `{ id, scopePrefix, forbidPattern, reason }` |
-| `effects` | `array` (`minItems: 1`) | Objects `{ name, protocol, idempotencyKey, timeoutMs, maxRetries, compensationRequiresAbsenceProof, crashRecoveryZeroNewAuth?, earsContractRef? }` |
-
-Allowed `protocol` values (supported by `run-tck-v2`):
-- `three-phase-reconcile` (external side effects that can time out with `UNKNOWN` and require explicit absence proof before compensating)
-- `idempotent-pin-dispatch` / `idempotent-consumer`
-- `transactional-outbox`
-- `saga-compensation`
-- `read-projection`
-
-### Complete Valid `bindings/<context>-effects.yaml` Example
+`schemaVersion: co-arising.effect-binding/v2`, `system`, `context`, `architectureStyle` (`cqrs-es-three-phase-effect` | `outbox-event-driven` | `workflow-orchestrated`), `forbiddenImports` (optional), `effects` (`minItems: 1`, `protocol`: `three-phase-reconcile` | `idempotent-pin-dispatch` | `idempotent-consumer` | `transactional-outbox` | `saga-compensation` | `read-projection`).
 
 ```yaml
 schemaVersion: co-arising.effect-binding/v2
@@ -238,4 +319,25 @@ effects:
     compensationRequiresAbsenceProof: false
     crashRecoveryZeroNewAuth: true
     earsContractRef: WalletTransfer
+```
+
+### 3.2 `bindings/<context>-readside.yaml` (`co-arising.readside-binding/v2` — Physical Materialized Views)
+
+Maps N logical `readModels` (Problem Space) onto M physical materialized views (Solution Space), allowing multiple logical read models to share a single physical table/view while the compiler verifies column-type consistency and index key coverage:
+
+```yaml
+schemaVersion: co-arising.readside-binding/v2
+system: wallet-app
+context: wallet
+
+materializedViews:
+  - name: mv_wallet_unified
+    strategy: shared-materialized-view   # shared-materialized-view | dedicated-table | live-state-snapshot | external-search-index
+    storage: jdbc-postgres
+    servesReadModels:
+      - wallet-order-view
+      - wallet-audit-view
+    indexes:
+      - name: idx_wallet_status
+        keys: [status]
 ```

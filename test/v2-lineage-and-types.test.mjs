@@ -219,6 +219,7 @@ aggregates:
           - name: nextVersion
             type: Int
             source: const:1
+            waiveLineage: audit-only
           - name: snapshotStatus
             type: String
             source: state.status

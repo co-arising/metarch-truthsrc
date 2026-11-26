@@ -1,0 +1,16 @@
+schemaVersion: co-arising.readside-binding/v2
+system: wealth-canary
+context: canary
+
+materializedViews:
+  - name: mv_exam_batch_unified
+    strategy: shared-materialized-view
+    storage: jdbc-postgres
+    servesReadModels:
+      - batch-summary-view
+      - batch-detail-view
+    indexes:
+      - name: idx_batch_status
+        keys: [status]
+      - name: idx_batch_id
+        keys: [batchId]
