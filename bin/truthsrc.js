@@ -99,6 +99,9 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
   truthsrc audit-coverage-v2 --root <dir> --manifest <coverage-manifest.json> [--binding <effect-binding.yaml>]
                              [--db <knowledge.sqlite>]
                                                            100% full-coverage & E1-E4 evidence ledger audit (exit 2 on gray-zone/stale signoff)
+  truthsrc audit-system-lineage-v2 --canonicals <a.json,b.json> [--domain-map <domain-map.yaml>]
+                                   [--db <lineage.sqlite>] [--out <report.json>] [--out-md <signoff.md>] [--strict-lineage]
+                                                           multi-subdomain SQLite recursive field lineage, cross-subdomain PII taint & cycle gate (exit 2 on fail)
   truthsrc run-tck-v2 --adapter <module.ts|mjs> [--export createEffectAdapter]
                       [--protocol three-phase-reconcile|transactional-outbox|saga-compensation|idempotent-consumer]
                       [--scala-src <dir> --jvm-class <MainClass>] [--scala-classpath <jars>]
@@ -159,7 +162,7 @@ if (args.includes('--help') || args.includes('-h')) {
 try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
 
 // Legacy tree defaults are intentionally retained, but evaluated only after preflight.
-const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'run-tck-v2', 'guard-write', 'init-hooks', 'init-v2', 'check-v2', 'tasks-v2', 'lsp-ears'].includes(cmd);
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'audit-system-lineage-v2', 'run-tck-v2', 'guard-write', 'init-hooks', 'init-v2', 'check-v2', 'tasks-v2', 'lsp-ears'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -429,6 +432,15 @@ switch (cmd) {
     try {
       const { auditCoverageV2Cli } = await import('../lib/v2/cli.mjs');
       const result = auditCoverageV2Cli(process.argv.slice(3));
+      console.log(JSON.stringify(result, null, 2));
+      if (!result.passed) process.exitCode = 2;
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'audit-system-lineage-v2': {
+    try {
+      const { auditSystemLineageV2Cli } = await import('../lib/v2/cli.mjs');
+      const result = auditSystemLineageV2Cli(process.argv.slice(3));
       console.log(JSON.stringify(result, null, 2));
       if (!result.passed) process.exitCode = 2;
     } catch (error) { die(`[FAIL] ${error.message}`); }

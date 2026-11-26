@@ -21,7 +21,9 @@ NEVER put behavioral or v1 guard keys anywhere inside `structures/*.yaml`:
 | Key | Type | Required | Purpose |
 | :--- | :--- | :---: | :--- |
 | `system` | `string` | yes | System identifier (kebab-case), e.g. `order-hub` |
-| `context` | `string` | yes | Bounded Context identifier (kebab-case), e.g. `orders` |
+| `subdomain` | `string` | recommended | Problem-Space Subdomain identifier (stable across service splits/merges; preferred over `context`) |
+| `subdomainType` | `string` | optional | Problem-Space Subdomain classification: `core` \| `supporting` \| `generic` |
+| `context` | `string` | alias | Backward-compatible alias for `subdomain` (defaults to `subdomain` when omitted) |
 | `nominalTypes` | `array` | optional | Closed list of nominal ID types; when present, unregistered PascalCase IDs fail with `V2_UNKNOWN_TYPE` |
 | `roles` | `array` | optional | Declared human and non-human actors/callers (`kind: human \| system \| scheduler \| webhook \| ai-agent`) |
 | `compliance` | `object` | optional | Industry/jurisdiction privacy & regulatory contract (`industry`, `jurisdictions`, `dataResidency`, `erasureRequired`, `piiStrategy`, `retentionPolicy`, `obligations`) |
@@ -408,4 +410,33 @@ layers:
 parallelTdd:
   workspaceMode: share          # share (git worktree isolation) | branch | inherit
   mergeStrategy: slot-patch     # slot-patch | git-merge
+```
+
+### 3.4 System-Level Multi-Subdomain Map (`domain-map.yaml`, `co-arising.domain-map/v2`)
+
+Links stable **Problem-Space Subdomains** (`integrations`) independently of evolvable **Solution-Space Bounded Contexts** (`boundedContexts`). Audited via `truthsrc audit-system-lineage-v2`:
+
+```yaml
+schemaVersion: co-arising.domain-map/v2
+system: short-drama-exam
+
+# Solution Space: freely split/merge Bounded Contexts without touching Subdomain truth!
+boundedContexts:
+  - name: exam-monolith-bc
+    subdomains: [exam, certification]
+  - name: filing-service-bc
+    subdomains: [filing]
+
+# Problem Space: stable Subdomain -> Subdomain ACL field contracts
+integrations:
+  - id: exam-to-cert
+    upstreamSubdomain: exam
+    upstreamEvent: ExamAttempt.ExamPassed
+    downstreamSubdomain: certification
+    downstreamTarget: Certificate.Issue     # Command, Port.op, or ReadModel
+    fieldMappings:
+      - from: candidateId
+        to: holderId
+      - from: score
+        to: examScore
 ```

@@ -18,6 +18,8 @@
   "properties": {
     "schemaVersion": { "const": "co-arising.canonical/v2" },
     "system": { "type": "string", "minLength": 1 },
+    "subdomain": { "type": "string", "minLength": 1 },
+    "subdomainType": { "enum": ["core", "supporting", "generic"] },
     "context": { "type": "string", "minLength": 1 },
     "canonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "structures": {
