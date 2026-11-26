@@ -8,6 +8,9 @@ import { pathToFileURL } from 'node:url';
 import { compileCanonicalV2 } from '../lib/v2/compiler.mjs';
 import { scalaCodegenPlugin } from '../lib/v2/codegen/scala.mjs';
 import { typescriptCodegenPlugin } from '../lib/v2/codegen/typescript.mjs';
+import { emitV2ExecutableTests } from '../lib/v2/test-emitter/emit.mjs';
+import { materializeApplicationWitness } from '../lib/v2/test-emitter/witness-materialize.mjs';
+import { createSmtContext } from '../lib/ears/smt-encoder.mjs';
 
 function makeProject(structuresYaml, earsFiles) {
   const dir = mkdtempSync(join(tmpdir(), 'truthsrc-v2-p0-'));
@@ -508,4 +511,322 @@ rules:
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('Optional witness materialization: .__present=false emits None/null in Scala+TS+Gherkin and all locked tests pass live on Node+JVM', () => {
+  const structuresYaml = `
+system: optional-witness-fix
+context: batching
+aggregates:
+  - name: ExamBatch
+    idField: batchId
+    aliases: [batch, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "draft"
+        enum: ["draft", "published", "withdrawn"]
+      - name: publishedAtMs
+        type: Optional[Int]
+      - name: note
+        type: Optional[String]
+    commands:
+      - name: WithdrawBatch
+        parameters:
+          - name: clearedPublicationTime
+            type: Optional[Int]
+          - name: withdrawnAtMs
+            type: Int
+        produces: [BatchWithdrawn]
+      - name: ClearWithNoneLiteral
+        parameters:
+          - name: withdrawnAtMs
+            type: Int
+        produces: [BatchCleared]
+    events:
+      - name: BatchWithdrawn
+        fields:
+          - name: clearedPublicationTime
+            type: Optional[Int]
+          - name: withdrawnAtMs
+            type: Int
+      - name: BatchCleared
+        fields:
+          - name: withdrawnAtMs
+            type: Int
+`;
+
+  const withdrawEars = `
+slice ExamBatch.WithdrawBatch
+
+rules:
+  [WB_BAD_CLEAR] IF clearedPublicationTime is some THEN SHALL reject request with CLEARED_TIME_MUST_BE_NONE
+  [WB_BAD_TIME]  IF withdrawnAtMs <= 0 THEN SHALL reject request with INVALID_TIME
+  [WB_NOT_PUB]   IF batch.status != "published" or batch.publishedAtMs is none
+                 THEN SHALL reject request with BATCH_NOT_PUBLISHED
+  [WB_OK]        WHILE batch.status == "published" and batch.publishedAtMs is some and clearedPublicationTime is none and withdrawnAtMs > 0
+                 WHEN WithdrawBatch
+                 SHALL emit BatchWithdrawn
+                   AND transition batch.status -> "withdrawn"
+                 post:
+                   batch.publishedAtMs' = clearedPublicationTime
+`;
+
+  const clearEars = `
+slice ExamBatch.ClearWithNoneLiteral
+
+rules:
+  [CL_OK]     WHILE batch.status == "published" and batch.publishedAtMs != none and batch.note == none and withdrawnAtMs > 0
+              WHEN ClearWithNoneLiteral
+              SHALL emit BatchCleared
+                AND transition batch.status -> "withdrawn"
+              post:
+                batch.publishedAtMs' = none
+  [CL_REJECT] WHILE batch.status != "published" or batch.publishedAtMs == none or batch.note != none or withdrawnAtMs <= 0
+              WHEN ClearWithNoneLiteral
+              SHALL reject request with CANNOT_CLEAR
+`;
+
+  const dir = makeProject(structuresYaml, {
+    'withdraw-batch.ears': withdrawEars,
+    'clear-batch.ears': clearEars,
+  });
+
+  try {
+    const compiled = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'behaviors'),
+    });
+    assert.equal(compiled.passed, true, JSON.stringify(compiled.diagnostics, null, 2));
+
+    // Verify anti-hardcoding secondary witness flips real live Int (withdrawnAtMs), NOT dead absent optional payload
+    const wbBeh = compiled.canonical.behaviors.find(b => b.target === 'ExamBatch.WithdrawBatch');
+    const wbOk = wbBeh.testIr.scenarios[0].examples.find(e => e.ruleId === 'WB_OK');
+    assert.equal(wbOk.witness.scalars['clearedPublicationTime.__present'], false);
+    assert.equal(wbOk.witness.scalars['batch.publishedAtMs.__present'], true);
+    assert.ok(wbOk.secondaryWitness, 'expected distinct secondary witness for WB_OK');
+    assert.equal(wbOk.secondaryWitness.scalars['clearedPublicationTime.__present'], false);
+    assert.notEqual(
+      wbOk.witness.scalars.withdrawnAtMs,
+      wbOk.secondaryWitness.scalars.withdrawnAtMs,
+      'secondary witness must vary a live variable instead of dead payload of an absent Optional',
+    );
+
+    // Generate TS + Scala production scaffolds AND locked BDD tests
+    typescriptCodegenPlugin.generate(compiled.canonical, { outDir: dir });
+    scalaCodegenPlugin.generate(compiled.canonical, { outDir: dir, packageName: 'test.optwitness' });
+    const emittedTests = emitV2ExecutableTests(compiled.canonical, {
+      outDir: dir,
+      targets: ['typescript', 'scala'],
+      packageName: 'test.optwitness',
+    });
+
+    // 1. Gherkin feature table must NOT leak .__present columns
+    const wbFeatureEntry = emittedTests.emitted.find(
+      e => e.kind === 'gherkin' && e.target === 'ExamBatch.WithdrawBatch',
+    );
+    assert.ok(wbFeatureEntry, 'expected emitted Gherkin feature for ExamBatch.WithdrawBatch');
+    const wbFeature = readFileSync(wbFeatureEntry.file, 'utf8');
+    assert.ok(!wbFeature.includes('__present'), `Gherkin leaked __present:\n${wbFeature}`);
+
+    // 2. Generated TS locked specs must materialize null (not 0/1) and PASS 100% live via node --test
+    const tsWithdrawSpec = join(dir, 'generated-tests/ts/exam-batch-withdraw-batch.ears.spec.ts');
+    const tsClearSpec = join(dir, 'generated-tests/ts/exam-batch-clear-with-none-literal.ears.spec.ts');
+    const tsWithdrawSrc = readFileSync(tsWithdrawSpec, 'utf8');
+    assert.ok(!tsWithdrawSrc.includes('__present'), 'TS spec leaked __present');
+    assert.match(tsWithdrawSrc, /"clearedPublicationTime":null/u);
+    execFileSync(process.execPath, ['--test', tsWithdrawSpec, tsClearSpec], { stdio: 'pipe' });
+
+    // 3. Generated Scala locked specs must materialize None (not Some(0L)/Some(1L)) and PASS 100% live on JVM
+    const scWithdrawSpec = join(dir, 'generated-tests/scala/test/optwitness/ExamBatchWithdrawBatchEarsSpec.scala');
+    const scClearSpec = join(dir, 'generated-tests/scala/test/optwitness/ExamBatchClearWithNoneLiteralEarsSpec.scala');
+    const scWithdrawSrc = readFileSync(scWithdrawSpec, 'utf8');
+    assert.ok(!scWithdrawSrc.includes('__present'), 'Scala spec leaked __present');
+    assert.match(scWithdrawSrc, /clearedPublicationTime = None/u);
+    assert.match(scWithdrawSrc, /publishedAtMs = Some\(/u);
+    assert.match(scWithdrawSrc, /publishedAtMs = None/u);
+
+    // Lightweight ScalaTest shim to compile & actually run EVERY generated ScalaTest case on JVM
+    const shimDir = join(dir, 'scala-shim');
+    mkdirSync(shimDir, { recursive: true });
+    const shimPath = join(shimDir, 'AnyFunSuiteShim.scala');
+    writeFileSync(shimPath, `
+package org.scalatest.funsuite
+import scala.collection.mutable.ListBuffer
+abstract class AnyFunSuite {
+  private val cases = ListBuffer.empty[(String, () => Unit)]
+  protected def test(name: String)(body: => Unit): Unit = cases += ((name, () => body))
+  protected def fail(msg: String): Nothing = throw new AssertionError(msg)
+  def runAll(): Int = {
+    cases.foreach { case (name, fn) =>
+      try { fn() } catch { case e: Throwable => throw new RuntimeException(s"FAILED: $name -> \${e.getMessage}", e) }
+    }
+    cases.size
+  }
+}
+`, 'utf8');
+    const runnerPath = join(shimDir, 'RunSpecs.scala');
+    writeFileSync(runnerPath, `
+package test.optwitness
+object RunSpecs {
+  def main(args: Array[String]): Unit = {
+    val c1 = new ExamBatchWithdrawBatchEarsSpec().runAll()
+    val c2 = new ExamBatchClearWithNoneLiteralEarsSpec().runAll()
+    println(s"SCALA_SPECS_PASSED=\${c1 + c2}")
+  }
+}
+`, 'utf8');
+
+    const classesDir = join(dir, 'scala-classes');
+    mkdirSync(classesDir, { recursive: true });
+    execFileSync('scalac', [
+      '-d', classesDir,
+      shimPath,
+      join(dir, 'generated-scaffold/scala/test/optwitness/DomainTypes.scala'),
+      join(dir, 'generated-scaffold/scala/test/optwitness/ExamBatchBehavior.scala'),
+      scWithdrawSpec,
+      scClearSpec,
+      runnerPath,
+    ], { stdio: 'pipe' });
+    const jvmOut = execFileSync('scala', ['-cp', classesDir, 'test.optwitness.RunSpecs'], { encoding: 'utf8' });
+    assert.match(jvmOut, /SCALA_SPECS_PASSED=\d+/u);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('Application witness materialization and untyped story optionSyntax: no .__present leakage and absent optionals map to null', () => {
+  // Direct unit check on materializeApplicationWitness
+  const mat = materializeApplicationWitness({
+    scalars: {
+      'token.__present': false,
+      token: 0,
+      'presentFlag.__present': true,
+      presentFlag: 42,
+      'order.note.__present': false,
+      'order.note': 1,
+      'order.title.__present': true,
+      'order.title': 'hello',
+      'order.onlyPresent.__present': false,
+    },
+    externs: { authOk: true },
+  });
+  assert.deepEqual(mat.payload, {
+    token: null,
+    presentFlag: 42,
+    order: { note: null, title: 'hello', onlyPresent: null },
+  });
+  assert.deepEqual(mat.stateSnapshot, {
+    order: { note: null, title: 'hello', onlyPresent: null },
+  });
+  assert.ok(!JSON.stringify(mat).includes('__present'));
+
+  // End-to-end untyped application story using is none / is some
+  const dir = mkdtempSync(join(tmpdir(), 'truthsrc-app-opt-'));
+  try {
+    mkdirSync(join(dir, 'structures'), { recursive: true });
+    mkdirSync(join(dir, 'behaviors/application'), { recursive: true });
+    writeFileSync(join(dir, 'structures/s.yaml'), `
+system: app-opt-check
+context: auth
+ports:
+  - name: AuthPort
+    operations:
+      - name: CheckToken
+        parameters:
+          - token: Optional[String]
+valueObjects:
+  - name: AuthAck
+    fields:
+      - ok: Bool
+stories:
+  - name: TokenGate
+    responses: [AuthAck]
+`, 'utf8');
+    writeFileSync(join(dir, 'behaviors/application/token-gate.integration.ears'), `
+story TokenGate layer application
+
+rules:
+  [TG-1] WHILE token is none
+         WHEN AuthPort.CheckToken
+         SHALL reject request with MISSING_TOKEN
+  [TG-2] WHILE token is some
+         WHEN AuthPort.CheckToken
+         SHALL respond AuthAck with ack.ok == true
+`, 'utf8');
+
+    const compiled = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'behaviors'),
+    });
+    assert.equal(compiled.passed, true, JSON.stringify(compiled.diagnostics, null, 2));
+
+    emitV2ExecutableTests(compiled.canonical, {
+      outDir: dir,
+      targets: ['typescript', 'scala'],
+      packageName: 'test.appopt',
+    });
+
+    const tsSpec = readFileSync(join(dir, 'generated-tests/ts/token-gate.ears.spec.ts'), 'utf8');
+    const scSpec = readFileSync(join(dir, 'generated-tests/scala/test/appopt/TokenGateEarsSpec.scala'), 'utf8');
+    assert.ok(!tsSpec.includes('__present'), `TS app spec leaked __present:\n${tsSpec}`);
+    assert.ok(!scSpec.includes('__present'), `Scala app spec leaked __present:\n${scSpec}`);
+    assert.match(tsSpec, /"token":null/u);
+    assert.match(scSpec, /"token" -> null/u);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('SMT encoder regression: .__present flag does not pollute recordMembers during post-transition encoding', () => {
+  const ctx = createSmtContext({
+    kind: 'slice',
+    target: 'ExamBatch.Publish',
+    stateAliases: ['batch', 'state'],
+    resolvedSymbols: new Map([
+      ['Publish::batch.publishedAtMs', { type: { kind: 'optional', element: { kind: 'int' } } }],
+      ['Publish::nowMs', { type: { kind: 'int' } }],
+    ]),
+    axioms: [],
+    rules: [
+      {
+        id: 'R1',
+        command: 'Publish',
+        expandedGuard: {
+          kind: 'emptiness',
+          target: { kind: 'member', object: { kind: 'var', name: 'batch' }, field: 'publishedAtMs' },
+          check: 'empty',
+          optionSyntax: true,
+        },
+        post: [
+          {
+            target: { segments: ['batch', 'publishedAtMs'] },
+            expandedIndex: null,
+            expandedValue: { kind: 'var', name: 'nowMs' },
+          },
+        ],
+        actions: [],
+      },
+    ],
+  });
+
+  const assertions = ctx.encodePostTransition(
+    [
+      {
+        target: { segments: ['batch', 'publishedAtMs'] },
+        expandedIndex: null,
+        expandedValue: { kind: 'var', name: 'nowMs' },
+      },
+    ],
+    '',
+    '__next',
+  );
+  assert.ok(
+    assertions.includes('(= v__batch_publishedAtMs___present__next true)'),
+    `missing presence transition assertion: ${JSON.stringify(assertions)}`,
+  );
+  assert.ok(
+    assertions.includes('(= v__batch_publishedAtMs__next v__nowMs)'),
+    `missing value transition assertion: ${JSON.stringify(assertions)}`,
+  );
 });
