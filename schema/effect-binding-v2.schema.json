@@ -34,7 +34,16 @@
         "required": ["name", "protocol", "idempotencyKey", "timeoutMs", "maxRetries", "compensationRequiresAbsenceProof"],
         "properties": {
           "name": { "type": "string", "minLength": 1 },
-          "protocol": { "enum": ["three-phase-reconcile", "idempotent-pin-dispatch", "read-projection"] },
+          "protocol": {
+            "enum": [
+              "three-phase-reconcile",
+              "idempotent-pin-dispatch",
+              "idempotent-consumer",
+              "transactional-outbox",
+              "saga-compensation",
+              "read-projection"
+            ]
+          },
           "idempotencyKey": { "type": "string", "minLength": 1 },
           "timeoutMs": { "type": "integer", "minimum": 1 },
           "maxRetries": { "type": "integer", "minimum": 0 },

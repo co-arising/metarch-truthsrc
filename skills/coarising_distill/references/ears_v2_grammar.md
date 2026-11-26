@@ -141,8 +141,8 @@ Key application syntax rules:
 | `EARS_NEG_PRED_NAME` | Predicate in `where:` or `extern` starts with `not`, `non`, `un`, `invalid`, `no`, `未`, `不`, `无`, `非` | Rename positively (`validAmount`, `txReserved`) and negate at use sites (`not validAmount`) |
 | `V2_PATH_LAYER_MISMATCH` | `slice` under `application/` or `story` under `domain/` | Move file to matching directory |
 | `V2_LEGACY_GUARD_FORBIDDEN` | `@guard`/`guardExpr` placed in YAML | Move behavior into `*.ears` |
-| `V2_UNDECLARED_ENUM_VALUE` | String literal in `.ears` not in `enum:` / `units:` | Add the literal to `structures/*.yaml` or fix typo |
-| `V2_UNDECLARED_EXTERN` | `extern fn(...)` missing or wrong arity in `externContracts` | Register exact name & `params` in `structures/*.yaml` |
+| `EARS_UNKNOWN_ENUM_LITERAL` | String literal in `.ears` not in `enum:` / `units:` | Add the literal to `structures/*.yaml` or fix typo |
+| `EARS_UNDECLARED_EXTERN` / `EARS_EXTERN_ARITY_MISMATCH` | `extern fn(...)` missing or wrong arity in `externContracts` | Register exact name & `params` in `structures/*.yaml` |
 | `V2_FIRST_HIT_SHADOWED_RULE` | Earlier rule's condition subsumes a later rule (dead rule) | Tighten earlier rule or reorder rules |
 | `V2_SMT_GATE_FAILED` | Z3 found a logic gap, conflict, or invariant violation | **NEVER guess** — present the A/B Clarification Card to the user and apply their choice |
 | `V2_BILINGUAL_DRIFT` | Sibling `.zh.ears` AST hash differs from `.ears` | Keep EN/ZH clauses structurally isomorphic |

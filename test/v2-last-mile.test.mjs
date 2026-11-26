@@ -5,7 +5,7 @@
 //   3. Cross-platform AGY / Claude Code Skills & AGY `run_workflow` template structural checks
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -213,6 +213,39 @@ test('cross-platform Skills (coarising-distill, coarising-cloze-worker) and AGY 
   assert.ok(dText.includes('references/structures_and_bindings_schema.md') && dText.includes('references/ears_v2_grammar.md'));
   assert.ok(readFileSync(distillYamlRef, 'utf8').includes('co-arising.effect-binding/v2'));
   assert.ok(readFileSync(distillEarsRef, 'utf8').includes('EARS_NEG_PRED_NAME'));
+
+  // Machine-verify that the bundled YAML + domain .ears + application .ears examples actually compile & pass Z3
+  const yamlRefText = readFileSync(distillYamlRef, 'utf8');
+  const earsRefText = readFileSync(distillEarsRef, 'utf8');
+  const yamlBlocks = [...yamlRefText.matchAll(/```yaml\n([\s\S]*?)```/gu)].map(m => m[1]);
+  const earsBlocks = [...earsRefText.matchAll(/```ears\n([\s\S]*?)```/gu)].map(m => m[1]);
+  const structYaml = yamlBlocks.find(b => b.includes('system: wallet-app') && b.includes('aggregates:'));
+  const bindingYaml = yamlBlocks.find(b => b.includes('schemaVersion: co-arising.effect-binding/v2'));
+  const domainEars = earsBlocks.find(b => b.startsWith('slice WalletLedger.ReserveFunds'));
+  const appEars = earsBlocks.find(b => b.startsWith('story WalletTransfer layer application'));
+  assert.ok(structYaml && bindingYaml && domainEars && appEars, 'bundled skill reference examples must be extractable');
+
+  const tmp = mkdtempSync(join(tmpdir(), 'coarising-skill-ref-check-'));
+  try {
+    mkdirSync(join(tmp, 'structures'), { recursive: true });
+    mkdirSync(join(tmp, 'behaviors/domain'), { recursive: true });
+    mkdirSync(join(tmp, 'behaviors/application'), { recursive: true });
+    mkdirSync(join(tmp, 'bindings'), { recursive: true });
+    writeFileSync(join(tmp, 'structures/wallet.yaml'), structYaml, 'utf8');
+    writeFileSync(join(tmp, 'behaviors/domain/wallet-reserve.ears'), domainEars, 'utf8');
+    writeFileSync(join(tmp, 'behaviors/application/wallet-transfer.story.ears'), appEars, 'utf8');
+    writeFileSync(join(tmp, 'bindings/wallet-effects.yaml'), bindingYaml, 'utf8');
+
+    const compProc = runCli([
+      'compile-v2',
+      '--structures', join(tmp, 'structures'),
+      '--behaviors', join(tmp, 'behaviors'),
+      '--out', join(tmp, 'canonical.json'),
+    ]);
+    assert.equal(compProc.status, 0, `bundled skill reference example failed compile-v2:\n${compProc.stdout}\n${compProc.stderr}`);
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
 
   const wText = readFileSync(worker, 'utf8');
   assert.ok(wText.startsWith('---\nname: coarising-cloze-worker\n'));
