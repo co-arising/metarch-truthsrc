@@ -327,3 +327,185 @@ rules:
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('P1 none literal: clearing Optional[T] with post: x\' = none and guarding with ==/!= none compiles in scalac and runs in TS', async () => {
+  const structuresYaml = `
+system: p1-none-literal
+context: scheduling
+aggregates:
+  - name: ScheduleItem
+    idField: itemId
+    aliases: [item, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "draft"
+        enum: ["draft", "published", "withdrawn"]
+      - name: publishedAtMs
+        type: Optional[Int]
+    commands:
+      - name: PublishItem
+        parameters:
+          - name: nowMs
+            type: Int
+        produces: [ItemPublished]
+      - name: WithdrawItem
+        parameters:
+          - name: withdrawnAtMs
+            type: Int
+        produces: [ItemWithdrawn]
+    events:
+      - name: ItemPublished
+        fields:
+          - name: nowMs
+            type: Int
+      - name: ItemWithdrawn
+        fields:
+          - name: withdrawnAtMs
+            type: Int
+`;
+
+  const publishEars = `
+slice ScheduleItem.PublishItem
+
+rules:
+  [R1] WHILE item.status == "draft" and item.publishedAtMs == none and nowMs > 0
+       WHEN PublishItem
+       SHALL emit ItemPublished
+         AND transition item.status -> "published"
+       post:
+         item.publishedAtMs' = nowMs
+
+  [R2] WHILE item.status != "draft" or item.publishedAtMs != none or nowMs <= 0
+       WHEN PublishItem
+       SHALL reject request with CANNOT_PUBLISH
+`;
+
+  const withdrawEars = `
+slice ScheduleItem.WithdrawItem
+
+rules:
+  [R1] WHILE item.status == "published" and item.publishedAtMs != none and withdrawnAtMs > 0
+       WHEN WithdrawItem
+       SHALL emit ItemWithdrawn
+         AND transition item.status -> "withdrawn"
+       post:
+         item.publishedAtMs' = none
+
+  [R2] WHILE item.status != "published" or item.publishedAtMs == none or withdrawnAtMs <= 0
+       WHEN WithdrawItem
+       SHALL reject request with CANNOT_WITHDRAW
+`;
+
+  const dir = makeProject(structuresYaml, {
+    'publish-item.ears': publishEars,
+    'withdraw-item.ears': withdrawEars,
+  });
+
+  try {
+    const compiled = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'behaviors'),
+    });
+    assert.equal(compiled.passed, true, JSON.stringify(compiled.diagnostics, null, 2));
+
+    // 1. Scala codegen + real scalac
+    const scalaOut = join(dir, 'out-scala');
+    scalaCodegenPlugin.generate(compiled.canonical, { outDir: scalaOut, packageName: 'test.p1none' });
+    const scalaBehavior = readFileSync(
+      join(scalaOut, 'generated-scaffold/scala/test/p1none/ScheduleItemBehavior.scala'),
+      'utf8',
+    );
+    assert.match(scalaBehavior, /publishedAtMs = Some\(ev\.nowMs\)/u);
+    assert.match(scalaBehavior, /publishedAtMs = None/u);
+    assert.match(scalaBehavior, /state\.publishedAtMs\.isEmpty/u);
+    assert.match(scalaBehavior, /state\.publishedAtMs\.nonEmpty/u);
+
+    const classesDir = join(dir, 'scala-classes');
+    mkdirSync(classesDir, { recursive: true });
+    execFileSync('scalac', [
+      '-d', classesDir,
+      join(scalaOut, 'generated-scaffold/scala/test/p1none/DomainTypes.scala'),
+      join(scalaOut, 'generated-scaffold/scala/test/p1none/ScheduleItemBehavior.scala'),
+    ], { stdio: 'pipe' });
+
+    // 2. TypeScript codegen + live Node 22 execution
+    const tsOut = join(dir, 'out-ts');
+    typescriptCodegenPlugin.generate(compiled.canonical, { outDir: tsOut });
+    const tsBehaviorPath = join(tsOut, 'generated-scaffold/ts/schedule-item.behavior.ts');
+    const tsBehavior = readFileSync(tsBehaviorPath, 'utf8');
+    assert.match(tsBehavior, /publishedAtMs: null/u);
+
+    const mod = await import(pathToFileURL(tsBehaviorPath).href);
+    const s0 = mod.initialScheduleItemState();
+    const res1 = mod.handleScheduleItemCommand(s0, { type: 'PublishItem', nowMs: 123456 });
+    assert.equal(res1.ok, true);
+    const s1 = mod.replayScheduleItem(s0, res1.events);
+    assert.equal(s1.publishedAtMs, 123456);
+
+    const res2 = mod.handleScheduleItemCommand(s1, { type: 'WithdrawItem', withdrawnAtMs: 200000 });
+    assert.equal(res2.ok, true);
+    const s2 = mod.replayScheduleItem(s1, res2.events);
+    assert.equal(s2.status, 'withdrawn');
+    assert.equal(s2.publishedAtMs, null);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('P1 none literal gate: blocks assigning none to non-optional state field (EARS_TYPE_MISMATCH)', () => {
+  const structuresYaml = `
+system: p1-none-gate
+context: scheduling
+aggregates:
+  - name: ScheduleItem
+    idField: itemId
+    aliases: [item, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "open"
+        enum: ["open", "closed"]
+      - name: payUntilMs
+        type: Int
+        default: 0
+    commands:
+      - name: CloseItem
+        parameters: []
+        produces: [ItemClosed]
+    events:
+      - name: ItemClosed
+        fields: []
+`;
+
+  const ears = `
+slice ScheduleItem.CloseItem
+
+rules:
+  [R1] WHILE item.status == "open"
+       WHEN CloseItem
+       SHALL emit ItemClosed
+         AND transition item.status -> "closed"
+       post:
+         item.payUntilMs' = none
+
+  [R2] WHILE item.status != "open"
+       WHEN CloseItem
+       SHALL reject request with ALREADY_CLOSED
+`;
+
+  const dir = makeProject(structuresYaml, { 'close-item.ears': ears });
+  try {
+    const compiled = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'behaviors'),
+    });
+    assert.equal(compiled.passed, false);
+    assert.ok(
+      compiled.diagnostics.some(d => d.code === 'EARS_TYPE_MISMATCH'),
+      JSON.stringify(compiled.diagnostics, null, 2),
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

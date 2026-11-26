@@ -125,7 +125,7 @@ Key application syntax rules:
 | Intervals | `x in [lo..hi]`, `x in (lo..hi]` | Numeric bounds |
 | Finite sets | `x in {"a", "b"}`, `x not in {"c"}` | Checked against closed `enum` |
 | Map ops | `k in agg.map`, `agg.map[k]` | Total map membership & lookup |
-| Optionals / strings | `x is empty`, `x is non-empty`, `x is some`, `x is none` | Option presence check |
+| Optionals / strings | `x is empty`, `x is non-empty`, `x is some`, `x is none`, `x == none`, `post: x' = none` | Option presence check & clearing (`none` / `null` / `无值` -> Scala `None`, TS `null`) |
 | Quantifiers | `forall x in col : <pred>`, `exists x in col : <pred>` | Over `Seq[T]` |
 | Aggregations | `count(col)`, `len(col)`, `sum(col)` | Over `Seq[T]` |
 | Time windows | `elapsed within 5m`, `nowMs within 30s of createdAtMs` | Units: `ms`, `s`, `m`, `h`, `d` |
@@ -146,3 +146,6 @@ Key application syntax rules:
 | `V2_FIRST_HIT_SHADOWED_RULE` | Earlier rule's condition subsumes a later rule (dead rule) | Tighten earlier rule or reorder rules |
 | `V2_SMT_GATE_FAILED` | Z3 found a logic gap, conflict, or invariant violation | **NEVER guess** — present the A/B Clarification Card to the user and apply their choice |
 | `V2_BILINGUAL_DRIFT` | Sibling `.zh.ears` AST hash differs from `.ears` | Keep EN/ZH clauses structurally isomorphic |
+| `V2_STATE_CHANGE_WITHOUT_EVENT` | Domain rule mutates state (`transition`/`post:`) without `SHALL emit <Event>` | Add `SHALL emit <Event>` so Event Sourcing replay updates state |
+| `V2_UNPROPAGATED_EVENT_FIELD` | Deterministic (L1) event declares a field absent from command parameters | Add the field to command parameters or align parameter/event field names |
+| `V2_POST_EVENT_FIELD_MISSING` | `post:` references a command parameter not carried by the emitted event | Add the field to the emitted event's `fields:` (or use `none` to clear an `Optional[T]` field) |
