@@ -81,8 +81,8 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
   truthsrc emit-tests --in <file-or-dir> [--project <config>] [--types <file>] [--solver z3|cvc5]
                       [--out-features <dir>] [--out-scala <dir>] [--package <pkg>] [--manifest <file>]
                                                            compile TestIR to locked Gherkin & ScalaTest oracles + SHA-256 manifest
-  truthsrc compile-v2 --structures <dir> --specs <dir> [--out <canonical-v2.json>] [--db <knowledge.sqlite>]
-                      [--solver z3|cvc5] [--bmc-steps <k>] [--no-gap-check] [--format human|json]
+  truthsrc compile-v2 --structures <dir> --behaviors <dir> [--out <canonical-v2.json>] [--db <knowledge.sqlite>]
+                      [--specs <dir>] [--solver z3|cvc5] [--bmc-steps <k>] [--no-gap-check] [--format human|json]
                                                            co-arising 2.0 EARS-native compiler + SMT hard gate (exit 2 if blocked)
   truthsrc generate-v2 --in <canonical-v2.json> --out <dir> [--target typescript,scala] [--package <pkg>]
                        [--overwrite-cloze]

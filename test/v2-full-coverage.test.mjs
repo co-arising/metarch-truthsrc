@@ -326,3 +326,93 @@ rules:
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('path-to-layer compiler gate enforces behaviors/domain vs behaviors/application separation', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'coarising-layer-gate-'));
+  try {
+    mkdirSync(join(dir, 'structures'), { recursive: true });
+    mkdirSync(join(dir, 'behaviors/domain'), { recursive: true });
+    mkdirSync(join(dir, 'behaviors/application'), { recursive: true });
+
+    writeFileSync(join(dir, 'structures/domain.yaml'), `
+system: layer-lab
+context: core
+
+ports:
+  - name: TicketPort
+    operations:
+      - name: close
+        parameters:
+          - actor: ActorId
+
+valueObjects:
+  - name: TicketAck
+    fields:
+      - closed: Bool
+
+externContracts:
+  - name: actorAuthorized
+    params:
+      - actor: ActorId
+
+aggregates:
+  - name: Ticket
+    stateFields:
+      - name: status
+        type: String
+        default: "open"
+        enum: ["open", "closed"]
+    commands:
+      - name: Close
+        parameters: []
+        produces: [TicketClosed]
+    events:
+      - name: TicketClosed
+        fields: []
+
+stories:
+  - name: CloseTicketFlow
+    pins: []
+    responses: [TicketAck]
+`, 'utf8');
+
+    const domainSpec = `
+slice Ticket.Close
+rules:
+  [T1] IF ticket.status != "open" THEN SHALL reject request with ALREADY_CLOSED
+  [T2] WHILE ticket.status == "open" WHEN Close SHALL transition ticket.status -> "closed" AND emit TicketClosed
+`;
+    const appSpec = `
+story CloseTicketFlow layer application
+where:
+  extern actorAuthorized(actor)
+rules:
+  [A1] IF not actorAuthorized(actor) WHEN TicketPort.close THEN SHALL reject request with FORBIDDEN
+  [A2] WHILE actorAuthorized(actor) WHEN TicketPort.close SHALL dispatch Ticket.Close AND respond TicketAck with ack.closed == true
+`;
+
+    // 1. Correct placement passes
+    writeFileSync(join(dir, 'behaviors/domain/ticket-close.ears'), domainSpec, 'utf8');
+    writeFileSync(join(dir, 'behaviors/application/close-ticket.story.ears'), appSpec, 'utf8');
+    const okRes = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'behaviors'),
+    });
+    assert.equal(okRes.passed, true, JSON.stringify(okRes.diagnostics));
+
+    // 2. Swapped placement (story in domain/, slice in application/) is blocked with V2_PATH_LAYER_MISMATCH
+    rmSync(join(dir, 'behaviors/domain/ticket-close.ears'));
+    rmSync(join(dir, 'behaviors/application/close-ticket.story.ears'));
+    writeFileSync(join(dir, 'behaviors/domain/misplaced-story.ears'), appSpec, 'utf8');
+    writeFileSync(join(dir, 'behaviors/application/misplaced-slice.ears'), domainSpec, 'utf8');
+    const badRes = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'behaviors'),
+    });
+    assert.equal(badRes.passed, false);
+    const mismatches = badRes.diagnostics.filter(d => d.code === 'V2_PATH_LAYER_MISMATCH');
+    assert.equal(mismatches.length, 2, JSON.stringify(badRes.diagnostics));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

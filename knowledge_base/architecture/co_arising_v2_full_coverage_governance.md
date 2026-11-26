@@ -82,7 +82,26 @@ stage-3-generated  【完全毕业（Channel 4A）】彻底移出 handwritten/�
 
 ---
 
-## 6. 统一分层证据账本（Evidence Ledger）与硬不变量
+## 6. 有界上下文真源正交目录与层级硬门禁
+
+在每个有界上下文（`truth/<system>/contexts/<context>/`）下，顶层按**知识形态正交三分**，`behaviors/` 内部再按**架构层级**拆分：
+
+```text
+contexts/<context>/
+├── structures/          # 静态结构（名词：类型/枚举/聚合/读模型/端口/extern 签名）
+├── behaviors/           # 动态行为（动词：问题空间 EARS，按架构分层）
+│   ├── domain/          #   仅允许领域聚合 behavior/slice（layer domain）
+│   └── application/     #   仅允许应用层用户故事 story（layer application）
+└── bindings/            # 解决方案空间绑定（如 S1 外部资源效果协议 YAML）
+```
+
+编译器在 `compile-v2` 阶段执行 **Path-to-Layer 静态硬门禁**：
+- **`V2_PATH_LAYER_MISMATCH`**：`behaviors/domain/` 下出现 `story` 或 `behaviors/application/` 下出现领域 `slice` → **直接阻断**。
+- **`V2_LAYER_ACTION_VIOLATION`**：领域层出现 `pin`/`dispatch`/`respond`/`expose`，或应用层直接 `emit`/`transition` 聚合内部状态 → **直接阻断**。
+
+---
+
+## 7. 统一分层证据账本（Evidence Ledger）与硬不变量
 
 `truthsrc audit-coverage-v2` 与 `truthsrc run-tck-v2` 共同强制以下门禁，结果写入 `knowledge.sqlite` 的 `file_coverage` 表：
 
