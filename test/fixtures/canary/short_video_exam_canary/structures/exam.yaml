@@ -1,0 +1,216 @@
+system: short-video-platform
+subdomain: creator-qualification
+subdomainType: core
+
+roles:
+  - name: Creator
+    kind: human
+    scope: tenant
+  - name: CategoryReviewer
+    kind: human
+    scope: org
+
+valueObjects:
+  - name: ExamAck
+    fields:
+      - accepted: Bool
+  - name: PublishAck
+    fields:
+      - published: Bool
+
+aggregates:
+  - name: ExamAttempt
+    idField: attemptId
+    aliases: [attempt, state]
+    stateFields:
+      - candidateId: CreatorId = ""
+      - categoryId: CategoryId = ""
+      - name: status
+        type: String
+        default: "pending"
+        enum: ["pending", "started", "submitted", "passed", "rejected"]
+      - score: Int = 0
+    commands:
+      - name: StartAttempt
+        parameters:
+          - candidateId: CreatorId
+          - categoryId: CategoryId
+        produces: [AttemptStarted]
+      - name: SubmitAnswer
+        parameters:
+          - score: Int
+        produces: [AnswerSubmitted]
+      - name: ReviewAttempt
+        parameters:
+          - approved: Bool
+        produces: [AttemptPassed, AttemptRejected]
+    events:
+      - name: AttemptStarted
+        fields:
+          - name: candidateId
+            type: CreatorId
+            source: cmd.candidateId
+          - name: categoryId
+            type: CategoryId
+            source: cmd.categoryId
+      - name: AnswerSubmitted
+        fields:
+          - name: score
+            type: Int
+            source: cmd.score
+      - name: AttemptPassed
+        fields:
+          - name: approved
+            type: Bool
+            source: cmd.approved
+            waiveLineage: audit-only
+      - name: AttemptRejected
+        fields:
+          - name: approved
+            type: Bool
+            source: cmd.approved
+            waiveLineage: audit-only
+    ruleRefs:
+      ALREADY_STARTED: "attempt must be pending before starting"
+      NOT_STARTED: "attempt must be started before submitting answers"
+      INVALID_SCORE: "score must be between 0 and 100"
+      NOT_SUBMITTED: "attempt must be submitted before review"
+
+readModels:
+  - name: my-attempt-view
+    sourceAggregate: ExamAttempt
+    sourceEvents: [AttemptStarted, AnswerSubmitted, AttemptPassed, AttemptRejected]
+    visibleTo: [Creator, CategoryReviewer]
+    rowScope:
+      kind: self
+      matchField: candidateId
+      principalKey: id
+    fields:
+      - name: attemptId
+        type: AttemptId
+        source: aggregateIdentity
+      - name: candidateId
+        type: CreatorId
+        source: stateField:candidateId
+      - name: categoryId
+        type: CategoryId
+        source: stateField:categoryId
+      - name: status
+        type: String
+        enum: ["pending", "started", "submitted", "passed", "rejected"]
+        source: stateField:status
+      - name: score
+        type: Int
+        source: stateField:score
+
+ports:
+  - name: ExamAttemptPort
+    operations:
+      - name: start
+        callerKind: human
+        authz:
+          mode: auth-core
+          scope: tenant
+          action: "exam:attempt:start"
+          allowedRoles: [Creator]
+          bindPrincipal:
+            - candidateId: principal.id
+          requiresEntitlement:
+            - code: "creator:realname-verified"
+            - code: "course:completed"
+              matchParam: categoryId
+        parameters:
+          - candidateId: CreatorId
+          - categoryId: CategoryId
+        returns: ExamAck
+      - name: submit
+        callerKind: human
+        authz:
+          mode: resource-policy
+          scope: tenant
+          action: "exam:attempt:submit"
+          allowedRoles: [Creator]
+          resource:
+            type: ExamAttempt
+            idFrom: param.attemptId
+            ownerField: candidateId
+            relation: owner
+          bindPrincipal:
+            - candidateId: principal.id
+        parameters:
+          - attemptId: AttemptId
+          - candidateId: CreatorId
+          - score: Int
+        returns: ExamAck
+      - name: review
+        callerKind: human
+        authz:
+          mode: external-pdp
+          scope: org
+          policyRef: "mcn-rebac.review-attempt"
+          action: "exam:attempt:review"
+          resource:
+            type: ExamAttempt
+            idFrom: param.attemptId
+            ownerField: candidateId
+            relation: category-reviewer
+          contextParams:
+            - categoryId: param.categoryId
+            - tenantId: token.tenantId
+        parameters:
+          - attemptId: AttemptId
+          - categoryId: CategoryId
+          - approved: Bool
+        returns: ExamAck
+      - name: getMyAttempt
+        callerKind: human
+        authz:
+          mode: auth-core
+          scope: tenant
+          action: "exam:attempt:read"
+          allowedRoles: [Creator]
+          bindPrincipal:
+            - candidateId: principal.id
+        parameters:
+          - attemptId: AttemptId
+          - candidateId: CreatorId
+        returns: my-attempt-view
+  - name: CreatorPublishPort
+    operations:
+      - name: publishVerticalVideo
+        callerKind: human
+        authz:
+          mode: auth-core
+          scope: tenant
+          action: "video:vertical:publish"
+          allowedRoles: [Creator]
+          bindPrincipal:
+            - creatorId: principal.id
+          requiresEntitlement:
+            - code: "cert:vertical-video:active"
+              source: ExamAttempt
+              matchParam: categoryId
+        parameters:
+          - creatorId: CreatorId
+          - categoryId: CategoryId
+          - videoId: VideoId
+        returns: PublishAck
+
+externContracts:
+  - name: attemptExists
+    ownerPort: ExamAttemptPort
+    params:
+      - attemptId: AttemptId
+  - name: categoryOpen
+    ownerPort: CreatorPublishPort
+    params:
+      - categoryId: CategoryId
+
+stories:
+  - name: QualificationExam
+    role: Creator
+    goal: "Complete vertical-category qualification exams and unlock restricted short-video publishing"
+    soThat: "Only verified, qualified creators can publish regulated vertical videos"
+    release: R1
+    responses: [ExamAck, PublishAck]
+    views: [my-attempt-view]

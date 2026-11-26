@@ -1,0 +1,12 @@
+slice ExamAttempt.ReviewAttempt
+
+rules:
+  [NOT_SUBMITTED] IF attempt.status != "submitted" THEN SHALL reject request with NOT_SUBMITTED
+  [PASSED]        WHILE attempt.status == "submitted" and approved == true
+                  WHEN ReviewAttempt
+                  SHALL transition attempt.status -> "passed"
+                    AND emit AttemptPassed
+  [REJECTED]      WHILE attempt.status == "submitted" and approved == false
+                  WHEN ReviewAttempt
+                  SHALL transition attempt.status -> "rejected"
+                    AND emit AttemptRejected

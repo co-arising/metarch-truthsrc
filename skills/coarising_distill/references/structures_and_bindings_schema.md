@@ -83,7 +83,7 @@ Three forms are accepted by `parseFieldSpec`:
 #### ReadModel Visibility, Sensitivity & Deadlines (Compliance & Temporal Guards)
 - **On `readModels[*]`**:
   - `visibleTo: [Role1, Role2]` — restricts which roles may query this view (compiler checks membership against `roles` and blocks ports whose `allowedRoles` exceed `visibleTo` with `V2_READMODEL_VISIBILITY_MISMATCH`).
-  - `rowScope: "self" | "org" | "tenant" | "global"` — documents row-level isolation scope.
+  - `rowScope`: string (`"self" | "org" | "tenant" | "global"`) OR structured object `{ kind: self | org | tenant | global, matchField: <fieldName>, principalKey: id | orgId | tenantId | <attr> }` — compiler checks `matchField` against `readModel.fields` (`V2_READMODEL_UNKNOWN_ROWSCOPE_FIELD`) and generated TS/Scala controllers enforce `403 FORBIDDEN_ROW_SCOPE` at runtime when a returned view leaks another owner's row!
   - `fields[*].sensitivity`: `public` | `internal` | `pii` | `secret` — any `public`/`anonymous` port returning a ReadModel containing `pii` or `secret` fields fails compilation with **`V2_READMODEL_SENSITIVE_PUBLIC_EXPOSURE`**!
 - **On `aggregates[*].deadlines`** (links state deadline fields to scheduled commands):
   ```yaml
@@ -131,48 +131,79 @@ Three forms are accepted by `parseFieldSpec`:
 
 ### 2.4 Authz PEP Contracts (`roles` & `ports[*].operations[*].authz`)
 
-Truth declares the **PEP (Policy Enforcement Point) contract** — leaving dynamic policy evaluation to `auth-core` or an external PDP (`AuthorizationPort`) in Solution Space:
+Truth declares the **PEP (Policy Enforcement Point) contract** — covering operation-level RBAC, **instance/resource-level ownership (anti-IDOR)**, **unforgeable principal parameter binding**, **qualification/certificate entitlements (ABAC)**, and **pluggable external PDP / ReBAC (`AuthorizationPort`)**:
 
 ```yaml
 roles:
-  - name: Customer
+  - name: Creator
     kind: human            # human | system | scheduler | webhook | ai-agent
     scope: tenant
-  - name: SettlementCron
-    kind: scheduler
-  - name: TaWebhook
-    kind: webhook
+  - name: CategoryReviewer
+    kind: human
+    scope: org
 
 ports:
-  - name: TransferSubmitPort
+  - name: ExamAttemptPort
     operations:
       - name: submit
         callerKind: human  # human | system | scheduler | webhook | anonymous
         authz:
-          mode: auth-core  # auth-core | static-roles | external-pdp | public | internal-only
-          scope: tenant    # global | tenant | workgroup | project | workshop | org | custom
-          action: "wallet:transfer:submit"
-          allowedRoles: [Customer]
+          mode: resource-policy  # auth-core | static-roles | external-pdp | resource-policy | public | internal-only
+          scope: tenant          # global | tenant | workgroup | project | workshop | org | custom
+          action: "exam:attempt:submit"
+          allowedRoles: [Creator]
+          resource:              # First-class resource target (enforces 403 FORBIDDEN_RESOURCE on cross-owner IDOR)
+            type: ExamAttempt    # Aggregate name or "<subdomain>.<Resource>"
+            idFrom: param.attemptId
+            ownerField: candidateId        # Validated against local aggregate stateFields
+            ownerPrincipalKey: id          # Optional (default: "id"; also "tenantId" or attribute key)
+            relation: owner                # Optional ReBAC relation label
+          bindPrincipal:         # Router force-overwrites client params from authenticated Principal (prevents spoofing)
+            - candidateId: principal.id
         parameters:
-          - actor: ActorId
-          - clientRequestId: RequestId
-          - amount: Money
-        returns: TransferAck
+          - attemptId: AttemptId
+          - candidateId: CreatorId
+          - score: Int
+        returns: ExamAck
+
+  - name: CreatorPublishPort
+    operations:
+      - name: publishVerticalVideo
+        callerKind: human
+        authz:
+          mode: auth-core
+          action: "video:vertical:publish"
+          allowedRoles: [Creator]
+          bindPrincipal:
+            - creatorId: principal.id
+          requiresEntitlement:   # Enforces 403 ENTITLEMENT_REQUIRED (checks scoped "<code>:<matchParam>" or EntitlementPort)
+            - code: "cert:vertical-video:active"
+              source: ExamAttempt
+              matchParam: categoryId
+        parameters:
+          - creatorId: CreatorId
+          - categoryId: CategoryId
+          - videoId: VideoId
+        returns: PublishAck
 
   - name: ExpenseApprovalPort
     operations:
       - name: approve
         callerKind: human
         authz:
-          mode: external-pdp                 # Workday Org-Role / OPA / OpenFGA dynamic PDP
+          mode: external-pdp                 # Workday Org-Role / OPA / OpenFGA dynamic ReBAC PDP
           policyRef: "org-rbac.approve-expense"
           action: "expense:approve"
+          resource:                          # Forwarded as first-class AuthzResource in AuthzDecisionQuery
+            type: ExpenseReport
+            idFrom: param.reportId
+            relation: org-approver
           contextParams:                     # param.<p> checked against operation parameters!
             - orgUnitId: param.orgUnitId
             - amount: param.amount
             - tenantId: token.tenantId
         parameters:
-          - actor: ActorId
+          - reportId: ReportId
           - orgUnitId: OrgUnitId
           - amount: Money
         returns: ApprovalAck

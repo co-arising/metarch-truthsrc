@@ -1,0 +1,44 @@
+story QualificationExam layer application
+
+where:
+  extern attemptExists(attemptId)
+  extern categoryOpen(categoryId)
+
+rules:
+  [QE-01] WHEN ExamAttemptPort.start
+          SHALL dispatch ExamAttempt.StartAttempt
+            AND respond ExamAck with ack.accepted == true
+
+  [QE-02] IF not attemptExists(attemptId)
+          WHEN ExamAttemptPort.submit
+          THEN SHALL reject request with NOT_FOUND
+
+  [QE-03] WHILE attemptExists(attemptId)
+          WHEN ExamAttemptPort.submit
+          SHALL dispatch ExamAttempt.SubmitAnswer
+            AND respond ExamAck with ack.accepted == true
+
+  [QE-04] IF not attemptExists(attemptId)
+          WHEN ExamAttemptPort.review
+          THEN SHALL reject request with NOT_FOUND
+
+  [QE-05] WHILE attemptExists(attemptId)
+          WHEN ExamAttemptPort.review
+          SHALL dispatch ExamAttempt.ReviewAttempt
+            AND respond ExamAck with ack.accepted == true
+
+  [QE-06] IF not attemptExists(attemptId)
+          WHEN ExamAttemptPort.getMyAttempt
+          THEN SHALL reject request with NOT_FOUND
+
+  [QE-07] WHILE attemptExists(attemptId)
+          WHEN ExamAttemptPort.getMyAttempt
+          SHALL expose my-attempt-view as view.score >= 0
+
+  [QE-08] IF not categoryOpen(categoryId)
+          WHEN CreatorPublishPort.publishVerticalVideo
+          THEN SHALL reject request with CATEGORY_CLOSED
+
+  [QE-09] WHILE categoryOpen(categoryId)
+          WHEN CreatorPublishPort.publishVerticalVideo
+          SHALL respond PublishAck with ack.published == true

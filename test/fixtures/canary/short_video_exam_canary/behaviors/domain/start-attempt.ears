@@ -1,0 +1,11 @@
+slice ExamAttempt.StartAttempt
+
+rules:
+  [ALREADY_STARTED] IF attempt.status != "pending" THEN SHALL reject request with ALREADY_STARTED
+  [STARTED]         WHILE attempt.status == "pending"
+                    WHEN StartAttempt
+                    SHALL transition attempt.status -> "started"
+                      AND emit AttemptStarted
+                    post:
+                      attempt.candidateId' = candidateId
+                      attempt.categoryId' = categoryId

@@ -1,0 +1,11 @@
+slice ExamAttempt.SubmitAnswer
+
+rules:
+  [NOT_STARTED]   IF attempt.status != "started" THEN SHALL reject request with NOT_STARTED
+  [INVALID_SCORE] IF score < 0 or score > 100 THEN SHALL reject request with INVALID_SCORE
+  [SUBMITTED]     WHILE attempt.status == "started" and score >= 0 and score <= 100
+                  WHEN SubmitAnswer
+                  SHALL transition attempt.status -> "submitted"
+                    AND emit AnswerSubmitted
+                  post:
+                    attempt.score' = score
