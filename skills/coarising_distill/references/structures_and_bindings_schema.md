@@ -76,6 +76,21 @@ Three forms are accepted by `parseFieldSpec`:
   - `derived` or `derived:<reason>`
   - NEVER write free prose like `"Documentation only: ..."`; the compiler fails with `V2_READMODEL_INVALID_SOURCE`.
 
+#### ReadModel Visibility, Sensitivity & Deadlines (Compliance & Temporal Guards)
+- **On `readModels[*]`**:
+  - `visibleTo: [Role1, Role2]` — restricts which roles may query this view (compiler checks membership against `roles` and blocks ports whose `allowedRoles` exceed `visibleTo` with `V2_READMODEL_VISIBILITY_MISMATCH`).
+  - `rowScope: "self" | "org" | "tenant" | "global"` — documents row-level isolation scope.
+  - `fields[*].sensitivity`: `public` | `internal` | `pii` | `secret` — any `public`/`anonymous` port returning a ReadModel containing `pii` or `secret` fields fails compilation with **`V2_READMODEL_SENSITIVE_PUBLIC_EXPOSURE`**!
+- **On `aggregates[*].deadlines`** (links state deadline fields to scheduled commands):
+  ```yaml
+  deadlines:
+    - name: autoCloseExam
+      stateField: examEndAtMs
+      triggerCommand: AutoCloseBatch
+      graceWindow: "30s"
+  ```
+- **On `pipelines[*].admission`** (bounded batch fan-out): `admission: { maxItemsPerChunk: 50, maxInFlightChunks: 4 }`.
+
 #### Machine-Checkable `waiveLineage:` Reasons
 - **On `events[*]` or `events[*].fields[*]`** (unconsumed numeric event fields FAIL compilation by default unless consumed or waived!):
   - `routing-id` | `redundant-param` | `redundant-param:<cmdParam>` | `saga-trigger` | `audit-only` | `notification-only`
@@ -333,6 +348,7 @@ context: wallet
 materializedViews:
   - name: mv_wallet_unified
     strategy: shared-materialized-view   # shared-materialized-view | dedicated-table | live-state-snapshot | external-search-index
+    refreshMode: hybrid                  # stream (default) | batch | hybrid
     storage: jdbc-postgres
     servesReadModels:
       - wallet-order-view

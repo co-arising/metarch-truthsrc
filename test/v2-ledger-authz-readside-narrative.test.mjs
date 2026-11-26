@@ -801,3 +801,227 @@ test('Layer 3+4 Canary Corpus & Mutation Gate: compiles zero-warning under stric
     rmSync(workDir, { recursive: true, force: true });
   }
 });
+
+// ============================================================================
+// BATCH E: Compliance Privacy/Visibility Gates, Deadlines, & Stream/Batch Mode
+// ============================================================================
+test('Batch E: ReadModel PII/secret public exposure gate, visibleTo mismatch, deadlines, and readside refreshMode (stream/batch/hybrid)', () => {
+  const negYaml = `
+system: cert-exam
+context: cert
+roles:
+  - name: Candidate
+    kind: human
+  - name: Grader
+    kind: human
+  - name: ExamCron
+    kind: scheduler
+aggregates:
+  - name: ExamCert
+    aliases: [cert, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "active"
+        enum: ["active", "revoked"]
+      - name: idCardNo
+        type: String
+        default: ""
+        waiveLineage: immutable-config
+      - name: expiresAtMs
+        type: Int
+        default: 0
+        waiveLineage: immutable-config
+    commands:
+      - name: Revoke
+        parameters: []
+        produces: [CertRevoked]
+    events:
+      - name: CertRevoked
+        fields: []
+    deadlines:
+      - name: badDeadline
+        stateField: missingTimeField
+        triggerCommand: MissingExpireCmd
+readModels:
+  - name: public-cert-view
+    sourceAggregate: ExamCert
+    visibleTo: [GhostRole]
+    fields:
+      - name: status
+        type: String
+        source: stateField:status
+        sensitivity: public
+      - name: idCardNo
+        type: String
+        source: stateField:idCardNo
+        sensitivity: pii
+      - name: badFlag
+        type: String
+        source: derived
+        sensitivity: top-secret-invalid
+  - name: grader-only-view
+    sourceAggregate: ExamCert
+    visibleTo: [Grader]
+    fields:
+      - name: status
+        type: String
+        source: stateField:status
+ports:
+  - name: CertVerifyPort
+    operations:
+      - name: verifyPublic
+        callerKind: anonymous
+        authz:
+          mode: public
+          action: "cert:verify"
+        parameters: []
+        returns: public-cert-view
+      - name: candidatePeekGrader
+        callerKind: human
+        authz:
+          mode: auth-core
+          allowedRoles: [Candidate]
+        parameters: []
+        returns: grader-only-view
+`;
+  const badReadside = `
+schemaVersion: co-arising.readside-binding/v2
+materializedViews:
+  - name: mv_cert
+    strategy: shared-materialized-view
+    refreshMode: realtime-magic
+    servesReadModels: [public-cert-view]
+`;
+  const ears = `
+slice ExamCert.Revoke
+rules:
+  [BAD] IF cert.status != "active" THEN SHALL reject request with ALREADY_REVOKED
+  [OK]  WHILE cert.status == "active" WHEN Revoke SHALL transition cert.status -> "revoked" AND emit CertRevoked
+`;
+  const negDir = makeProject(negYaml, { 'domain/revoke.ears': ears }, { 'bindings/cert-readside.yaml': badReadside });
+  try {
+    const res = compileCanonicalV2({
+      structuresDir: join(negDir, 'structures'),
+      specsPath: join(negDir, 'behaviors'),
+      bindingsPath: join(negDir, 'bindings'),
+    });
+    assert.equal(res.passed, false);
+    const errs = codes(res.diagnostics, 'error');
+    for (const expected of [
+      'V2_DEADLINE_UNKNOWN_FIELD',
+      'V2_DEADLINE_UNKNOWN_COMMAND',
+      'V2_READMODEL_UNKNOWN_VISIBLE_ROLE',
+      'V2_READMODEL_INVALID_SENSITIVITY',
+      'V2_READMODEL_SENSITIVE_PUBLIC_EXPOSURE',
+      'V2_READMODEL_VISIBILITY_MISMATCH',
+      'V2_READSIDE_INVALID_REFRESH_MODE',
+    ]) {
+      assert.ok(errs.includes(expected), `expected ${expected} in ${JSON.stringify(errs)}`);
+    }
+  } finally {
+    rmSync(negDir, { recursive: true, force: true });
+  }
+
+  // Positive: clean public non-PII view + matching visibleTo + valid deadline + hybrid stream/batch readside
+  const posYaml = `
+system: cert-exam
+context: cert
+roles:
+  - name: Grader
+    kind: human
+  - name: ExamCron
+    kind: scheduler
+aggregates:
+  - name: ExamCert
+    aliases: [cert, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "active"
+        enum: ["active", "revoked"]
+      - name: expiresAtMs
+        type: Int
+        default: 0
+        waiveLineage: immutable-config
+    commands:
+      - name: Revoke
+        parameters: []
+        produces: [CertRevoked]
+    events:
+      - name: CertRevoked
+        fields: []
+    deadlines:
+      - name: expireCert
+        stateField: expiresAtMs
+        triggerCommand: Revoke
+        graceWindow: "60s"
+readModels:
+  - name: public-cert-view
+    sourceAggregate: ExamCert
+    fields:
+      - name: status
+        type: String
+        source: stateField:status
+        sensitivity: public
+  - name: grader-only-view
+    sourceAggregate: ExamCert
+    visibleTo: [Grader]
+    rowScope: org
+    fields:
+      - name: status
+        type: String
+        source: stateField:status
+        sensitivity: internal
+ports:
+  - name: CertVerifyPort
+    operations:
+      - name: verifyPublic
+        callerKind: anonymous
+        authz:
+          mode: public
+          action: "cert:verify"
+        parameters: []
+        returns: public-cert-view
+      - name: graderView
+        callerKind: human
+        authz:
+          mode: auth-core
+          allowedRoles: [Grader]
+        parameters: []
+        returns: grader-only-view
+pipelines:
+  - id: cert-batch-sync
+    name: CertBatchSync
+    admission:
+      maxItemsPerChunk: 100
+      maxInFlightChunks: 4
+    steps:
+      - id: s1
+        command: ExamCert.Revoke
+`;
+  const posReadside = `
+schemaVersion: co-arising.readside-binding/v2
+materializedViews:
+  - name: mv_cert_hybrid
+    strategy: shared-materialized-view
+    refreshMode: hybrid
+    storage: jdbc-postgres
+    servesReadModels: [public-cert-view, grader-only-view]
+`;
+  const posDir = makeProject(posYaml, { 'domain/revoke.ears': ears }, { 'bindings/cert-readside.yaml': posReadside });
+  try {
+    const res = compileCanonicalV2({
+      structuresDir: join(posDir, 'structures'),
+      specsPath: join(posDir, 'behaviors'),
+      bindingsPath: join(posDir, 'bindings'),
+      strictLineage: true,
+    });
+    assert.equal(res.passed, true, JSON.stringify(res.diagnostics, null, 2));
+    assert.equal(res.canonical.readside.materializedViews[0].refreshMode, 'hybrid');
+    assert.equal(res.canonical.structures.aggregates[0].deadlines[0].triggerCommand, 'Revoke');
+    assert.equal(res.canonical.structures.pipelines[0].admission.maxItemsPerChunk, 100);
+  } finally {
+    rmSync(posDir, { recursive: true, force: true });
+  }
+});
