@@ -1,0 +1,29 @@
+schemaVersion: co-arising.testing-binding/v2
+system: wealth-canary
+context: canary
+
+layers:
+  domain:
+    harness: pure-unit
+    minLineCoverage: 80
+    minBranchCoverage: 70
+    requireAllRuleHits: true
+    mutationGate: true
+  application:
+    harness: hybrid
+    minLineCoverage: 75
+    doubles:
+      - port: BatchAdminPort
+        strategy: mockito
+      - port: sessionValid
+        strategy: fake-stub
+  interfaces:
+    harness: play-test
+    verifyAuthzMatrix: true
+  infrastructure:
+    harness: effect-tck
+    requireTck: true
+
+parallelTdd:
+  workspaceMode: share
+  mergeStrategy: slot-patch

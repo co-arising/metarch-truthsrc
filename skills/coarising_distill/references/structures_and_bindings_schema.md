@@ -341,3 +341,37 @@ materializedViews:
       - name: idx_wallet_status
         keys: [status]
 ```
+
+### 3.3 `bindings/<context>-testing.yaml` (`co-arising.testing-binding/v2` — Layered Test Strategy & Parallel TDD Isolation)
+
+Declares per-Onion-layer test harnesses (`pure-unit`, `constructor-di`, `akka-testkit`, `mockito`, `play-test`, `effect-tck`, `testcontainers`), behavioral coverage gates, and git-worktree isolation for parallel `@cloze` TDD workers:
+
+```yaml
+schemaVersion: co-arising.testing-binding/v2
+system: wallet-app
+context: wallet
+
+layers:
+  domain:
+    harness: pure-unit          # pure-unit | property-based (mockito/akka-testkit FORBIDDEN in pure domain)
+    minLineCoverage: 85
+    minBranchCoverage: 80
+    requireAllRuleHits: true
+    mutationGate: true
+  application:
+    harness: hybrid             # constructor-di | akka-testkit | akka-persistence-testkit | mockito | hybrid
+    minLineCoverage: 80
+    doubles:
+      - port: TransferSubmitPort
+        strategy: fake-stub     # fake-stub | mockito | akka-probe | wiremock | in-memory
+  interfaces:
+    harness: in-process-router  # in-process-router | play-test | supertest | http-smoke
+    verifyAuthzMatrix: true
+  infrastructure:
+    harness: effect-tck         # effect-tck | h2-in-memory | testcontainers | wiremock | real-dependency-smoke | hybrid
+    requireTck: true
+
+parallelTdd:
+  workspaceMode: share          # share (git worktree isolation) | branch | inherit
+  mergeStrategy: slot-patch     # slot-patch | git-merge
+```
