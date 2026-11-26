@@ -1,0 +1,84 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "co-arising EARS",
+  "scopeName": "source.ears",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#rule-id" },
+    { "include": "#host-call" },
+    { "include": "#keywords" },
+    { "include": "#actions" },
+    { "include": "#operators" },
+    { "include": "#numbers" }
+  ],
+  "repository": {
+    "comments": {
+      "name": "comment.line.number-sign.ears",
+      "match": "#.*$"
+    },
+    "strings": {
+      "name": "string.quoted.double.ears",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.ears",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "rule-id": {
+      "name": "entity.name.tag.rule-id.ears",
+      "match": "\\[[A-Za-z0-9_-]+\\]"
+    },
+    "host-call": {
+      "name": "support.function.host.ears",
+      "match": "@host\\b"
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.header.ears",
+          "match": "\\b(slice|story|layer|domain|application|where|WHERE|define|extern|axioms|rules|rule|post)\\b|(切片|故事|层级|领域|应用|定义|外部判定|公理|规则|变更后)"
+        },
+        {
+          "name": "keyword.control.clause.ears",
+          "match": "\\b(ALWAYS|always|WHILE|while|WHEN|when|event|IF|if|THEN|then|SHALL\\s+NOT|SHALL|shall\\s+not|shall)\\b|(恒成立|当启用|当处于|当收到|事件|如果|则|必须|禁止)"
+        },
+        {
+          "name": "keyword.operator.logical.ears",
+          "match": "\\b(and|AND|or|OR|not|NOT|in|is|empty|non-empty|some|none|forall|exists|within|of|as|from|with)\\b|(且|或|不满足|属于|不为|为|非空|空|有值|无值|所有|存在|在时间窗内|距|作为|来自|携带)"
+        },
+        {
+          "name": "constant.language.boolean.ears",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "actions": {
+      "patterns": [
+        {
+          "name": "support.function.action.ears",
+          "match": "\\b(reject|request|emit|transition|succeed-empty|keep|pin|dispatch|respond|expose|supply|sum|count|len)\\b|(拒绝请求|拒绝|请求|返回|发射|状态变为|幂等空成功|维持|固定|派发|响应|展示)"
+        }
+      ]
+    },
+    "operators": {
+      "name": "keyword.operator.comparison.ears",
+      "match": "(==|!=|>=|<=|->|\\.\\.|[><=+\\-*':])"
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.duration.ears",
+          "match": "\\b[0-9]+(ms|s|m|h|d)\\b"
+        },
+        {
+          "name": "constant.numeric.decimal.ears",
+          "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,62 @@
+name: co-arising-v2-matrix-ci
+
+on:
+  push:
+    branches: [main, feat/co-arising-v2-ears-native]
+  pull_request:
+
+jobs:
+  v2-toolchain-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Install Z3 & Coursier / Scala 2.12 (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y z3 scala
+          curl -fL https://github.com/coursier/coursier/releases/latest/download/cs-x86_64-pc-linux.gz | gzip -d > /usr/local/bin/cs
+          chmod +x /usr/local/bin/cs
+          SCALA_CP=$(cs fetch -p org.scalatest:scalatest-funsuite_2.12:3.2.19)
+          echo "COARISING_SCALA_CP=$SCALA_CP" >> "$GITHUB_ENV"
+
+      - name: Install Z3 & Coursier / Scala 2.12 (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install z3 scala@2.12 coursier/formulas/coursier
+          echo "/opt/homebrew/opt/scala@2.12/bin" >> "$GITHUB_PATH"
+          SCALA_CP=$(cs fetch -p org.scalatest:scalatest-funsuite_2.12:3.2.19)
+          echo "COARISING_SCALA_CP=$SCALA_CP" >> "$GITHUB_ENV"
+
+      - name: Tier 1 architectural + ESLint check
+        run: npm run lint
+
+      - name: Run EARS 1.0 & co-arising 2.0 full suites (TS + Scala + JVM TCK + LSP)
+        run: |
+          npm run test:ears
+          npm run test:v2
+
+      - name: Smoke test init-v2 + check-v2 --strict across TS + Scala
+        run: |
+          TMP_PROJ="$(mktemp -d)/ci-starter"
+          node bin/truthsrc.js init-v2 "$TMP_PROJ" --target typescript,scala --package example.ci
+          node bin/truthsrc.js check-v2 --root "$TMP_PROJ" --strict --format human

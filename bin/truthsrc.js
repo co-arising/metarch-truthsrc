@@ -112,6 +112,7 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
   truthsrc check-v2 [--root <dir>] [--project <truthsrc.v2.json>] [--target typescript,scala] [--strict | --no-strict]
                     [--sync] [--skip-coverage] [--scala-classpath <jars>] [--format human|json]
                                                            single-command v2 gate: compile-v2 + verify-v2 + audit-coverage-v2 (exit 2 on fail)
+  truthsrc lsp-ears                                        LSP 3.17 stdio server for .ears (live diagnostics, go-to-definition, hover)
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
                                                        "command": "truthsrc", "args": ["mcp"])
@@ -152,7 +153,7 @@ if (args.includes('--help') || args.includes('-h')) {
 try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
 
 // Legacy tree defaults are intentionally retained, but evaluated only after preflight.
-const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'run-tck-v2', 'guard-write', 'init-hooks', 'init-v2', 'check-v2'].includes(cmd);
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'run-tck-v2', 'guard-write', 'init-hooks', 'init-v2', 'check-v2', 'lsp-ears'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -468,6 +469,11 @@ switch (cmd) {
       console.log(result.format === 'human' ? renderCheckV2Human(result) : JSON.stringify(result, null, 2));
       if (!result.passed) process.exitCode = 2;
     } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'lsp-ears': {
+    const { runEarsLspServer } = await import('../lib/v2/ears-lsp.mjs');
+    runEarsLspServer();
     break;
   }
   case 'mcp': {
