@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { auditFullCoverageV2 } from '../lib/v2/coverage-audit.mjs';
 import { runThreePhaseEffectTck } from '../lib/v2/effect-tck.mjs';
+import { compileCanonicalV2 } from '../lib/v2/compiler.mjs';
 
 function sha256Text(text) {
   return createHash('sha256').update(text).digest('hex');
@@ -208,4 +209,120 @@ test('runThreePhaseEffectTck passes 8/8 on conformant adapter and catches blind 
   const red = runThreePhaseEffectTck(buggyFactory);
   assert.equal(red.passed, false);
   assert.ok(red.failedIds.includes('TCK-04-TIMEOUT-NO-BLIND-COMPENSATION'));
+});
+
+test('computable domain-boundary gates reject undeclared story dispatch/port/view, enum typos, undeclared externs, and type mismatches', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'coarising-boundary-'));
+  try {
+    mkdirSync(join(dir, 'structures'), { recursive: true });
+    mkdirSync(join(dir, 'specs-bad-domain'), { recursive: true });
+    mkdirSync(join(dir, 'specs-bad-story'), { recursive: true });
+
+    writeFileSync(join(dir, 'structures/domain.yaml'), `
+system: check-lab
+context: check
+
+exactTypes:
+  - name: MoneyUnit
+    form: unit-decimal
+    scale: 2
+    amountField: amount
+    unitField: currency
+    units: ["CNY"]
+
+readModels:
+  - name: item-view
+    fields:
+      - ready: Bool
+
+ports:
+  - name: ItemPort
+    operations:
+      - name: submit
+        parameters:
+          - actor: ActorId
+          - amount: MoneyUnit
+
+valueObjects:
+  - name: ItemAck
+    fields:
+      - accepted: Bool
+
+externContracts:
+  - name: actorAllowed
+    params:
+      - actor: ActorId
+
+aggregates:
+  - name: Item
+    stateFields:
+      - name: status
+        type: String
+        default: "open"
+        enum: ["open", "closed"]
+      - qty: Int = 0
+    commands:
+      - name: Close
+        parameters:
+          - delta: Int
+        produces: [ItemClosed]
+    events:
+      - name: ItemClosed
+        fields:
+          - delta: Int
+
+stories:
+  - name: ItemFlow
+    pins: [ItemOriginal]
+    responses: [ItemAck]
+`, 'utf8');
+
+    // Bad domain spec: enum typo "closd" + type mismatch (string compared with <)
+    writeFileSync(join(dir, 'specs-bad-domain/item.ears'), `
+slice Item.Close
+rules:
+  [R1] IF item.status == "closd" or item.status < 5 THEN SHALL reject request with BAD
+  [R2] WHILE item.status == "open" WHEN Close SHALL transition item.status -> "bogus_state" AND emit ItemClosed
+`, 'utf8');
+
+    const badDomain = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'specs-bad-domain'),
+    });
+    assert.equal(badDomain.passed, false);
+    const domainCodes = new Set(badDomain.diagnostics.map(d => d.code));
+    assert.ok(domainCodes.has('EARS_UNKNOWN_ENUM_LITERAL'), `expected EARS_UNKNOWN_ENUM_LITERAL, got ${[...domainCodes]}`);
+    assert.ok(domainCodes.has('EARS_TYPE_MISMATCH'), `expected EARS_TYPE_MISMATCH, got ${[...domainCodes]}`);
+
+    // Bad story spec: undeclared extern, undeclared port op, undeclared dispatch target, undeclared view field, unit typo "USD"
+    writeFileSync(join(dir, 'specs-bad-story/flow.ears'), `
+story ItemFlow layer application
+where:
+  extern secretMagic(actor)
+  extern actorAllowed(actor, extraArg)
+rules:
+  [S1] IF not actorAllowed(actor, extraArg) or amount.currency == "USD"
+       WHEN GhostPort.run
+       THEN SHALL reject request with BAD
+  [S2] WHILE secretMagic(actor)
+       WHEN ItemPort.submit
+       SHALL dispatch Item.NonExistentCommand
+         AND expose item-view as view.ghostField == true
+`, 'utf8');
+
+    const badStory = compileCanonicalV2({
+      structuresDir: join(dir, 'structures'),
+      specsPath: join(dir, 'specs-bad-story'),
+    });
+    assert.equal(badStory.passed, false);
+    const storyCodes = new Set(badStory.diagnostics.map(d => d.code));
+    assert.ok(storyCodes.has('EARS_UNDECLARED_EXTERN'), `missing EARS_UNDECLARED_EXTERN in ${[...storyCodes]}`);
+    assert.ok(storyCodes.has('EARS_EXTERN_ARITY_MISMATCH'), `missing EARS_EXTERN_ARITY_MISMATCH in ${[...storyCodes]}`);
+    assert.ok(storyCodes.has('EARS_UNKNOWN_PORT_OP'), `missing EARS_UNKNOWN_PORT_OP in ${[...storyCodes]}`);
+    assert.ok(storyCodes.has('EARS_UNKNOWN_DISPATCH_TARGET'), `missing EARS_UNKNOWN_DISPATCH_TARGET in ${[...storyCodes]}`);
+    assert.ok(storyCodes.has('EARS_UNKNOWN_VIEW_FIELD'), `missing EARS_UNKNOWN_VIEW_FIELD in ${[...storyCodes]}`);
+    assert.ok(storyCodes.has('EARS_UNKNOWN_ENUM_LITERAL'), `missing EARS_UNKNOWN_ENUM_LITERAL in ${[...storyCodes]}`);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

@@ -408,8 +408,32 @@ aggregates:
 
 stories:
   - name: TicketIntake
+    pins: [TicketOriginal]
+    responses: [IntakeAck]
     callerContract:
       idempotencyKey: "(actor, reqId)"
+
+ports:
+  - name: IntakePort
+    operations:
+      - name: submit
+        parameters:
+          - actor: ActorId
+          - reqId: RequestId
+
+valueObjects:
+  - name: IntakeAck
+    fields:
+      - replayed: Bool
+
+externContracts:
+  - name: authOk
+    params:
+      - actor: ActorId
+  - name: seenBefore
+    params:
+      - actor: ActorId
+      - reqId: RequestId
 `, 'utf8');
 
     // Shadowed rule: [S2] is strictly subsumed by [S1] in First-Hit order
