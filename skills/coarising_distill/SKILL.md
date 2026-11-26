@@ -11,6 +11,16 @@ description: >-
 
 Use this skill whenever the user hands you a PRD, user story doc, meeting notes, or legacy specification and wants to convert it into a mathematically verified `co-arising 2.0` truth source.
 
+## Mandatory Pre-Read (Do This BEFORE Writing Any YAML or `.ears`)
+
+Before authoring a single line of YAML or EARS, **MUST read both bundled reference specs** inside this skill folder:
+
+1. **`references/structures_and_bindings_schema.md`** — exact valid YAML schema for `structures/*.yaml` (`exactTypes`, `valueObjects`, `readModels`, `ports`, `externContracts`, `aggregates`, `stories`, type expressions, closed `enum:` syntax) and `bindings/*-effects.yaml` (`co-arising.effect-binding/v2`).
+2. **`references/ears_v2_grammar.md`** — exact EARS v2 grammar for `behaviors/domain/*.ears` (`slice`), `behaviors/application/*.{story,integration}.ears` (`story ... layer application`), `WHEN event`, `post:` folds, expressions, and diagnostic error codes.
+3. Also inspect any existing starter files already in the workspace under `truth/<context>/` (created by `truthsrc init-v2`) to align naming and paths.
+
+> Do NOT guess YAML keys or invent EARS syntax from memory. Everything accepted by the compiler is documented in `references/structures_and_bindings_schema.md` and `references/ears_v2_grammar.md`.
+
 ## Hard Rules (Non-Negotiable)
 
 1. **Orthogonal separation**: Static nouns (`exactTypes`, `valueObjects`, `aggregates`, `ports`, `readModels`, `stories`, `externContracts`) go ONLY in `structures/*.yaml`. NEVER put `@guard`, `guardExpr`, or behavioral rules in YAML.

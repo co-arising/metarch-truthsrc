@@ -174,7 +174,7 @@ test('truthsrc mcp exposes and executes all 5 v2 tools (v2_compile, v2_query_gra
     const byId = new Map(replies.map(r => [r.id, r]));
 
     const toolNames = byId.get(2).result.tools.map(t => t.name);
-    for (const expected of ['v2_compile', 'v2_query_graph', 'v2_tasks', 'v2_context_pack', 'v2_verify']) {
+    for (const expected of ['v2_compile', 'v2_query_graph', 'v2_tasks', 'v2_context_pack', 'v2_verify', 'v2_view']) {
       assert.ok(toolNames.includes(expected), `missing MCP tool ${expected}`);
     }
 
@@ -199,15 +199,20 @@ test('truthsrc mcp exposes and executes all 5 v2 tools (v2_compile, v2_query_gra
 
 test('cross-platform Skills (coarising-distill, coarising-cloze-worker) and AGY workflow template exist and are well-formed', () => {
   const distill = join(REPO_ROOT, 'skills/coarising_distill/SKILL.md');
+  const distillYamlRef = join(REPO_ROOT, 'skills/coarising_distill/references/structures_and_bindings_schema.md');
+  const distillEarsRef = join(REPO_ROOT, 'skills/coarising_distill/references/ears_v2_grammar.md');
   const worker = join(REPO_ROOT, 'skills/coarising_cloze_worker/SKILL.md');
   const workflow = join(REPO_ROOT, 'workflows/coarising_cloze_pipeline.py');
 
-  for (const f of [distill, worker, workflow]) {
+  for (const f of [distill, distillYamlRef, distillEarsRef, worker, workflow]) {
     assert.ok(existsSync(f), `missing ${f}`);
   }
   const dText = readFileSync(distill, 'utf8');
   assert.ok(dText.startsWith('---\nname: coarising-distill\n'));
   assert.ok(dText.includes('v2_compile') && dText.includes('Clarification Card'));
+  assert.ok(dText.includes('references/structures_and_bindings_schema.md') && dText.includes('references/ears_v2_grammar.md'));
+  assert.ok(readFileSync(distillYamlRef, 'utf8').includes('co-arising.effect-binding/v2'));
+  assert.ok(readFileSync(distillEarsRef, 'utf8').includes('EARS_NEG_PRED_NAME'));
 
   const wText = readFileSync(worker, 'utf8');
   assert.ok(wText.startsWith('---\nname: coarising-cloze-worker\n'));
