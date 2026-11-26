@@ -14,21 +14,17 @@
 
 ## P0：对外正式发布前必须补齐（GA Blocker）
 
-- [ ] **#1 跨平台 CI 防“静默跳过”与环境 Preflight**
-  - **现状**：`lib/v2/verify-gate.mjs` 的 `findCoursierJars()` 目前硬编码 macOS `~/Library/Caches/Coursier/...` 及 Scala 2.12，在 Linux CI 缺 jar 时会静默返回 `{ skipped: true, passed: true }`。
-  - **目标**：支持 Linux/macOS/Windows 缓存探查与 `--scala-classpath` / `COARISING_SCALA_CP`；新增 `--strict`（CI 默认开启，缺失依赖直接失败而非跳过）；缺失 `z3` 时输出清晰 preflight 安装指引。
+- [x] **#1 跨平台 CI 防“静默跳过”与环境 Preflight**
+  - **已落地**：`lib/ears/smt-solver.mjs` 新增 `checkSolverAvailable()` 与跨平台安装指引；`lib/v2/compiler.mjs` 编译前执行 solver preflight（缺失报 `V2_SOLVER_MISSING`）；`lib/v2/verify-gate.mjs` 新增跨平台 Coursier/Ivy2/Maven 探查、`--scala-classpath` / `COARISING_SCALA_CP`、`--strict`（CI 默认开启，缺失依赖直接失败而非静默跳过）与 `runV2Preflight()`。
 
-- [ ] **#2 Scala 目标补齐 `layer: application`（与 TypeScript 对齐）**
-  - **现状**：`lib/v2/codegen/scala.mjs` 与 `lib/v2/test-emitter/emit.mjs` 目前仅生成并测试 `layer === 'domain'`，对 `layer === 'application'`（`*.story.ears` / `*.integration.ears`）跳过。
-  - **目标**：补齐 Scala 应用层 Port 脚手架、`@cloze` 骨架与可执行 ScalaTest 锁定预言机（或在文档中显式声明发布范围）。
+- [x] **#2 Scala 目标补齐 `layer: application`（与 TypeScript 对齐）**
+  - **已落地**：`lib/v2/codegen/scala.mjs` 生成应用层 `*Port.scala` 与 `*Cloze.scala`；`lib/v2/test-emitter/scala-scalatest.mjs` 与 `emit.mjs` 生成并锁定可执行应用层 `*EarsSpec.scala`；`bank-wealth-demo` 已全量对齐 **5 TS + 5 Scala** 套件真实编译通过。
 
-- [ ] **#3 反作弊 Hooks 下沉为 `truthsrc` 一等子命令**
-  - **现状**：`PreToolUse` / `Stop` 写入边界守卫脚本仍停留在 `bank-wealth-demo/tools/coarising-guard-write.mjs`。
-  - **目标**：下沉至 `metarch-truthsrc`，提供 `truthsrc guard-write` 与 `truthsrc init-hooks`，让新项目开箱即用。
+- [x] **#3 反作弊 Hooks 下沉为 `truthsrc` 一等子命令**
+  - **已落地**：新增 `lib/v2/guard-write.mjs` 与 `truthsrc guard-write` / `truthsrc init-hooks` 一等子命令；`bank-wealth-demo/tools/coarising-guard-write.mjs` 收敛为薄代理包装层。
 
-- [ ] **#4 一键脚手架与聚合门禁命令（Onboarding DX）**
-  - **现状**：完整链路需手动串接 6 条独立命令与多份配置文件。
-  - **目标**：新增 `truthsrc init-v2 <dir>`（生成标准 `structures / behaviors/{domain,application} / bindings` 与最小可运行示例）及 `truthsrc check-v2`（单命令串联 compile + verify + audit-coverage）。
+- [x] **#4 一键脚手架与聚合门禁命令（Onboarding DX）**
+  - **已落地**：新增 `lib/v2/init-v2.mjs`（`truthsrc init-v2 <dir>`，开箱生成标准 `structures / behaviors/{domain,application} / bindings` + hooks + 100% 覆盖率清单）与 `lib/v2/check-v2.mjs`（`truthsrc check-v2`，单命令串联 compile + verify + audit-coverage）。
 
 ---
 
