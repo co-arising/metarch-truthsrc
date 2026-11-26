@@ -1025,3 +1025,134 @@ materializedViews:
     rmSync(posDir, { recursive: true, force: true });
   }
 });
+
+test('Batch E Compliance: blocks raw PII in immutable events under erasureRequired, validates obligation mappedTo, and renders legal signoff', () => {
+  const ears = `
+slice CandidateProfile.Register
+rules:
+  [BAD] IF prof.status != "new" or idToken is empty THEN SHALL reject request with INVALID
+  [OK]  WHILE prof.status == "new" and idToken is non-empty
+        WHEN Register
+        SHALL transition prof.status -> "registered"
+          AND emit CandidateRegistered
+        post:
+          prof.idToken' = idToken
+`;
+
+  // Negative: raw sensitivity: pii inside immutable event while erasureRequired=true & piiStrategy=pii-vault + unknown mappedTo
+  const negYaml = `
+system: exam-compliance
+context: compliance
+compliance:
+  industry: media-certification
+  jurisdictions: [CN-PIPL, CN-NRTA]
+  dataResidency: mars-datacenter
+  erasureRequired: true
+  piiStrategy: pii-vault
+  retentionPolicy: "5y-statutory"
+  obligations:
+    - id: COMP-01
+      regulation: "CN-PIPL §47"
+      summary: "Erasable PII via vault"
+      mappedTo: [CandidateProfile.GhostCmd]
+      legalSignoff: pending-counsel
+aggregates:
+  - name: CandidateProfile
+    aliases: [prof, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "new"
+        enum: ["new", "registered"]
+      - name: idToken
+        type: String
+        default: ""
+        waiveLineage: external-read
+    commands:
+      - name: Register
+        parameters:
+          - idToken: String
+        produces: [CandidateRegistered]
+    events:
+      - name: CandidateRegistered
+        fields:
+          - name: idToken
+            type: String
+            sensitivity: pii
+`;
+  const negDir = makeProject(negYaml, { 'domain/register.ears': ears });
+  try {
+    const res = compileCanonicalV2({
+      structuresDir: join(negDir, 'structures'),
+      specsPath: join(negDir, 'behaviors'),
+    });
+    assert.equal(res.passed, false);
+    const errs = codes(res.diagnostics, 'error');
+    assert.ok(errs.includes('V2_COMPLIANCE_RAW_PII_IN_IMMUTABLE_EVENT'), `expected RAW_PII error in ${errs}`);
+    assert.ok(errs.includes('V2_COMPLIANCE_UNKNOWN_MAPPING'), `expected UNKNOWN_MAPPING error in ${errs}`);
+    assert.ok(errs.includes('V2_COMPLIANCE_INVALID_CONTRACT'), `expected INVALID_CONTRACT error in ${errs}`);
+  } finally {
+    rmSync(negDir, { recursive: true, force: true });
+  }
+
+  // Positive: tokenized-pii in immutable event + valid mappedTo + signoff/lineage.md legal signoff section
+  const posYaml = `
+system: exam-compliance
+context: compliance
+compliance:
+  industry: media-certification
+  jurisdictions: [CN-PIPL, CN-NRTA]
+  dataResidency: cn-mainland
+  erasureRequired: true
+  piiStrategy: pii-vault
+  retentionPolicy: "5y-statutory"
+  obligations:
+    - id: COMP-01
+      regulation: "CN-PIPL §47"
+      summary: "Raw PII stored in external PiiVault; immutable events store tokenized-pii only"
+      mappedTo: [CandidateProfile.Register, CandidateProfile.CandidateRegistered]
+      legalSignoff: pending-counsel
+aggregates:
+  - name: CandidateProfile
+    aliases: [prof, state]
+    stateFields:
+      - name: status
+        type: String
+        default: "new"
+        enum: ["new", "registered"]
+      - name: idToken
+        type: String
+        default: ""
+        sensitivity: tokenized-pii
+        waiveLineage: external-read
+    commands:
+      - name: Register
+        parameters:
+          - idToken: String
+        produces: [CandidateRegistered]
+    events:
+      - name: CandidateRegistered
+        fields:
+          - name: idToken
+            type: String
+            sensitivity: tokenized-pii
+`;
+  const posDir = makeProject(posYaml, { 'domain/register.ears': ears });
+  try {
+    const signoffDir = join(posDir, 'signoff');
+    const res = compileCanonicalV2({
+      structuresDir: join(posDir, 'structures'),
+      specsPath: join(posDir, 'behaviors'),
+      outSignoffDir: signoffDir,
+      strictLineage: true,
+    });
+    assert.equal(res.passed, true, JSON.stringify(res.diagnostics, null, 2));
+    assert.equal(res.canonical.structures.compliance.industry, 'media-certification');
+    assert.equal(res.canonical.structures.compliance.piiStrategy, 'pii-vault');
+    const linMd = readFileSync(join(signoffDir, 'lineage.md'), 'utf8');
+    assert.ok(linMd.includes('Regulatory & Privacy Compliance Signoff'));
+    assert.ok(linMd.includes('CN-PIPL §47') && linMd.includes('pending-counsel'));
+  } finally {
+    rmSync(posDir, { recursive: true, force: true });
+  }
+});

@@ -24,6 +24,7 @@ NEVER put behavioral or v1 guard keys anywhere inside `structures/*.yaml`:
 | `context` | `string` | yes | Bounded Context identifier (kebab-case), e.g. `orders` |
 | `nominalTypes` | `array` | optional | Closed list of nominal ID types; when present, unregistered PascalCase IDs fail with `V2_UNKNOWN_TYPE` |
 | `roles` | `array` | optional | Declared human and non-human actors/callers (`kind: human \| system \| scheduler \| webhook \| ai-agent`) |
+| `compliance` | `object` | optional | Industry/jurisdiction privacy & regulatory contract (`industry`, `jurisdictions`, `dataResidency`, `erasureRequired`, `piiStrategy`, `retentionPolicy`, `obligations`) |
 | `exactTypes` | `array` | optional | Fixed-point decimal and unit-decimal (money) types (no floating point) |
 | `valueObjects` | `array` | optional | Structured DTOs / responses (`respond <VO>`) |
 | `aggregates` | `array` | yes | Write-model domain aggregates with `stateFields`, `commands`, `events`, `ruleRefs` |
@@ -90,6 +91,23 @@ Three forms are accepted by `parseFieldSpec`:
       graceWindow: "30s"
   ```
 - **On `pipelines[*].admission`** (bounded batch fan-out): `admission: { maxItemsPerChunk: 50, maxInFlightChunks: 4 }`.
+- **Top-level `compliance:`** (persists Phase 0 regulatory alignment & enforces `V2_COMPLIANCE_RAW_PII_IN_IMMUTABLE_EVENT` when `erasureRequired: true` and `piiStrategy != statutory-retention`):
+  ```yaml
+  compliance:
+    industry: media-certification
+    jurisdictions: [CN-PIPL, CN-NRTA]
+    dataResidency: cn-mainland            # cn-mainland | eu-only | us-only | region-isolated | global
+    erasureRequired: true
+    piiStrategy: pii-vault                # pii-vault | crypto-shredding | statutory-retention
+    retentionPolicy: "5y-statutory"
+    obligations:
+      - id: COMP-01
+        regulation: "CN-PIPL §47"
+        summary: "Personal identifiers must be erasable via PiiVault token without mutating event log"
+        mappedTo: [ExamCert.Revoke, public-cert-view]
+        legalSignoff: pending-counsel     # pending-counsel | approved | waived
+  ```
+  - Event/state fields may carry `sensitivity: public | internal | pii | secret | tokenized-pii`. Raw `sensitivity: pii` on immutable domain events is blocked when `erasureRequired: true` unless `piiStrategy: statutory-retention`.
 
 #### Machine-Checkable `waiveLineage:` Reasons
 - **On `events[*]` or `events[*].fields[*]`** (unconsumed numeric event fields FAIL compilation by default unless consumed or waived!):
