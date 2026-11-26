@@ -30,18 +30,14 @@
 
 ## P1：复杂生产业务能力短板（Preview 可声明限制，GA 后演进）
 
-- [ ] **#5 扩展 EARS 语言表达力与 v2 业务投影**
-  - 支持 `WHEN event <Aggregate>.<Event>` 跨聚合事件驱动编排与应用层多步 `k`-step BMC；
-  - 增强集合量词（`forall`/`exists`）、`Sequence` 聚合（`sum`/`count`）、`Option` 模式匹配与时间窗口比较；
-  - 将 v1 的 `project-spec`（PM 可读 AC / DMN 决策表）与 `.zh.ears` 中英语义等价门禁接入 `compile-v2`。
+- [x] **#5 扩展 EARS 语言表达力与 v2 业务投影**
+  - **已落地**：支持 `WHEN event <Aggregate>.<Event>` 跨聚合事件编排（带 `EARS_UNKNOWN_TRIGGER_EVENT` 门禁）与应用层 `pin`/`SHALL NOT dispatch` `k`-step BMC；支持 `forall`/`exists` 量词、`sum`/`count`/`len` 序列聚合、`is some`/`is none` Option 匹配与 `within <dur> [of <ref>]` 时间窗（含 `ms/s/m/h/d` 时长字面量）；已将 Style E AC / Style B DMN 决策表投影（`--out-ac`/`--out-tables`）与 `.zh.ears` 双语等价门禁（`V2_BILINGUAL_DRIFT`）接入 `compile-v2`。
 
-- [ ] **#6 扩展 S1 效果协议 TCK 协议族与多语言执行器**
-  - 在 `three-phase-reconcile` 基础上新增 `transactional-outbox`、`saga-compensation`、`idempotent-consumer` 等通用 S1 协议族；
-  - 支持对 Scala/JVM 适配器直接执行 S1 故障注入 TCK（不再仅限 Node ESM 模块）。
+- [x] **#6 扩展 S1 效果协议 TCK 协议族与多语言执行器**
+  - **已落地**：`lib/v2/effect-tck.mjs` 在 `three-phase-reconcile`（8 场景）基础上新增 `transactional-outbox`（5 场景）、`saga-compensation`（5 场景）、`idempotent-consumer`（5 场景），并提供基于 `scalac`+`scala` NDJSON IPC 的 JVM/Scala TCK 执行器（`truthsrc run-tck-v2 --protocol <p> --scala-src <dir> --jvm-class <Main>`）。
 
-- [ ] **#7 增强 YAML 解析健壮性与源码级诊断体验**
-  - 补强 `lib/v2/yaml-parser.mjs` 对复杂多行块标量与流式语法的兼容；
-  - 为 `EARS_*` 与 `V2_*` 诊断补齐精确 `file:line:col` 源码片段高亮定位。
+- [x] **#7 增强 YAML 解析健壮性与源码级诊断体验**
+  - **已落地**：`lib/v2/yaml-parser.mjs` 支持多行块标量（`|`/`|-`/`|+`/`>`/`>-`/`>+`）、跨行流式集合（`[...]`/`{...}`）、`---`/`...` 文档分隔符与结构化 `V2YamlError`；新增 `lib/v2/diagnostics.mjs` 为全部 `EARS_*` / `V2_*` 诊断附带 `file:line:col` 与 `^` 源码高亮片段。
 
 ---
 

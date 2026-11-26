@@ -82,8 +82,9 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
                       [--out-features <dir>] [--out-scala <dir>] [--package <pkg>] [--manifest <file>]
                                                            compile TestIR to locked Gherkin & ScalaTest oracles + SHA-256 manifest
   truthsrc compile-v2 --structures <dir> --behaviors <dir> [--out <canonical-v2.json>] [--db <knowledge.sqlite>]
-                      [--specs <dir>] [--solver z3|cvc5] [--bmc-steps <k>] [--no-gap-check] [--format human|json]
-                                                           co-arising 2.0 EARS-native compiler + SMT hard gate (exit 2 if blocked)
+                      [--specs <dir>] [--solver z3|cvc5] [--bmc-steps <k>] [--no-gap-check] [--no-bilingual-check]
+                      [--out-ac <dir>] [--out-tables <dir>] [--lang zh|en] [--format human|json]
+                                                           co-arising 2.0 EARS-native compiler + SMT hard gate + projections (exit 2 if blocked)
   truthsrc generate-v2 --in <canonical-v2.json> --out <dir> [--target typescript,scala] [--package <pkg>]
                        [--overwrite-cloze]
                                                            direct EARS-IR codegen: L1 deterministic + L2/L3/app @cloze skeletons
@@ -99,7 +100,9 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
                              [--db <knowledge.sqlite>]
                                                            100% full-coverage & E1-E4 evidence ledger audit (exit 2 on gray-zone/stale signoff)
   truthsrc run-tck-v2 --adapter <module.ts|mjs> [--export createEffectAdapter]
-                                                           run 8-scenario S1 fault-injection TCK (timeout/replay/recovery/absence proof)
+                      [--protocol three-phase-reconcile|transactional-outbox|saga-compensation|idempotent-consumer]
+                      [--scala-src <dir> --jvm-class <MainClass>] [--scala-classpath <jars>]
+                                                           run S1 fault-injection TCK suites (TS/Node ESM or Scala/JVM runner)
   truthsrc guard-write [--root <dir>] [--active-cloze <slot-id>] [--payload <json>]
                                                            PreToolUse anti-cheat guard: blocks locked territories & outside-@cloze edits (exit 2)
   truthsrc init-hooks [--root <dir>] [--target typescript,scala] [--bin truthsrc] [--force]
