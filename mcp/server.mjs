@@ -147,6 +147,140 @@ const TOOLS = [
     { ...SOURCE_PROPS, aggregate: { type: 'string' } }, ['aggregate'], (g, a) => aggregates_referencing(g, a.aggregate)),
   T('contexts_depending_on', 'Bounded contexts depending on a context.',
     { ...SOURCE_PROPS, context: { type: 'string' } }, ['context'], (g, a) => contexts_depending_on(g, a.context)),
+
+  // ── co-arising 2.0 EARS-native tools ───────────────────────────────────────
+  T('v2_compile',
+    'Compile co-arising 2.0 orthogonal structures + *.ears behaviors through the strict domain-boundary, Path-to-Layer, bilingual, and Z3/SMT hard gate. Returns clarificationCards and file:line:col snippets if blocked.',
+    {
+      structures: { type: 'string', description: 'Path to structures/ directory.' },
+      behaviors: { type: 'string', description: 'Path to behaviors/ directory (or single .ears file).' },
+      out: { type: 'string', description: 'Optional output path for canonical-v2.json.' },
+      db: { type: 'string', description: 'Optional output path for knowledge.sqlite.' },
+      outAc: { type: 'string', description: 'Optional directory for Style E AC projections.' },
+      outTables: { type: 'string', description: 'Optional directory for Style B DMN tables.' },
+      lang: { type: 'string', enum: ['zh', 'en'], description: 'Language for Style E AC projections (default: zh).' },
+      solver: { type: 'string', enum: ['z3', 'cvc5'], description: 'SMT solver binary (default: z3).' },
+      checkGaps: { type: 'boolean', description: 'Run SMT completeness gap check (default: true).' },
+    },
+    ['structures', 'behaviors'],
+    async (_g, a) => {
+      const { compileCanonicalV2 } = await import('../lib/v2/compiler.mjs');
+      const res = compileCanonicalV2({
+        structuresDir: a.structures,
+        specsPath: a.behaviors,
+        outFile: a.out ?? null,
+        dbFile: a.db ?? null,
+        outAcDir: a.outAc ?? null,
+        outTablesDir: a.outTables ?? null,
+        projectionLang: a.lang ?? 'zh',
+        solver: a.solver ?? 'z3',
+        checkGaps: a.checkGaps !== false,
+      });
+      return {
+        passed: res.passed,
+        blocked: res.blocked,
+        canonicalSha256: res.canonical?.canonicalSha256 ?? null,
+        verificationSummary: res.canonical?.verificationSummary ?? null,
+        outFile: res.outFile,
+        dbInfo: res.dbInfo,
+        projections: res.projections,
+        bilingualChecks: res.bilingualChecks,
+        diagnostics: res.diagnostics,
+        clarificationCards: res.clarificationCards,
+      };
+    }),
+
+  T('v2_query_graph',
+    'Query a node and its incoming/outgoing neighbors in the co-arising 2.0 SQLite knowledge graph (agg:*, behavior:*, cloze:*, rule:*, port:*, readmodel:*).',
+    {
+      db: { type: 'string', description: 'Path to knowledge.sqlite.' },
+      nodeId: { type: 'string', description: 'Node ID such as "behavior:QuotaIntake" or "agg:QuotaBucket".' },
+    },
+    ['db', 'nodeId'],
+    async (_g, a) => {
+      const { queryV2KnowledgeNeighbors } = await import('../lib/v2/knowledge-db.mjs');
+      return queryV2KnowledgeNeighbors(resolve(a.db), a.nodeId);
+    }),
+
+  T('v2_tasks',
+    'Derive actionable Channel 4B @cloze & S1 effect adapter tasks with automatic dirty invalidation (PENDING | STALE | UNVERIFIED | GREEN_NEEDS_REVIEW | VERIFIED), or record a blind-review verdict.',
+    {
+      root: { type: 'string', description: 'Project root directory containing truthsrc.v2.json or .truthsrc/.' },
+      project: { type: 'string', description: 'Optional explicit path to truthsrc.v2.json.' },
+      targets: { type: 'array', items: { type: 'string' }, description: 'Target list (e.g. ["typescript", "scala"]).' },
+      next: { type: 'boolean', description: 'Return the highest-priority actionable task bundled with its Sandwich Context Pack.' },
+      includeDone: { type: 'boolean', description: 'Include VERIFIED tasks in the returned list.' },
+      recordReview: { type: 'boolean', description: 'Record a blind-review verdict into SQLite provenance.' },
+      slot: { type: 'string', description: 'Slot ID (required when recordReview=true).' },
+      verdict: { type: 'string', enum: ['PASS', 'FAIL'], description: 'Blind review verdict.' },
+      reviewer: { type: 'string', description: 'Reviewer identifier.' },
+      notes: { type: 'string', description: 'Optional review notes.' },
+    },
+    ['root'],
+    async (_g, a) => {
+      const { deriveClozeTasksV2, getNextTaskWithContextPack, recordTaskBlindReviewV2 } = await import('../lib/v2/tasks-v2.mjs');
+      if (a.recordReview) {
+        return recordTaskBlindReviewV2({
+          rootDir: a.root,
+          projectFile: a.project ?? null,
+          slotId: a.slot,
+          verdict: a.verdict,
+          reviewer: a.reviewer ?? 'blind-reviewer',
+          notes: a.notes ?? '',
+        });
+      }
+      if (a.next) {
+        return getNextTaskWithContextPack({ rootDir: a.root, projectFile: a.project ?? null, targets: a.targets ?? null });
+      }
+      return deriveClozeTasksV2({
+        rootDir: a.root,
+        projectFile: a.project ?? null,
+        targets: a.targets ?? null,
+        includeDone: Boolean(a.includeDone),
+      });
+    }),
+
+  T('v2_context_pack',
+    'Export a self-contained Sandwich Context Pack (closed-over types, authoritative EARS rules, @cloze line bounds, and locked @CoArisingSpec acceptance oracles) for a single @cloze slot.',
+    {
+      canonical: { type: 'string', description: 'Path to canonical-v2.json.' },
+      slot: { type: 'string', description: 'Target @cloze slot ID.' },
+      db: { type: 'string', description: 'Optional path to knowledge.sqlite.' },
+      workspace: { type: 'string', description: 'Optional workspace root to locate editable @cloze line bounds.' },
+    },
+    ['canonical', 'slot'],
+    async (_g, a) => {
+      const { buildSandwichContextPack } = await import('../lib/v2/context-pack.mjs');
+      const canonicalV2 = JSON.parse(readFileSync(resolve(a.canonical), 'utf8'));
+      const res = buildSandwichContextPack({
+        canonicalV2,
+        dbFile: a.db ? resolve(a.db) : null,
+        slotId: a.slot,
+        workspaceDir: a.workspace ?? null,
+      });
+      return { pack: res.pack, markdown: res.markdown };
+    }),
+
+  T('v2_verify',
+    'Run the Stop Hook triple verification gate: locked test SHA-256 tamper check, live TS/Scala BDD oracle execution, and provenance reconciliation.',
+    {
+      root: { type: 'string', description: 'Project root directory.' },
+      targets: { type: 'array', items: { type: 'string' }, description: 'Targets to verify (default: ["typescript"]).' },
+      canonical: { type: 'string', description: 'Optional path to canonical-v2.json.' },
+      db: { type: 'string', description: 'Optional path to knowledge.sqlite.' },
+      strict: { type: 'boolean', description: 'Fail loudly if required toolchains/jars are missing (default: false unless CI=true).' },
+    },
+    ['root'],
+    async (_g, a) => {
+      const { runV2VerifyGate } = await import('../lib/v2/verify-gate.mjs');
+      return runV2VerifyGate({
+        rootDir: a.root,
+        targets: a.targets ?? ['typescript'],
+        canonicalFile: a.canonical ?? null,
+        dbFile: a.db ?? null,
+        strict: a.strict ?? Boolean(process.env.CI),
+      });
+    }),
 ];
 
 // ── JSON-RPC over stdio ──────────────────────────────────────────────────────
@@ -185,7 +319,9 @@ async function handle(req) {
           return err(-32602, `missing required argument: ${r}`);
       }
       let graph = null;
-      if (!['diff', 'project_status', 'project_sources'].includes(tool.name)) graph = await graphFor(args);
+      if (!['diff', 'project_status', 'project_sources'].includes(tool.name) && !tool.name.startsWith('v2_')) {
+        graph = await graphFor(args);
+      }
       const envelope = await tool.fn(graph, args);
       return ok({ content: [{ type: 'text', text: JSON.stringify(envelope, null, 2) }] });
     }
