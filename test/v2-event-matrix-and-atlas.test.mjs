@@ -38,6 +38,9 @@ test('EventFlow + Multi-Diagram Exporters + Unified Offline Atlas HTML on Canary
     assert.equal(res.passed, true, `Canary compile should pass: ${JSON.stringify(res.diagnostics)}`);
     assert.equal(res.canonical.structures.eventFlow.timelines.length, 2);
     assert.equal(res.canonical.structures.eventFlow.hotspots.length, 1);
+    assert.equal(res.canonical.structures.aggregates[0].relations.length, 1);
+    const dmMmd = readFileSync(join(signoffDir, 'diagrams', 'domain-model.mmd'), 'utf8');
+    assert.match(dmMmd, /ExamBatch "1" --> "N" certification_Certificate/);
 
     // Check emitted signoff artifacts: event-matrix.md, story-map.csv, domain-map.cml, diagrams/*.mmd, atlas.html
     assert.equal(existsSync(join(signoffDir, 'event-matrix.md')), true);
@@ -118,6 +121,11 @@ aggregates:
         fields: []
       - name: TicketReopened
         fields: []
+    relations:
+      - target: GhostAggregate
+        cardinality: "1:MANY"
+        viaField: missingField
+        meaning: "invalid relation"
 journeys:
   - id: j1
     name: BadJourney
@@ -168,6 +176,9 @@ rules:
     assert.ok(codes.has('V2_EVENTFLOW_INVALID_HOTSPOT'), `missing V2_EVENTFLOW_INVALID_HOTSPOT in ${[...codes]}`);
     assert.ok(codes.has('V2_JOURNEY_INVALID_EMOTION_SCORE'), `missing V2_JOURNEY_INVALID_EMOTION_SCORE in ${[...codes]}`);
     assert.ok(codes.has('V2_EVENTFLOW_UNPLACED_EVENT'), `missing V2_EVENTFLOW_UNPLACED_EVENT in ${[...codes]}`);
+    assert.ok(codes.has('V2_AGGREGATE_RELATION_UNKNOWN_TARGET'), `missing V2_AGGREGATE_RELATION_UNKNOWN_TARGET in ${[...codes]}`);
+    assert.ok(codes.has('V2_AGGREGATE_RELATION_INVALID_CARDINALITY'), `missing V2_AGGREGATE_RELATION_INVALID_CARDINALITY in ${[...codes]}`);
+    assert.ok(codes.has('V2_AGGREGATE_RELATION_UNKNOWN_FIELD'), `missing V2_AGGREGATE_RELATION_UNKNOWN_FIELD in ${[...codes]}`);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }

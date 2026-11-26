@@ -2,10 +2,11 @@
 name: coarising-distill
 description: >-
   Distill an unstructured PRD, RFC, or requirements document into an orthogonal
-  co-arising 2.0 truth source (structures/*.yaml + behaviors/{domain,application}/*.ears
-  + bindings/*-{effects,readside}.yaml), preserving user stories, use cases, journeys,
-  read-model provenance, and authz PEP contracts, converging via Z3/SMT and emitting
-  read-only signoff docs (signoff/{use-cases,lineage,ac,tables}).
+  co-arising 2.0 truth source covering all 13 EventStorming/DDD stages
+  (subdomain + domain-map.yaml + eventFlow/hotspots + structures/*.yaml +
+  behaviors/{domain,application}/*.ears + bindings/*-{effects,readside,testing}.yaml),
+  converging via Z3/SMT & multi-subdomain SQLite lineage and emitting read-only
+  signoff docs + the unified offline Atlas HTML viewer (signoff/atlas.html).
 ---
 
 # co-arising 2.0 Truth Distillation Skill (`PRD → Verified Truth Source`)
@@ -16,7 +17,7 @@ Use this skill whenever the user hands you a PRD, user story doc, meeting notes,
 
 Before authoring a single line of YAML or EARS, **MUST read both bundled reference specs** inside this skill folder:
 
-1. **`references/structures_and_bindings_schema.md`** — exact valid YAML schema for `structures/*.yaml` (`roles`, `nominalTypes`, `exactTypes`, `valueObjects`, `aggregates`, `readModels` with mandatory `source:`, `ports` with `callerKind`/`authz`, `stories`, `useCases`, `pipelines`, `journeys`, `sagas`, `externContracts`, `waiveLineage`) and `bindings/*-{effects,readside}.yaml`.
+1. **`references/structures_and_bindings_schema.md`** — exact valid YAML schema for `structures/*.yaml` (`subdomain`, `subdomainType`, `roles`, `compliance`, `nominalTypes`, `exactTypes`, `valueObjects`, `aggregates` with `deadlines`/`relations`, `readModels` with `source:`/`visibleTo`/`sensitivity`, `ports` with `callerKind`/`authz`, `stories`, `useCases`, `pipelines`, `journeys`, `eventFlow` with `timelines`/`hotspots`, `sagas`, `externContracts`, `waiveLineage`), `domain-map.yaml`, and `bindings/*-{effects,readside,testing}.yaml`.
 2. **`references/ears_v2_grammar.md`** — exact EARS v2 grammar for `behaviors/domain/*.ears` (`slice`), `behaviors/application/*.{story,integration}.ears` (`story ... layer application`), `WHEN event`, `post:` folds, expressions, and diagnostic error codes.
 3. Also inspect any existing starter files already in the workspace under `truth/<context>/` (created by `truthsrc init-v2`) to align naming and paths.
 
@@ -85,26 +86,31 @@ Before locking Phase 1, silently scan the PRD against these **8 blind-spot & uni
 | **7. Authorization, Conflict of Interest & Org Isolation (Compliance)** | 「按钮是固定角色就能点，还是按机构/部门归属或动态规则判断（如 MCN 管理员只能看本机构人员）？有没有『自己不能审自己的单 / 双盲评审 / 超额需复核』的硬规矩？」 | `ports.operations.authz` (`auth-core` / `external-pdp` + `contextParams`); maker-checker rules in `.ears` |
 | **8. Audit Trail, External `UNKNOWN` & Post-Facto Revocation (Compliance)** | 「监管抽查时需要追溯哪些操作留痕？外部系统超时没返回结果时是先标『待核实』还是直接重试？事后查出作弊/误发时，证书或结果能不能吊销/冲正（保留痕迹不物理删除）？」 | Append-only audit events (`waiveLineage: audit-only`); `three-phase-reconcile`; `Revoke*` commands |
 
-## Procedure (5-Phase Event-Modeling Distillation Funnel)
+## Procedure (5-Phase 13/13 Event-Modeling Distillation Funnel: Diverge First, Then Converge)
 
-### Phase 0 — PRD Decomposition: Actors, Journeys, User Stories & Use Cases
-1. Read the requirements document completely. Extract:
-   - **Actors / Callers (`roles:`)**: both human roles (`kind: human`) and non-human callers (`kind: system | scheduler | webhook | ai-agent`).
-   - **User Stories (`stories:`)**: `role`, `goal`, `soThat`, `release`, `coversUseCases`.
-   - **End-to-End Use Cases (`useCases:`)**: ordered causal steps (`actor → port → command → emissions → readsView / updatesViews → pipeline / saga`) + `prdRefs` + `extensions` (failure/timeout/compensation branches).
-   - **Story-Mapping Journeys (`journeys:`)**: group stages, stories, useCases, and screens into user journeys when multiple workflows form a release.
-2. Confirm the Actor + Use Case map with the user (or proceed if they asked for a full first draft straight away).
+### Phase 0 — Big-Picture Divergence: Subdomains, EventFlow + Hotspots, Journeys & Compliance (Stages #01, #04, #05, #11, #12)
+1. **Do NOT jump straight into single-aggregate fields/EARS!** First map the whole problem space from the PRD:
+   - **Subdomains & Context Mapping (#04, #05)**: Identify stable Problem-Space `subdomain`s (`subdomainType: core | supporting | generic`). If the PRD spans multiple subdomains (e.g., `exam` + `certification` + `filing`), sketch `domain-map.yaml` (`co-arising.domain-map/v2`) with cross-subdomain ACL `integrations` and Solution-Space `boundedContexts` (can start as 1 monolith BC and split later with zero subdomain truth edits).
+   - **Big-Picture EventFlow & Hotspots (#01)**: Sketch `eventFlow.timelines` (chronological stages + `(sequence, step)` + `pivotal: true` milestones). **CRITICAL — Never silently assume away PRD contradictions or gray areas**: record every unresolved product/legal/business question as an explicit entry in `eventFlow.hotspots` (`status: open`, `blocking: true` for architecture-shaping questions so the compiler blocks until the PM arbitrates and records `status: resolved` + `resolution`!).
+   - **Actors, Stories, Use Cases & Journeys (#02, #11, #12)**:
+     - `roles:` (human + `system | scheduler | webhook | ai-agent`)
+     - `stories:` (`role`, `goal`, `soThat`, `release`, `coversUseCases`)
+     - `useCases:` (ordered causal `steps`, `prdRefs`, `readEvidence`, `extensions`)
+     - `journeys:` (backbone `stages` with `channel`, `emotionScore` 1–5, `painPoints`, `stories`, `useCases`, `screens`)
+   - **Compliance Contract**: Persist agreed regulatory obligations in top-level `compliance:`.
+2. Present any blocking `hotspots` and Phase 0 PM-language radar questions to the user/PM in plain business language before locking Phase 1.
 
-### Phase 1 — Orthogonal Write Model, Read Model & Authz PEP Contracts (`structures/*.yaml`)
+### Phase 1 — Orthogonal Write Model, Aggregate Relations, Read Model & Authz PEP Contracts (Stages #02, #03, #06, #07, #08, #09, #13)
 1. **Write Model (`exactTypes`, `nominalTypes`, `aggregates`, `sagas`, `pipelines`)**:
-   - Declare fixed-point `exactTypes` (never float), aggregates with `stateFields` (using `waiveLineage: immutable-config` for seed-only config fields like `singleCap`), `commands` (`parameters`, `produces`), `events` (explicit `fields`, optional `source: cmd.<p> | state.<s> | const:<v>`, and explicit `waiveLineage` for intentional routing/audit/saga-trigger fields), and `ruleRefs`.
-2. **Read Model (`readModels` — Logical Problem Space)**:
-   - For every view referenced in `useCases.readEvidence`, `steps.readsView`, `steps.updatesViews`, or `expose`: declare `sourceAggregate`, `sourceEvents`, and per-field machine-checkable `source:` (`stateField:`, `eventField:`, `aggregateIdentity`, or `derived:<reason>`).
+   - Declare fixed-point `exactTypes` (never float), aggregates with `stateFields` (using `waiveLineage: immutable-config` for seed-only config fields), `commands` (`parameters`, `produces`), `events` (explicit `fields`, `sensitivity`, optional `source: cmd.<p> | state.<s> | const:<v>`, and typed `waiveLineage`), `deadlines`, **explicit `relations:` (`target`, `cardinality: 1:1|1:N|N:1|N:M`, `meaning` — Stage #07)**, and `ruleRefs`.
+   - Ensure every aggregate event is placed in `eventFlow.timelines` (zero `V2_EVENTFLOW_UNPLACED_EVENT` warnings).
+2. **Read Model (`readModels` — Logical Problem Space, Stage #13)**:
+   - For every view referenced in `useCases.readEvidence`, `steps.readsView`, `steps.updatesViews`, or `expose`: declare `sourceAggregate`, `sourceEvents`, `visibleTo`, `rowScope`, and per-field machine-checkable `source:` + `sensitivity`.
    - Prefer `stateField:` when the aggregate already folds that field into state (avoid write-only dead state fields!).
 3. **Inbound Surfaces & Authz PEP (`ports`, `valueObjects`, `externContracts`)**:
    - Declare every inbound `Port.operation` with `callerKind` and `authz` (`auth-core` / `static-roles` / `external-pdp` / `public` / `internal-only`).
    - Declare every external predicate in `externContracts` with exact `params` and `ownerPort`.
-4. Write `truth/<context>/structures/<context>.yaml` (or split into `structures/*.yaml` + `structures/use-cases.yaml`).
+4. Write `truth/<subdomain>/structures/<subdomain>.yaml` (or split into `structures/*.yaml` + `structures/use-cases.yaml`).
 
 ### Phase 2 — Layered Behavior Authoring & Solution-Space Bindings
 1. For each domain command in `useCases`, author `behaviors/domain/<agg>-<cmd>.ears` (invariants, DMN First-Hit rules, `SHALL emit`, and `post:` event folds covering all state mutations).
@@ -132,11 +138,16 @@ Before locking Phase 1, silently scan the PRD against these **8 blind-spot & uni
    - Translate the Z3 counterexample and Option A / Option B into plain domain language.
    - Ask the user to pick Option A, Option B, or a custom business rule.
    - Apply their decision to `.ears` and re-run `compile-v2` until `[PASS]`.
+4. For **multi-subdomain systems** (`domain-map.yaml`), also run the recursive SQLite cross-subdomain lineage & PII taint gate and export the system-wide Atlas:
+   ```bash
+   truthsrc audit-system-lineage-v2 --canonicals a.json,b.json --domain-map truth/domain-map.yaml --out-md signoff/system-lineage.md --strict-lineage
+   truthsrc atlas-v2 --canonicals a.json,b.json --domain-map truth/domain-map.yaml --out signoff/system-atlas.html --out-dir signoff
+   ```
 
 ### Phase 4 — Business Signoff & Handoff to Implementation
-1. Present the generated read-only signoff pack for PM/business approval:
-   - `signoff/use-cases.md` (User Stories, Journeys, Use Case Mermaid sequence diagrams, PRD traceability)
-   - `signoff/lineage.md` (Field Lineage Ledger, Explicit Waivers, Authz PEP Matrix, ReadSide Physical Materialization Map)
+1. Present the generated read-only signoff pack for PM / Architecture / Legal approval:
+   - `signoff/atlas.html` (Unified offline interactive Atlas viewer: 6 Problem-Space diagrams incl. Brandolini Event Matrix, 2D Story Map + CSV, Sequence SVG, Domain Model + Relations, Field Lineage + PII, ContextMapper `.cml` + 5 Solution-Space diagrams)
+   - `signoff/event-matrix.md`, `signoff/use-cases.md`, `signoff/lineage.md` (incl. Compliance & Legal Signoff), `signoff/story-map.csv`, `signoff/domain-map.cml`
    - `signoff/ac/*.md` (PM-friendly Style E AC) & `signoff/tables/*.md` (DMN decision tables)
 2. Emit Onion 5-layer code (`domain / application / interfaces / infrastructure / modules`) + `@cloze` skeletons, locked BDD/HTTP oracles, and the derived task queue:
    ```bash

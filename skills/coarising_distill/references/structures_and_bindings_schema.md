@@ -37,7 +37,8 @@ NEVER put behavioral or v1 guard keys anywhere inside `structures/*.yaml`:
 | `externContracts` | `array` | optional | Declared external host predicates (`extern fn(a, b)`) with exact `params` and `ownerPort` |
 | `stories` | `array` | optional | Application stories + User Story narrative (`role`, `goal`, `soThat`, `release`, `coversUseCases`, `pins`, `responses`, `views`, `callerContract`) |
 | `useCases` | `array` | optional | End-to-end causal business flows (`actor`, `beneficiary`, `intent`, `prdRefs`, `readEvidence`, `steps`, `extensions`; `kind: use-cases` also supported) |
-| `journeys` | `array` | optional | Story-Mapping journeys (`persona`, `goal`, `release`, `stages: [{ name, stories, useCases, screens }]`) |
+| `journeys` | `array` | optional | Story-Mapping journeys (`persona`, `goal`, `release`, `stages: [{ name, release, channel, emotionScore, painPoints, stories, useCases, screens }]`) |
+| `eventFlow` | `object` | recommended | Stage #01 Big-Picture EventStorming timeline (`timelines: [{ id, name, events: [{ event, sequence, step, pivotal, description }] }]` + `hotspots: [{ id, question, linkedEvents, status, blocking, resolution }]`) |
 
 ### 2.2 Supported Type Expressions (`parseTypeExpr`)
 
@@ -91,6 +92,14 @@ Three forms are accepted by `parseFieldSpec`:
       stateField: examEndAtMs
       triggerCommand: AutoCloseBatch
       graceWindow: "30s"
+  ```
+- **On `aggregates[*].relations`** (Stage #07 explicit aggregate-to-aggregate domain relationships — rendered in `domain-model` diagrams and validated by compiler):
+  ```yaml
+  relations:
+    - target: ExamAttempt                 # Local aggregate name OR "<subdomain>.<Aggregate>" for cross-subdomain refs
+      cardinality: "1:N"                  # 1:1 | 1:N | N:1 | N:M
+      meaning: "One exam batch governs many independent candidate attempts"
+      viaField: batchId                   # Optional: validated against this aggregate's stateFields
   ```
 - **On `pipelines[*].admission`** (bounded batch fan-out): `admission: { maxItemsPerChunk: 50, maxInFlightChunks: 4 }`.
 - **Top-level `compliance:`** (persists Phase 0 regulatory alignment & enforces `V2_COMPLIANCE_RAW_PII_IN_IMMUTABLE_EVENT` when `erasureRequired: true` and `piiStrategy != statutory-retention`):

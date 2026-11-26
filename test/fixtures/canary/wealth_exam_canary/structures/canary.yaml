@@ -69,6 +69,10 @@ aggregates:
           - name: withdrawnAtMs
             type: Int
             waiveLineage: audit-only
+    relations:
+      - target: certification.Certificate
+        cardinality: "1:N"
+        meaning: "One published exam batch triggers many candidate certificates in the certification subdomain"
     ruleRefs:
       NOT_DRAFT: "batch must be draft"
       FEE_INVALID: "fee must be within (0, feeLimit]"
