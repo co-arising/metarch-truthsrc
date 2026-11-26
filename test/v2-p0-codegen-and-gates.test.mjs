@@ -10,6 +10,7 @@ import { scalaCodegenPlugin } from '../lib/v2/codegen/scala.mjs';
 import { typescriptCodegenPlugin } from '../lib/v2/codegen/typescript.mjs';
 import { emitV2ExecutableTests } from '../lib/v2/test-emitter/emit.mjs';
 import { materializeApplicationWitness } from '../lib/v2/test-emitter/witness-materialize.mjs';
+import { extractFailedTsSpecIds } from '../lib/v2/verify-gate.mjs';
 import { createSmtContext } from '../lib/ears/smt-encoder.mjs';
 
 function makeProject(structuresYaml, earsFiles) {
@@ -829,4 +830,23 @@ test('SMT encoder regression: .__present flag does not pollute recordMembers dur
     assertions.includes('(= v__batch_publishedAtMs__next v__nowMs)'),
     `missing value transition assertion: ${JSON.stringify(assertions)}`,
   );
+});
+
+test('verify-gate extractFailedTsSpecIds supports both TAP and Node 24+ spec reporter output (with or without ANSI)', () => {
+  const tapOut = [
+    'TAP version 13',
+    'ok 1 - [LOT_OK] (primary) ConfirmUnits -> emit UnitsConfirmed',
+    'not ok 2 - [LOT_BAD_PRICE] (primary) ConfirmUnits -> reject LOT_BAD_PRICE',
+    'not ok 3 - [LOT_BAD_PRICE] (secondary) ConfirmUnits -> reject LOT_BAD_PRICE',
+    'not ok 4 - [LOT_BAD_UNITS] (primary) ConfirmUnits -> reject LOT_BAD_UNITS',
+  ].join('\n');
+  assert.deepEqual(extractFailedTsSpecIds(tapOut), ['LOT_BAD_PRICE', 'LOT_BAD_UNITS']);
+
+  const specOut = [
+    '✔ [LOT_OK] (primary) ConfirmUnits -> emit UnitsConfirmed (0.5ms)',
+    '\u001b[31m✖ [LOT_BAD_PRICE] (primary) ConfirmUnits -> reject LOT_BAD_PRICE (1.2ms)\u001b[39m',
+    '  ✖ [LOT_ALREADY_CONFIRMED] (primary) ConfirmUnits -> reject LOT_ALREADY_CONFIRMED (0.3ms)',
+    '  × [APP-01] (primary) Submit -> reject MISSING_TOKEN (0.2ms)',
+  ].join('\n');
+  assert.deepEqual(extractFailedTsSpecIds(specOut), ['LOT_BAD_PRICE', 'LOT_ALREADY_CONFIRMED', 'APP-01']);
 });
