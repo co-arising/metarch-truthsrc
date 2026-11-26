@@ -1,0 +1,52 @@
+// Thin Play Framework HTTP Bridge delegating to co-arising 2.0 Onion HttpRouter.
+// Pure domain and application layers remain 100% Play-free.
+package controllers
+
+import javax.inject._
+import play.api.libs.json._
+import play.api.mvc._
+import {{PACKAGE}}.interfaces.api.{HttpRequest, HttpResponse}
+import {{PACKAGE}}.interfaces.http.HttpRouter
+
+@Singleton
+class PlayHttpBridge @Inject()(cc: ControllerComponents, router: HttpRouter) extends AbstractController(cc) {
+  private def toAnyMap(js: JsObject): Map[String, Any] =
+    js.value.map {
+      case (k, JsString(v)) => k -> v
+      case (k, JsNumber(v)) => k -> v
+      case (k, JsBoolean(v)) => k -> v
+      case (k, obj: JsObject) => k -> toAnyMap(obj)
+      case (k, arr: JsArray) => k -> arr.value.map(_.toString).toSeq
+      case (k, JsNull) => k -> ""
+    }.toMap
+
+  private def toJsValue(v: Any): JsValue = v match {
+    case null => JsNull
+    case s: String => JsString(s)
+    case b: Boolean => JsBoolean(b)
+    case n: Int => JsNumber(BigDecimal(n))
+    case n: Long => JsNumber(BigDecimal(n))
+    case n: BigDecimal => JsNumber(n)
+    case m: Map[_, _] => JsObject(m.map { case (k, vv) => k.toString -> toJsValue(vv) }.toSeq)
+    case seq: Iterable[_] => JsArray(seq.map(toJsValue).toSeq)
+    case other => JsString(other.toString)
+  }
+
+  private def render(resp: HttpResponse): Result =
+    Status(resp.status)(toJsValue(resp.body))
+
+  def health: Action[AnyContent] = Action {
+    render(router.route(HttpRequest("GET", "/health")))
+  }
+
+  def dispatch(path: String): Action[AnyContent] = Action { req =>
+    val bodyMap = req.body.asJson match {
+      case Some(obj: JsObject) => toAnyMap(obj)
+      case _ => Map.empty[String, Any]
+    }
+    val queryMap = req.queryString.collect { case (k, v) if v.nonEmpty => k -> v.head }
+    val headersMap = req.headers.toSimpleMap
+    val normalized = if (path.startsWith("/")) path else s"/$path"
+    render(router.route(HttpRequest(req.method, normalized, headersMap, queryMap, bodyMap)))
+  }
+}

@@ -1,0 +1,20 @@
+// @generated scaffold by co-arising 2.0 (Scala 2.13 + Play Framework HTTP Entry)
+name := "{{SYSTEM}}-{{CONTEXT}}"
+version := "0.1.0-SNAPSHOT"
+scalaVersion := "2.13.14"
+
+lazy val root = (project in file("."))
+  .enablePlugins(PlayScala)
+  .settings(
+    Compile / unmanagedSourceDirectories ++= Seq(
+      baseDirectory.value / "generated-scaffold" / "scala",
+      baseDirectory.value / "handwritten" / "scala"
+    ),
+    Test / unmanagedSourceDirectories += baseDirectory.value / "generated-tests" / "scala",
+    libraryDependencies ++= Seq(
+      guice,
+      // Optional: plug in auth-core / Play Authority adapter into HttpAuthority:
+      // "net.imadz" %% "auth-core" % "0.2",
+      "org.scalatest" %% "scalatest" % "3.2.19" % Test
+    )
+  )

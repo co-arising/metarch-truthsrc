@@ -262,7 +262,7 @@ const TOOLS = [
     }),
 
   T('v2_verify',
-    'Run the Stop Hook triple verification gate: locked test SHA-256 tamper check, live TS/Scala BDD oracle execution, and provenance reconciliation.',
+    'Run the Stop Hook triple verification gate: locked test SHA-256 tamper check, live TS/Scala BDD oracle execution (domain/application/interfaces), Onion DIP boundary check, and provenance reconciliation.',
     {
       root: { type: 'string', description: 'Project root directory.' },
       targets: { type: 'array', items: { type: 'string' }, description: 'Targets to verify (default: ["typescript"]).' },
@@ -279,6 +279,27 @@ const TOOLS = [
         canonicalFile: a.canonical ?? null,
         dbFile: a.db ?? null,
         strict: a.strict ?? Boolean(process.env.CI),
+      });
+    }),
+
+  T('v2_view',
+    'Export a self-contained, strict-CSP offline HTML visual workbench (truth <-> Onion 5-layer code <-> locked tests) for any co-arising 2.0 project.',
+    {
+      root: { type: 'string', description: 'Project root directory containing .truthsrc/knowledge.sqlite.' },
+      out: { type: 'string', description: 'Destination path for the offline HTML file (e.g. workshop.html).' },
+      title: { type: 'string', description: 'Optional custom workbench title.' },
+      subtitle: { type: 'string', description: 'Optional custom workbench subtitle.' },
+      chapters: { type: 'string', description: 'Optional JSON file with custom curated chapter layout.' },
+    },
+    ['root', 'out'],
+    async (_g, a) => {
+      const { exportV2WorkshopHtml } = await import('../lib/v2/view-v2.mjs');
+      return exportV2WorkshopHtml({
+        rootDir: a.root,
+        outFile: a.out,
+        title: a.title ?? null,
+        subtitle: a.subtitle ?? null,
+        chaptersFile: a.chapters ?? null,
       });
     }),
 ];

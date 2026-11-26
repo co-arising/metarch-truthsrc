@@ -60,10 +60,14 @@ Use this skill whenever the user hands you a PRD, user story doc, meeting notes,
 
 ### Phase 4 — Business Signoff & Handoff to Implementation
 1. Present the generated read-only `projections/ac/*.md` (PM-friendly AC) and `projections/tables/*.md` (DMN decision tables) for business signoff.
-2. Materialize scaffolds, locked BDD oracles, and the derived task queue:
+2. Copy static project scaffold, emit Onion 5-layer code (`domain / application / interfaces / infrastructure / modules`) + `@cloze` skeletons, locked BDD/HTTP oracles, and the derived task queue:
    ```bash
-   truthsrc generate-v2 --in .truthsrc/canonical-v2.json --out . --target typescript,scala --package <pkg>
+   truthsrc generate-v2 --in .truthsrc/canonical-v2.json --out . --target typescript,scala --package <pkg> --with-scaffold
    truthsrc emit-tests-v2 --in .truthsrc/canonical-v2.json --out . --target typescript,scala --package <pkg>
    truthsrc tasks-v2 --root . --format human
    ```
 3. Hand off the derived Channel 4B `@cloze` slots to `coarising-cloze-worker` (or the AGY `coarising_cloze_pipeline.py` parallel workflow).
+4. Once verified, export the offline visual workbench for interactive inspection:
+   ```bash
+   truthsrc view-v2 --root . --out workshop.html
+   ```

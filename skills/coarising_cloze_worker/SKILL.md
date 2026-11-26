@@ -65,9 +65,11 @@ Run Mode B in a **fresh subagent / conversation** that has NEVER seen the worker
 
 ---
 
-## Final Gate
+## Final Gate & Live Run
 
-Once `truthsrc tasks-v2 --root . --format json` shows `pending=0, stale=0, unverified=0, greenNeedsReview=0`, run:
+Once `truthsrc tasks-v2 --root . --format json` shows `pending=0, stale=0, unverified=0, greenNeedsReview=0`, run the full `domain / application / interfaces` + Onion DIP + coverage gate, export the offline workbench, and boot the runnable HTTP service:
 ```bash
 truthsrc check-v2 --root . --strict --format human
+truthsrc view-v2 --root . --out workshop.html
+node handwritten/server.ts   # GET /health + /api/v1/<context>/...
 ```

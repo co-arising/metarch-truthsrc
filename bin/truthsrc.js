@@ -86,16 +86,16 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
                       [--out-ac <dir>] [--out-tables <dir>] [--lang zh|en] [--format human|json]
                                                            co-arising 2.0 EARS-native compiler + SMT hard gate + projections (exit 2 if blocked)
   truthsrc generate-v2 --in <canonical-v2.json> --out <dir> [--target typescript,scala] [--package <pkg>]
-                       [--overwrite-cloze]
-                                                           direct EARS-IR codegen: L1 deterministic + L2/L3/app @cloze skeletons
+                       [--with-scaffold] [--force-scaffold] [--overwrite-cloze]
+                                                           direct EARS-IR Onion 5-layer codegen (domain/application/interfaces/infrastructure/modules) + @cloze skeletons
   truthsrc emit-tests-v2 --in <canonical-v2.json> --out <dir> [--target typescript,scala] [--package <pkg>]
-                                                           emit locked executable BDD oracles + Gherkin + SHA-256 manifest
+                                                           emit locked executable BDD oracles (domain/application/interfaces HTTP) + Gherkin + SHA-256 manifest
   truthsrc context-pack-v2 --in <canonical-v2.json> --slot <slot-id> [--db <knowledge.sqlite>]
                            [--workspace <dir>] [--out-md <file>] [--out-json <file>]
                                                            export Sandwich Context Pack for a Channel 4B @cloze slot
   truthsrc verify-v2 --root <dir> [--target typescript,scala] [--canonical <file>] [--db <knowledge.sqlite>]
                      [--strict | --no-strict] [--scala-classpath <jars>]
-                                                           Stop Hook triple gate: manifest tamper + live BDD oracles + provenance
+                                                           Stop Hook gate: manifest tamper + live domain/application/interfaces oracles + Onion DIP + provenance
   truthsrc audit-coverage-v2 --root <dir> --manifest <coverage-manifest.json> [--binding <effect-binding.yaml>]
                              [--db <knowledge.sqlite>]
                                                            100% full-coverage & E1-E4 evidence ledger audit (exit 2 on gray-zone/stale signoff)
@@ -108,13 +108,16 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
   truthsrc init-hooks [--root <dir>] [--target typescript,scala] [--bin truthsrc] [--force]
                                                            scaffold .claude/settings.json PreToolUse/Stop hooks & .truthsrc/hooks-policy.json
   truthsrc init-v2 <dir> [--system <id>] [--context <id>] [--target typescript,scala] [--package <pkg>] [--force]
-                                                           scaffold ready-to-run co-arising 2.0 bounded-context project
+                                                           scaffold ready-to-run co-arising 2.0 Onion 5-layer bounded-context project
   truthsrc check-v2 [--root <dir>] [--project <truthsrc.v2.json>] [--target typescript,scala] [--strict | --no-strict]
                     [--sync] [--skip-coverage] [--scala-classpath <jars>] [--format human|json]
                                                            single-command v2 gate: compile-v2 + verify-v2 + audit-coverage-v2 (exit 2 on fail)
   truthsrc tasks-v2 [--root <dir>] [--project <truthsrc.v2.json>] [--next] [--include-done]
                     [--record-review --slot <id> --verdict PASS|FAIL [--reviewer <name>]] [--format human|json]
                                                            derived @cloze & S1 task queue with dirty invalidation & blind-review recording
+  truthsrc view-v2 --out <workshop.html> [--root <dir>] [--project <truthsrc.v2.json>] [--db <knowledge.sqlite>]
+                   [--path-prefix <prefix>] [--title <text>] [--subtitle <text>] [--chapters <json>]
+                                                           export self-contained strict-CSP offline visual workbench (truth <-> Onion code <-> tests)
   truthsrc lsp-ears                                        LSP 3.17 stdio server for .ears (live diagnostics, go-to-definition, hover)
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
@@ -485,6 +488,13 @@ switch (cmd) {
       } else {
         console.log(JSON.stringify(result, null, 2));
       }
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'view-v2': {
+    try {
+      const { viewV2Cli } = await import('../lib/v2/cli.mjs');
+      console.log(JSON.stringify(viewV2Cli(process.argv.slice(3)), null, 2));
     } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }

@@ -131,9 +131,10 @@ test('P0 #2 + #4: init-v2 scaffolds TS+Scala (domain + application) and check-v2
     const checkJson = JSON.parse(checkProc.stdout);
     assert.equal(checkJson.passed, true, JSON.stringify(checkJson, null, 2));
     assert.equal(checkJson.verify.tsCheck.passed, true);
-    assert.equal(checkJson.verify.tsCheck.specFiles.length, 2);
+    assert.equal(checkJson.verify.tsCheck.specFiles.length, 3);
     assert.equal(checkJson.verify.scalaCheck.passed, true);
-    assert.equal(checkJson.verify.scalaCheck.suiteClasses.length, 2);
+    assert.equal(checkJson.verify.scalaCheck.suiteClasses.length, 3);
+    assert.equal(checkJson.verify.onionCheck.passed, true);
     assert.equal(checkJson.coverage.passed, true);
     assert.equal(checkJson.coverage.coverageRatio, 1);
 

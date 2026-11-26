@@ -1,0 +1,15 @@
+{
+  "name": "{{SYSTEM}}-{{CONTEXT}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "co-arising 2.0.0 EARS-native Onion Architecture project ({{SYSTEM}}/{{CONTEXT}})",
+  "scripts": {
+    "v2:check": "truthsrc check-v2 --root . --strict --format human",
+    "v2:sync": "truthsrc check-v2 --root . --sync --strict --format human",
+    "v2:tasks": "truthsrc tasks-v2 --root . --format human",
+    "v2:verify": "truthsrc verify-v2 --root . --strict",
+    "v2:view": "truthsrc view-v2 --root . --out workshop.html",
+    "v2:start": "node handwritten/server.ts"
+  }
+}
