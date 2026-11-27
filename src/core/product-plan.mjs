@@ -9,12 +9,12 @@ import { isClassicAggregateScaffoldManifest, preservesClassicAggregatePlaceholde
 import { isClassicRepositoryScaffoldManifest, preservesClassicRepositoryPlaceholders } from '../../lib/classic-architecture/target-v4.mjs';
 import { isClassicFullScaffoldManifest, preservesClassicFullPlaceholders } from '../../lib/classic-architecture/target-v5.mjs';
 
-const VERSION = 'truthsrc.product-generator/v1';
+const SUPPORTED_MANIFEST_VERSIONS = new Set(['truthsrc.product-generator/v1', 'truthsrc.product-generator/v2']);
 const entryKeys = ['path', 'content', 'kind', 'deps', 'knowledgeIds', 'productFootprint', 'merge', 'codeMappings'];
 function manifest(raw) {
   const value = detach(raw);
   object(value, ['schemaVersion', 'name', 'version', 'targetProfile', 'products', 'producers', 'artifactKinds', 'options'], at('manifest'));
-  if (value.schemaVersion !== VERSION) fail('PRODUCT_MANIFEST', 'explicit product generator manifest required', at('manifest'));
+  if (!SUPPORTED_MANIFEST_VERSIONS.has(value.schemaVersion)) fail('PRODUCT_MANIFEST', 'explicit product generator manifest required', at('manifest'));
   if (!/^[a-z][a-z0-9-]*$/u.test(value.name)) fail('PRODUCT_MANIFEST', 'generator name must be a slug', at('manifest'));
   text(value.version, at('manifest')); text(value.targetProfile, at('manifest'));
   for (const name of ['products', 'producers', 'artifactKinds', 'options']) if (!Array.isArray(value[name])) fail('PRODUCT_MANIFEST', 'manifest arrays must be explicit', at('manifest'));

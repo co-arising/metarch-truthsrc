@@ -7,10 +7,10 @@ lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .settings(
     Compile / unmanagedSourceDirectories ++= Seq(
-      baseDirectory.value / "generated-scaffold" / "scala",
-      baseDirectory.value / "handwritten" / "scala"
+      baseDirectory.value.getParentFile / "generated-scaffold" / "scala",
+      baseDirectory.value.getParentFile / "handwritten" / "scala"
     ),
-    Test / unmanagedSourceDirectories += baseDirectory.value / "generated-tests" / "scala",
+    Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "generated-tests" / "scala",
     coverageMinimumStmtTotal := {{MIN_LINE_COVERAGE}},
     coverageFailOnMinimum := true,
     coverageHighlighting := true,
