@@ -26,18 +26,20 @@ Use this skill once `compile-v2` has passed and Channel 4B `@cloze` slots need i
    truthsrc tasks-v2 --root . --next --format human
    ```
    (Or inspect all parallelizable slots with `truthsrc tasks-v2 --root . --format json`.)
-2. **Read ONLY the Sandwich Context Pack** returned for `<slot-id>` and open the target handwritten file (`handwritten/<slot-id>.cloze.ts` and/or `handwritten/scala/.../<Slot>Cloze.scala`).
+2. **Read ONLY the Sandwich Context Pack** returned for `<slot-id>` and open the target handwritten file (`handwritten/<slot-id>.cloze.ts` and/or `handwritten/scala/.../*Impl.scala`).
 3. **Set active slot guard** (when invoking hooks): `COARISING_ACTIVE_CLOZE=<slot-id>`.
 4. **Implement inside `@cloze:start(<slot-id>)..@cloze:end(<slot-id>)`**:
    - Use exact fixed-point helpers (`dec`, `decAdd`, `decSub`, `decMul`, `decCmp` in TS; `BigDecimal` in Scala) — never IEEE-754 floating-point math.
    - Honor DMN First-Hit rule ordering, every `SHALL NOT dispatch` prohibition, and every `ALWAYS ... SHALL NOT supply` untrusted-input sanitization axiom.
+   - For `scala-cqrs-play-service-v2` projects, after all EARS `@cloze` slots pass, also complete any non-EARS infrastructure isolation skeletons under `handwritten/scala/` (`*ComputationsImpl.scala` for L2 commands, `*ApplyEventSemanticsImpl.scala` for ReadSide projections, `*ConnectorImpl.scala` for external ToolGate ports, `*EffectPortImpl.scala` for external Effect adapters, and `modules/HandwrittenBindingsModule.scala` for custom Guice DI overrides).
 5. **Run the Stop Hook verification gate**:
    ```bash
-   truthsrc verify-v2 --root . --strict --target typescript,scala \
+   truthsrc verify-v2 --root . --strict --mutation-gate \
+     --target typescript,scala-cqrs-play-service-v2 \
      --canonical .truthsrc/canonical-v2.json \
      --db .truthsrc/knowledge.sqlite
    ```
-   Do not stop until `passed: true` and zero failed spec IDs remain.
+   Do not stop until `passed: true`, zero Onion DIP violations, 100% Domain Mutation Gate, and zero failed spec IDs remain.
 
 ---
 

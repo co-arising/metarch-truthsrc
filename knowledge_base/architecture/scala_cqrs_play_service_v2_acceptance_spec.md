@@ -14,7 +14,8 @@
 | **S4** | **语义稳定溯源（Semantic `@knowledge`）** | 严禁任何数组下标指针（如 `/aggregates/2/commands/0/guards/2`）。全部锚点必须使用业务语义键（`/aggregates/<Agg>/commands/<Cmd>`、`/behaviors/<Slice>/rules/<RuleId>`、`/readModels/<Name>` 等），真源增删改序后锚点仍 100% 稳定。 | 溯源门禁失败 |
 | **S5** | **真实语义而非空壳占位（Zero Stub Theater）** | 禁止出现 `???`；事件含非空字段时 `checkEventPostconditions` 必须生成真实运行时校验（不得退化为 `= None`）；禁止拼接转义 JSON 字符串（如 `contractJson = "{\"...\"}"`），强制强类型 `CallerContractSpec` 与 Scala `"""...""".stripMargin` 惯用语法。 | 代码审查/单测拒收 |
 | **S6** | **零硬编码运行时 & 1.0 Parity 零退化** | 除 `lib/runtime-profile.mjs` 外禁止硬编码运行时组织/包名（`npm run lint:arch` 0 issues）；`node emitter/parity.mjs` 全部 24 族必须维持 `allGreen: true`。 | CI 阻断合并 |
-| **S7** | **问题空间与解空间解耦（Context Mapping Gate）** | Subdomain（问题空间）绝不等价于 Bounded Context（解空间服务）。必须经 Phase 3.5 `domain-map.yaml` 决策确认后再按 BC 打包生成；跨 BC 边界自动触发 `#46 ExternalEventBridge` + `ExternalAuthority`。 | 禁止直接发版 |
+| **S7** | **问题空间与解空间解耦（Context Mapping Gate）** | Subdomain（问题空间）绝不等价于 Bounded Context（解空间服务）。必须经 Phase 3.5 `domain-map.yaml`（或零配置 `--packaging monolith` 大泥球策略）确认后按 BC 生成；跨 BC 边界自动触发 `#46 ExternalEventBridge` + `ExternalAuthority`。 | 禁止直接发版 |
+| **S8** | **EARS 双分支契约 & 0 方法才允许 `Noop`** | **分支一（确定性 4A）**：必须非空真实逻辑 + 100% 锁定测试覆盖（含 `checkEventPostconditions` 断言）+ 100% 变异杀死率，且仅 0 抽象方法的 ABI Trait 才允许 `Noop`。<br/>**分支二（非确定性 4B & Infra）**：L2 领域算子（`<Agg>ComputationsImpl` + `<Target>Impl`）、L3 应用编排（`<Story>Impl`）、`#26 *ApplyEventSemanticsImpl`、`#25 *ConnectorImpl`、`#44 *EffectPortImpl` 必须默认生成于 `handwritten/scala/` 隔离区、严禁 `Noop`，且全部在 `GeneratedBindingsModule` + `HandwrittenBindingsModule` + `<Context>ProjectionModule` 完成 DI 绑定。 | `npm run test:acceptance-v2` 直接拒收 |
 
 ---
 

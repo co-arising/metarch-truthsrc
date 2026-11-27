@@ -917,11 +917,43 @@ test('scala-cqrs-play-service-v2 (Full Blocks A+B+C+D): generates bank-wealth-de
     assert.match(routesConf, /controllers\.CashFundPurchasePlayController\./);
     assert.match(routesConf, /controllers\.AggregateStateApiController\./);
 
-    // 6. Saga / Effect Orchestration + SagaCoordinatorBootstrap + serialization.conf host/effect registrations
+    // 6. Saga / Effect Orchestration + SagaCoordinatorBootstrap + serialization.conf + Guice GeneratedBindingsModule & HandwrittenBindingsModule
     assert.equal(existsSync(join(work, 'generated-scaffold/scala/example/bankwealth/infrastructure/bootstrap/SagaCoordinatorBootstrap.scala')), true);
     const serConf = readFileSync(join(work, 'generated-scaffold/conf/serialization.conf'), 'utf8');
     assert.match(serConf, /cash-fund-purchase-host/);
     assert.match(serConf, /cash-fund-purchase-effect/);
+    const genBindings = readFileSync(join(work, 'generated-scaffold/scala/example/bankwealth/modules/GeneratedBindingsModule.scala'), 'utf8');
+    assert.match(genBindings, /bind\(classOf\[FundQuotaComputations\]\)\.toInstance\(FundQuotaComputations\.Noop\)/);
+    assert.match(genBindings, /bind\(classOf\[BankOrderReadsideRepository\]\)\.to\(classOf\[BankOrderReadsideRepositoryImpl\]\)/);
+    assert.match(genBindings, /bind\(classOf\[CashFundPurchaseHandler\]\)\.toInstance\(CashFundPurchaseImpl\)/);
+    assert.match(genBindings, /bind\(classOf\[SagaCoordinatorBootstrap\]\)\.asEagerSingleton\(\)/);
+    const hwBindings = readFileSync(join(work, 'handwritten/scala/example/bankwealth/modules/HandwrittenBindingsModule.scala'), 'utf8');
+    assert.match(hwBindings, /install\(new GeneratedBindingsModule\(\)\)/);
+
+    // 7. Pipeline + UseCase provenance bridging check
+    const enrichedCanonical = structuredClone(canonicalV2);
+    enrichedCanonical.structures.pipelines = [
+      { id: 'daily-reconcile', name: 'DailyReconcile', stages: ['FetchTaFiles', 'ReconcileOrders'] },
+    ];
+    enrichedCanonical.structures.stories[0].coversUseCases = ['UC-CASH-PURCHASE'];
+    const pipeOut = makeTempDir('truthsrc-v2-pipe-uc-');
+    try {
+      plugin.generate(enrichedCanonical, { outDir: pipeOut, packageName: 'example.bankwealth' });
+      assert.equal(existsSync(join(pipeOut, 'generated-scaffold/scala/example/bankwealth/application/process/DailyReconcileInvocationFace.scala')), true);
+      assert.equal(existsSync(join(pipeOut, 'generated-scaffold/scala/example/bankwealth/application/process/DailyReconcileCompositionHost.scala')), true);
+      assert.equal(existsSync(join(pipeOut, 'generated-scaffold/scala/example/bankwealth/infrastructure/bootstrap/DailyReconcileProcessBootstrap.scala')), true);
+      assert.equal(existsSync(join(pipeOut, 'generated-scaffold/protobuf/daily_reconcile_host.proto')), true);
+      const pipeSer = readFileSync(join(pipeOut, 'generated-scaffold/conf/serialization.conf'), 'utf8');
+      assert.match(pipeSer, /daily-reconcile-host/);
+      const pipeSagaBoot = readFileSync(join(pipeOut, 'generated-scaffold/scala/example/bankwealth/infrastructure/bootstrap/SagaCoordinatorBootstrap.scala'), 'utf8');
+      assert.match(pipeSagaBoot, /initDailyReconcileProcess\(sharding\)/);
+      const ucPort = readFileSync(join(pipeOut, 'generated-scaffold/scala/example/bankwealth/application/services/CashFundPurchasePort.scala'), 'utf8');
+      assert.match(ucPort, /#\/useCases\/UC-CASH-PURCHASE/);
+      const ucCtrl = readFileSync(join(pipeOut, 'generated-scaffold/scala/controllers/CashFundPurchasePlayController.scala'), 'utf8');
+      assert.match(ucCtrl, /#\/useCases\/UC-CASH-PURCHASE/);
+    } finally {
+      rmSync(pipeOut, { recursive: true, force: true });
+    }
 
     const tc = detectScalaToolchain();
     const cp = resolveScalaTestClasspath({ scalaBinaryVersion: tc.binaryVersion });

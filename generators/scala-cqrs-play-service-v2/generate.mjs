@@ -131,6 +131,8 @@ export function mergeCanonicalsForBc(canonicals, { bcName, domainMap = null } = 
       externContracts: dedupBy(canonicals.flatMap(c => c.structures?.externContracts ?? []), x => `${x.ownerPort || ''}:${x.name}`),
       aggregates: dedupBy(canonicals.flatMap(c => c.structures?.aggregates ?? []), x => x.name),
       stories: dedupBy(canonicals.flatMap(c => c.structures?.stories ?? []), x => x.name),
+      useCases: dedupBy(canonicals.flatMap(c => c.structures?.useCases ?? []), x => x.id || x.name),
+      pipelines: dedupBy(canonicals.flatMap(c => c.structures?.pipelines ?? c.pipelines ?? []), x => x.id || x.name),
       sagas: dedupBy(canonicals.flatMap(c => c.structures?.sagas ?? c.sagas ?? []), x => x.name),
       effects: dedupBy(canonicals.flatMap(c => c.structures?.effects ?? c.effects ?? []), x => x.name),
     },
@@ -208,6 +210,7 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
       protoPaths: blockC.protoPaths,
       orchestration,
       externalIntegrations,
+      nonEmptyComputationsAggs: new Set(blockARes.nonEmptyComputationsAggs ?? []),
     });
     for (const f of blockD.familiesUsed) allFamilies.add(f);
     for (const [rawPath, content] of Object.entries(blockD.files)) {
@@ -215,6 +218,36 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
       const stamped = stampGeneratedHeader(relPath, content, sha);
       writtenMap.set(relPath, writeArtifact(root, relPath, stamped, { overwrite: true }));
     }
+    for (const [hwPath, content] of Object.entries(blockD.handwrittenFiles ?? {})) {
+      writtenMap.set(hwPath, writeArtifact(root, hwPath, content, { overwrite: overwriteCloze }));
+    }
+
+    // Starter handwritten Guice bindings module (never overwritten once created) so
+    // BootstrapModule.installOptionalModule("<pkg>.modules.HandwrittenBindingsModule") wires
+    // GeneratedBindingsModule (+ ProjectionModule when present) out of the box!
+    const pkgDir = packageName.split('.').join('/');
+    const hwBindingsRel = `handwritten/scala/${pkgDir}/modules/HandwrittenBindingsModule.scala`;
+    const projModImport = blockD.projectionModuleClass ? [`import ${blockD.projectionModuleClass}`] : [];
+    const projModSimple = blockD.projectionModuleClass ? blockD.projectionModuleClass.split('.').pop() : null;
+    const hwBindingsContent = [
+      `// Handwritten DI bindings isolation zone for ${packageName}.`,
+      '// BootstrapModule automatically loads this module via installOptionalModule.',
+      '// GeneratedBindingsModule provides default bindings for Computations (L2 -> *Impl, L1-only -> Noop), ReadSide, ToolGates, Effects, *Impl handlers, and SagaCoordinatorBootstrap.',
+      '// Override or add custom infrastructure / DomainService bindings below; truthsrc generate-v2 will never overwrite this file.',
+      `package ${packageName}.modules`,
+      '',
+      'import com.google.inject.AbstractModule',
+      ...projModImport,
+      '',
+      'final class HandwrittenBindingsModule extends AbstractModule {',
+      '  override def configure(): Unit = {',
+      '    install(new GeneratedBindingsModule())',
+      ...(projModSimple ? [`    install(new ${projModSimple}())`] : []),
+      '  }',
+      '}',
+      '',
+    ].join('\n');
+    writtenMap.set(hwBindingsRel, writeArtifact(root, hwBindingsRel, hwBindingsContent, { overwrite: overwriteCloze }));
   }
 
   for (const rec of writtenMap.values()) written.push(rec);
