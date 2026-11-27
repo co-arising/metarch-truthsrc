@@ -144,6 +144,28 @@ Before locking Phase 1, silently scan the PRD against these **8 blind-spot & uni
    truthsrc atlas-v2 --canonicals a.json,b.json --domain-map truth/domain-map.yaml --out signoff/system-atlas.html --out-dir signoff
    ```
 
+### Phase 3.5 — Context Mapping & Bounded Context Packaging Decision Gate (Mandatory BEFORE Code Generation!)
+> **NEVER jump straight from Subdomain truth to `truthsrc generate-v2` without confirming how Subdomains map to deployable Bounded Contexts (services) and cross-BC integration patterns!**
+
+1. **Always present a plain-language Deployment & Integration Proposal to the user/architect** (do NOT expose raw DDD jargon — translate into team ownership, deployment cadence, and failure-isolation trade-offs):
+   - **Packaging Choice (`boundedContexts`)**: Given the distilled subdomains (e.g. `exam`, `certification`, `filing`), propose concrete options:
+     - **Option A (Recommended for MVP / small team — Modular Monolith)**: Package multiple subdomains into 1 deployable service (`boundedContexts: [{ name: core-service, subdomains: [a, b], package: ... }]`), keeping strict package isolation so they can split later with zero truth-source edits.
+     - **Option B (Team / Scale Split)**: Split high-churn or independently scaled subdomains into separate Bounded Context services (each gets its own `ApplicationBootstrap`, `conf/routes`, `build.sbt`, and database schema).
+   - **Cross-BC Context Mapping Pattern (`integrations[*].pattern`)**: For every event/API crossing two different Bounded Contexts, confirm the integration contract:
+     - `ACL` (Anti-Corruption Layer — default recommended when downstream must be insulated from upstream model changes; generates `#46 <Agg>ExternalEvents.scala` + `ExternalAuthority`),
+     - `OHS/PL` (Open Host Service / Published Language — public API or standardized event schema),
+     - `Conformist` or `Shared Kernel` (explicitly record the coupling risk).
+2. **Persist the approved decision into `truth/domain-map.yaml`** (`boundedContexts:` + `integrations:` + `package:` per BC).
+3. **Generate per Bounded Context** (not blindly 1-service-per-subdomain):
+   - Single-subdomain BC:
+     ```bash
+     truthsrc generate-v2 --generator scala-cqrs-play-service-v2 --in .truthsrc/canonical-v2.json --out . --package <pkg>
+     ```
+   - Multi-subdomain packaged BC:
+     ```bash
+     truthsrc generate-v2 --generator scala-cqrs-play-service-v2 --domain-map truth/domain-map.yaml --bc <bcName> --canonicals a.json,b.json --out services/<bcName> --package <pkg>
+     ```
+
 ### Phase 4 — Business Signoff & Handoff to Implementation
 1. Present the generated read-only signoff pack for PM / Architecture / Legal approval:
    - `signoff/atlas.html` (Unified offline interactive Atlas viewer: 6 Problem-Space diagrams incl. Brandolini Event Matrix, 2D Story Map + CSV, Sequence SVG, Domain Model + Relations, Field Lineage + PII, ContextMapper `.cml` + 5 Solution-Space diagrams)

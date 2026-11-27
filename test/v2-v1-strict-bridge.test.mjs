@@ -11,6 +11,7 @@ import {
   GENERATED_HEADER_CONF,
   GENERATED_HEADER_SCALA,
   GENERATOR_MANIFEST,
+  generateScalaCqrsPlayServiceV2ForBc,
 } from '../generators/scala-cqrs-play-service-v2/generate.mjs';
 import { renderCleanBoolScala, simplifyBoolExpr } from '../lib/v2/bridge/ears-simplify.mjs';
 import { emitV2ExecutableTests } from '../lib/v2/test-emitter/emit.mjs';
@@ -859,6 +860,68 @@ test('scala-cqrs-play-service-v2 (Full Blocks A+B+C+D): generates bank-wealth-de
     assert.ok(genRes.familiesUsed.includes('service-runtime'));
     assert.ok(genRes.familiesUsed.includes('project-scaffold'));
     assert.ok(genRes.familiesUsed.includes('authz-pep-dsl'));
+    assert.ok(genRes.familiesUsed.includes('query-service'));
+    assert.ok(genRes.familiesUsed.includes('projection-repository-port'));
+    assert.ok(genRes.familiesUsed.includes('projection-repository-implementation'));
+    assert.ok(genRes.familiesUsed.includes('projection'));
+    assert.ok(genRes.familiesUsed.includes('projection-handler'));
+    assert.ok(genRes.familiesUsed.includes('readside-bootstrap'));
+    assert.ok(genRes.familiesUsed.includes('command-endpoint-dsl'));
+    assert.ok(genRes.familiesUsed.includes('aggregate-state-controller'));
+    assert.ok(genRes.familiesUsed.includes('http-controller'));
+    assert.ok(genRes.familiesUsed.includes('routes'));
+    assert.ok(genRes.familiesUsed.includes('strict-saga-module'));
+    assert.ok(genRes.familiesUsed.includes('saga-coordinator-bootstrap'));
+
+    // 1. Semantic stable @knowledge anchors (zero array-index pointers like /aggregates/2/commands/0/guards/2)
+    const cbRules = readFileSync(
+      join(work, 'generated-scaffold/scala/example/bankwealth/domain/invariants/CreditBalanceRules.scala'),
+      'utf8',
+    );
+    assert.doesNotMatch(cbRules, /\/aggregates\/\d+\//, 'must never emit unstable numeric array indices in @knowledge anchors');
+    assert.match(cbRules, /#\/behaviors\/CreditBalance\.ReserveFunds\/rules\/BAL_INSUFFICIENT_FUNDS/);
+    // 2. Real checkEventPostconditions (never `= None`)
+    assert.doesNotMatch(cbRules, /def checkEventPostconditions\(events: List\[Event\]\): Option\[iMadzError\] = None/);
+    assert.match(cbRules, /private def checkEventPostcondition\(event: Event\): Option\[iMadzError\]/);
+
+    // 3. Strongly-typed CallerContractSpec (zero escaped `contractJson`)
+    const cashPort = readFileSync(
+      join(work, 'generated-scaffold/scala/example/bankwealth/application/services/CashFundPurchasePort.scala'),
+      'utf8',
+    );
+    assert.doesNotMatch(cashPort, /contractJson/, 'must replace escaped JSON string with typed CallerContractSpec');
+    assert.match(cashPort, /val spec: CallerContractSpec = CallerContractSpec\(/);
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/example/bankwealth/application/services/CallerContractSpec.scala')), true);
+
+    // 4. Full ReadSide Projection Suite wired into ApplicationBootstrap + idiomatic triple-quoted SQL DDL
+    const appBoot = readFileSync(
+      join(work, 'generated-scaffold/scala/example/bankwealth/infrastructure/bootstrap/ApplicationBootstrap.scala'),
+      'utf8',
+    );
+    assert.match(appBoot, /with BankOrderReadsideBootstrap/);
+    assert.match(appBoot, /initBankOrderReadsideProjection\(/);
+    const schemaDdl = readFileSync(
+      join(work, 'generated-scaffold/scala/example/bankwealth/infrastructure/repositories/projection/BankOrderReadsideSchema.scala'),
+      'utf8',
+    );
+    assert.match(schemaDdl, /"""\|CREATE TABLE IF NOT EXISTS/);
+    assert.match(schemaDdl, /\.stripMargin/);
+
+    // 5. auth-core Play Controllers + AggregateStateApiController + CommandDsl + conf/routes
+    const playCtrl = readFileSync(join(work, 'generated-scaffold/scala/controllers/CashFundPurchasePlayController.scala'), 'utf8');
+    assert.match(playCtrl, /Endpoint/);
+    assert.match(playCtrl, /api\.(?:global|tenant|anonymous)\./);
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/controllers/AggregateStateApiController.scala')), true);
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/example/bankwealth/infrastructure/api/CommandDsl.scala')), true);
+    const routesConf = readFileSync(join(work, 'generated-scaffold/conf/routes'), 'utf8');
+    assert.match(routesConf, /controllers\.CashFundPurchasePlayController\./);
+    assert.match(routesConf, /controllers\.AggregateStateApiController\./);
+
+    // 6. Saga / Effect Orchestration + SagaCoordinatorBootstrap + serialization.conf host/effect registrations
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/example/bankwealth/infrastructure/bootstrap/SagaCoordinatorBootstrap.scala')), true);
+    const serConf = readFileSync(join(work, 'generated-scaffold/conf/serialization.conf'), 'utf8');
+    assert.match(serConf, /cash-fund-purchase-saga-host/);
+    assert.match(serConf, /cash-fund-purchase-effect/);
 
     const tc = detectScalaToolchain();
     const cp = resolveScalaTestClasspath({ scalaBinaryVersion: tc.binaryVersion });
@@ -874,6 +937,170 @@ test('scala-cqrs-play-service-v2 (Full Blocks A+B+C+D): generates bank-wealth-de
       assert.equal(verify.testabilityCheck.passed, true);
       assert.equal(verify.expectedClozeRed.isExpectedTddRed, true);
     }
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('scala-cqrs-play-service-v2: Multi-Subdomain -> Single Bounded Context packaging + Cross-BC ExternalEventBridge (#46)', () => {
+  const work = makeTempDir('truthsrc-v2-bc-packaging-');
+  try {
+    mkdirSync(join(work, 'truth/identity/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/identity/behaviors/domain'), { recursive: true });
+    mkdirSync(join(work, 'truth/exam/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/exam/behaviors/domain'), { recursive: true });
+    mkdirSync(join(work, 'truth/cert/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/cert/behaviors/domain'), { recursive: true });
+
+    writeFileSync(join(work, 'truth/identity/structures/identity.yaml'), `
+system: edu-platform
+subdomain: identity
+context: identity
+aggregates:
+  - name: CandidateAccount
+    aliases: [acc, state]
+    stateFields:
+      - name: accountId
+        type: String
+        default: ""
+    commands:
+      - name: Register
+        produces: [Registered]
+        parameters:
+          - name: accountId
+            type: String
+    events:
+      - name: Registered
+        fields:
+          - name: accountId
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/identity/behaviors/domain/acc.ears'), `
+slice CandidateAccount.Register
+rules:
+  [ACC_EMPTY] IF accountId == "" THEN SHALL reject request with ACC_EMPTY
+  [ACC_OK]    WHILE accountId != ""
+              WHEN Register
+              SHALL emit Registered
+              post:
+                acc.accountId' = accountId
+`, 'utf8');
+
+    writeFileSync(join(work, 'truth/exam/structures/exam.yaml'), `
+system: edu-platform
+subdomain: exam
+context: exam
+aggregates:
+  - name: ExamSession
+    aliases: [session, state]
+    stateFields:
+      - name: sessionId
+        type: String
+        default: ""
+    commands:
+      - name: Start
+        produces: [SessionStarted]
+        parameters:
+          - name: sessionId
+            type: String
+    events:
+      - name: SessionStarted
+        fields:
+          - name: sessionId
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/exam/behaviors/domain/exam.ears'), `
+slice ExamSession.Start
+rules:
+  [SES_EMPTY] IF sessionId == "" THEN SHALL reject request with SES_EMPTY
+  [SES_OK]    WHILE sessionId != ""
+              WHEN Start
+              SHALL emit SessionStarted
+              post:
+                session.sessionId' = sessionId
+`, 'utf8');
+
+    writeFileSync(join(work, 'truth/cert/structures/cert.yaml'), `
+system: edu-platform
+subdomain: cert
+context: cert
+aggregates:
+  - name: Certificate
+    aliases: [cert, state]
+    stateFields:
+      - name: certId
+        type: String
+        default: ""
+    commands:
+      - name: Issue
+        produces: [CertIssued]
+        parameters:
+          - name: certId
+            type: String
+    events:
+      - name: CertIssued
+        fields:
+          - name: certId
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/cert/behaviors/domain/cert.ears'), `
+slice Certificate.Issue
+rules:
+  [CERT_EMPTY] IF certId == "" THEN SHALL reject request with CERT_EMPTY
+  [CERT_OK]    WHILE certId != ""
+               WHEN Issue
+               SHALL emit CertIssued
+               post:
+                 cert.certId' = certId
+`, 'utf8');
+
+    const cIdentity = compileCanonicalV2({ structuresDir: join(work, 'truth/identity/structures'), specsPath: join(work, 'truth/identity/behaviors') }).canonical;
+    const cExam = compileCanonicalV2({ structuresDir: join(work, 'truth/exam/structures'), specsPath: join(work, 'truth/exam/behaviors') }).canonical;
+    const cCert = compileCanonicalV2({ structuresDir: join(work, 'truth/cert/structures'), specsPath: join(work, 'truth/cert/behaviors') }).canonical;
+
+    // Context Mapping: identity + exam packaged into ONE BC (`core-bc`), while `cert` is upstream/separate BC with ACL integration into ExamSession!
+    const domainMap = {
+      system: 'edu-platform',
+      boundedContexts: [
+        { name: 'core-bc', subdomains: ['identity', 'exam'], package: 'edu.platform.core' },
+        { name: 'cert-bc', subdomains: ['cert'], package: 'edu.platform.cert' },
+      ],
+      integrations: [
+        {
+          id: 'cert-to-exam',
+          upstreamSubdomain: 'cert',
+          upstreamEvent: 'Certificate.CertIssued',
+          downstreamSubdomain: 'exam',
+          downstreamTarget: 'ExamSession.Start',
+          pattern: 'ACL',
+        },
+      ],
+    };
+
+    const bcOut = join(work, 'services/core-bc');
+    const bcRes = generateScalaCqrsPlayServiceV2ForBc({
+      domainMap,
+      bcName: 'core-bc',
+      canonicals: [cIdentity, cExam, cCert],
+      outDir: bcOut,
+    });
+
+    assert.equal(bcRes.boundedContext, 'core-bc');
+    assert.deepEqual(bcRes.packagedSubdomains.sort(), ['exam', 'identity']);
+    assert.equal(bcRes.externalIntegrationsCount, 1);
+    assert.ok(bcRes.familiesUsed.includes('external-event-bridge'), 'must emit #46 external-event-bridge for cross-BC integration');
+
+    // Both subdomains' aggregates live inside ONE unified Play/sbt BC service!
+    assert.equal(existsSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/domain/entities/CandidateAccountEntity.scala')), true);
+    assert.equal(existsSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/domain/entities/ExamSessionEntity.scala')), true);
+    // Excluded subdomain (`cert`) must NOT leak into core-bc!
+    assert.equal(existsSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/domain/entities/CertificateEntity.scala')), false);
+
+    // #46 ExternalEventBridge + ExternalAuthority wired cleanly into ExamSession + ApplicationBootstrap!
+    assert.equal(existsSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/application/aggregates/behaviors/ExamSessionExternalEvents.scala')), true);
+    const appBoot = readFileSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/infrastructure/bootstrap/ApplicationBootstrap.scala'), 'utf8');
+    assert.match(appBoot, /initCandidateAccountAggregate\(sharding, candidateAccountComputations\)/);
+    assert.match(appBoot, /initExamSessionAggregate\(sharding, examSessionComputations, examSessionAuthority\)/);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }
