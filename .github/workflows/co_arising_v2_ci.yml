@@ -3,6 +3,7 @@ name: co-arising-v2-matrix-ci
 on:
   push:
     branches: [main, feat/co-arising-v2-ears-native]
+    tags: ['v*']
   pull_request:
 
 jobs:
@@ -74,3 +75,39 @@ jobs:
           TMP_PROJ="$(mktemp -d)/ci-starter"
           node bin/truthsrc.js init-v2 "$TMP_PROJ" --target typescript,scala --package example.ci
           node bin/truthsrc.js check-v2 --root "$TMP_PROJ" --strict --mutation-gate --format human
+
+  dispatch-downstream:
+    needs: v2-toolchain-matrix
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Export capabilities metadata
+        id: caps
+        run: |
+          node bin/truthsrc.js export-capabilities --out /tmp/capabilities.lock.json
+          VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/capabilities.lock.json','utf8')).toolVersion)")
+          SHA=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/capabilities.lock.json','utf8')).surfaceSha256)")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "surface_sha256=$SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch truthsrc-updated to bank-wealth-demo
+        env:
+          DISPATCH_TOKEN: ${{ secrets.COARISING_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$DISPATCH_TOKEN" ]; then
+            echo "COARISING_DISPATCH_TOKEN not configured; skipping downstream dispatch"
+            exit 0
+          fi
+          curl -fsSL -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $DISPATCH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/co-arising/bank-wealth-demo/dispatches \
+            -d "{\"event_type\":\"truthsrc-updated\",\"client_payload\":{\"truthsrc_commit\":\"${{ github.sha }}\",\"version\":\"${{ steps.caps.outputs.version }}\",\"surface_sha256\":\"${{ steps.caps.outputs.surface_sha256 }}\"}}"
