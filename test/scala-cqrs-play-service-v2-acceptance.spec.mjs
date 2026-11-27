@@ -28,6 +28,9 @@ import {
 } from '../lib/v2/verify-gate.mjs';
 import { buildV2WorkshopView, exportV2WorkshopHtml } from '../lib/v2/view-v2.mjs';
 import { deriveClozeTasksV2 } from '../lib/v2/tasks-v2.mjs';
+import { materializeApplicationWitness } from '../lib/v2/test-emitter/witness-materialize.mjs';
+import { initV2Project } from '../lib/v2/init-v2.mjs';
+import { runCheckV2 } from '../lib/v2/check-v2.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
@@ -1064,8 +1067,451 @@ test('[SPEC-S12] Monolith upgrade writes default canonical-v2.json, enables zero
 
     const queue = deriveClozeTasksV2({ rootDir: work });
     assert.equal(queue.summary.totalCloze > 0, true, 'tasks-v2 --root <dir> must see all monolith clozeSlots immediately');
+    assert.deepEqual(queue.targets, ['scala-cqrs-play-service-v2'], 'monolith Scala-only root must auto-detect single-stack target');
   } finally {
     rmSync(srcWork, { recursive: true, force: true });
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S13] Rejected application witness preserves empty sequence without clobbering', () => {
+  const canonical = {
+    structures: {
+      ports: [{
+        name: 'GradingPort',
+        operations: [{
+          name: 'Submit',
+          parameters: [
+            { name: 'paperId', resolvedType: { kind: 'string' } },
+            { name: 'scores', resolvedType: { kind: 'sequence', element: { kind: 'int' } } },
+          ],
+        }],
+      }],
+      aggregates: [],
+      stories: [],
+    },
+  };
+  const rejected = materializeApplicationWitness(
+    { scalars: { paperId: 'p-1', '@agg(len:scores)': 0, scores: [] } },
+    {
+      canonicalV2: canonical,
+      command: 'GradingPort.Submit',
+      example: { ruleId: 'R-EMPTY', actions: [{ kind: 'reject', modality: 'SHALL', code: 'EMPTY_SCORES' }] },
+    },
+  );
+  assert.deepEqual(rejected.payload.scores, []);
+  assert.deepEqual(rejected.clientPayload.scores, []);
+
+  const accepted = materializeApplicationWitness(
+    { scalars: { paperId: 'p-1', scores: [] } },
+    {
+      canonicalV2: canonical,
+      command: 'GradingPort.Submit',
+      example: { ruleId: 'R-OK', actions: [{ kind: 'respond', modality: 'SHALL', response: 'Ok' }] },
+    },
+  );
+  assert.equal(Array.isArray(accepted.payload.scores) && accepted.payload.scores.length > 0, true);
+});
+
+test('[SPEC-S14] Hybrid L1+L2 aggregate with custom aliases unifies RuleParams, emits Computations.Noop, folds state cleanly, and passes strict Scala verify', () => {
+  const work = makeTempDir('coarising-spec-s14-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: hybrid-sys
+subdomain: billing
+exactTypes:
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    units: [CNY]
+aggregates:
+  - name: HybridOrder
+    aliases: [order]
+    idField: orderId
+    stateFields:
+      - name: orderId
+        type: String
+      - name: status
+        type: String
+        default: "Draft"
+      - name: total
+        type: Int
+        default: 0
+    commands:
+      - name: Open
+        parameters:
+          - name: orderId
+            type: String
+        produces: [Opened]
+      - name: Price
+        parameters:
+          - name: qty
+            type: Int
+          - name: unitPrice
+            type: Int
+          - name: total
+            type: Int
+        produces: [Priced]
+    events:
+      - name: Opened
+        fields:
+          - name: orderId
+            type: String
+      - name: Priced
+        fields:
+          - name: total
+            type: Int
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/hybrid-order-open.ears'), `slice HybridOrder.Open
+
+rules:
+  [OPEN_INVALID] IF order.status != "Draft" THEN SHALL reject request with OPEN_INVALID
+  [OPEN_OK]      WHILE order.status == "Draft"
+                 WHEN Open
+                 SHALL transition order.status -> "Open"
+                   AND emit Opened
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/hybrid-order-price.ears'), `slice HybridOrder.Price
+
+rules:
+  [PRICE_BAD] IF qty * unitPrice != total or total <= 0 THEN SHALL reject request with PRICE_BAD
+  [PRICE_OK]  WHILE qty * unitPrice == total and total > 0
+              WHEN Price
+              SHALL emit Priced
+              post:
+                order.total' = total
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S14 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec14' });
+    emitV2ExecutableTests(comp.canonical, { outDir: work, targets: ['scala-cqrs-play-service-v2'], packageName: 'example.spec14' });
+
+    // No split DomainServiceRuleParams file; EventHandler must not emit state.copy(state = ...); non-empty L2 Computations must not emit Noop
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/example/spec14/domain/invariants/params/HybridOrderDomainServiceRuleParams.scala')), false);
+    const evHandler = readFileSync(join(work, 'generated-scaffold/scala/example/spec14/domain/entities/behaviors/HybridOrderEventHandler.scala'), 'utf8');
+    assert.doesNotMatch(evHandler, /state\.copy\(state\s*=/);
+    const compTrait = readFileSync(join(work, 'generated-scaffold/scala/example/spec14/domain/services/HybridOrderComputations.scala'), 'utf8');
+    assert.doesNotMatch(compTrait, /\bval\s+Noop\b/);
+
+    // Fill L2 cloze and run strict Scala verification
+    const implPath = join(work, 'handwritten/scala/example/spec14/domain/services/impl/HybridOrderPriceImpl.scala');
+    const filled = readFileSync(implPath, 'utf8').replace(
+      /\/\/ @cloze:start\(hybrid-order-price\)[\s\S]*?\/\/ @cloze:end\(hybrid-order-price\)/u,
+      [
+        '// @cloze:start(hybrid-order-price)',
+        '    if (p.qty * p.unitPrice != p.total || p.total <= 0L) Left(iMadzError("PRICE_BAD", "invalid total"))',
+        '    else Right(List(Priced(p.total)))',
+        '    // @cloze:end(hybrid-order-price)',
+      ].join('\n'),
+    );
+    writeFileSync(implPath, filled, 'utf8');
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S14 strict verify failed: ${JSON.stringify(verify, null, 2)}`);
+    assert.equal(verify.tsCheck.skipped, true, 'Scala-only root must auto-skip TS suite');
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S15] Public first route, resource-policy PDP, and PlayController status mapping & authz parity', () => {
+  const work = makeTempDir('coarising-spec-s15-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: authz-sys
+subdomain: catalog
+roles: [Admin, Member]
+aggregates:
+  - name: Item
+    aliases: [item]
+    idField: itemId
+    stateFields:
+      - name: itemId
+        type: String
+      - name: ownerId
+        type: String
+    commands:
+      - name: Update
+        parameters:
+          - name: itemId
+            type: String
+        produces: [Updated]
+    events:
+      - name: Updated
+        fields:
+          - name: itemId
+            type: String
+ports:
+  - name: CatalogPort
+    operations:
+      - name: ListPublic
+        kind: query
+        parameters: []
+        authz:
+          mode: public
+      - name: UpdateItem
+        kind: command
+        parameters:
+          - name: itemId
+            type: String
+        authz:
+          mode: resource-policy
+          allowedRoles: [Member]
+          policyRef: "item.update"
+          resource:
+            type: Item
+            idFrom: param.itemId
+            ownerField: ownerId
+stories:
+  - name: CatalogStory
+    inboundPort: CatalogPort
+    dispatches: [Item.Update]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/item-update.ears'), `slice Item.Update
+
+rules:
+  [UPD_EMPTY] IF itemId == "" THEN SHALL reject request with UPD_EMPTY
+  [UPD_OK]    WHILE itemId != ""
+              WHEN Update
+              SHALL emit Updated
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/catalog-story.story.ears'), `story CatalogStory layer application
+
+rules:
+  [APP_PUBLIC]  WHEN CatalogPort.ListPublic
+                SHALL respond PublicList
+  [APP_UPD_BAD] IF itemId == ""
+                WHEN CatalogPort.UpdateItem
+                THEN SHALL reject request with ITEM_NOT_FOUND
+  [APP_UPD_OK]  WHILE itemId != ""
+                WHEN CatalogPort.UpdateItem
+                SHALL dispatch Item.Update
+                  AND respond Ok
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S15 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec15' });
+    emitV2ExecutableTests(comp.canonical, { outDir: work, targets: ['scala-cqrs-play-service-v2'], packageName: 'example.spec15' });
+
+    const playCtrl = readFileSync(join(work, 'generated-scaffold/scala/controllers/CatalogStoryPlayController.scala'), 'utf8');
+    assert.match(playCtrl, /HttpStatusMapper\.statusForRejection\(err\.code\)/);
+    assert.match(playCtrl, /FORBIDDEN_RESOURCE/);
+    assert.match(playCtrl, /case JsNull\s*=>\s*null/);
+
+    const implPath = join(work, 'handwritten/scala/example/spec15/application/services/CatalogStoryImpl.scala');
+    writeFileSync(implPath, readFileSync(implPath, 'utf8').replace(
+      /\/\/ @cloze:start\(catalog-story\)[\s\S]*?\/\/ @cloze:end\(catalog-story\)/u,
+      [
+        '// @cloze:start(catalog-story)',
+        '    if (req.operation == "CatalogPort.ListPublic") {',
+        '      Right(CatalogStorySuccessResponse("APP_PUBLIC", Some("PublicList"), Map.empty))',
+        '    } else {',
+        '      val itemId = req.payload.get("itemId").map(_.toString).getOrElse("")',
+        '      if (itemId.isEmpty) Left(iMadzError("ITEM_NOT_FOUND", "missing itemId"))',
+        '      else {',
+        '        effects.dispatch("Item.Update", Map("itemId" -> itemId))',
+        '        Right(CatalogStorySuccessResponse("APP_UPD_OK", Some("Ok"), Map.empty))',
+        '      }',
+        '    }',
+        '    // @cloze:end(catalog-story)',
+      ].join('\n'),
+    ), 'utf8');
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S15 Scala verify failed: ${JSON.stringify(verify, null, 2)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S16] ReadSide with ExactType/VO fields and Zero-VO bounded contexts emit compilable converters and views', () => {
+  const workVo = makeTempDir('coarising-spec-s16-vo-');
+  const workZero = makeTempDir('coarising-spec-s16-zero-');
+  try {
+    mkdirSync(join(workVo, 'truth/structures'), { recursive: true });
+    mkdirSync(join(workVo, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(workVo, 'truth/structures/model.yaml'), `
+system: rs-sys
+subdomain: wallet
+exactTypes:
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    units: [CNY]
+aggregates:
+  - name: Wallet
+    aliases: [wallet]
+    idField: walletId
+    stateFields:
+      - name: walletId
+        type: String
+      - name: balance
+        type: Money
+    commands:
+      - name: Deposit
+        parameters:
+          - name: walletId
+            type: String
+          - name: amount
+            type: Money
+        produces: [Deposited]
+    events:
+      - name: Deposited
+        fields:
+          - name: walletId
+            type: String
+          - name: amount
+            type: Money
+readModels:
+  - name: WalletSummary
+    sourceAggregate: Wallet
+    fields:
+      - name: walletId
+        type: String
+        source: eventField:Wallet.Deposited.walletId
+      - name: lastAmount
+        type: Money
+        source: eventField:Wallet.Deposited.amount
+`, 'utf8');
+    writeFileSync(join(workVo, 'truth/behaviors/wallet-deposit.ears'), `slice Wallet.Deposit
+
+rules:
+  [DEP_BAD] IF amount.amount <= 0.00 THEN SHALL reject request with DEP_BAD
+  [DEP_OK]  WHILE amount.amount > 0.00
+            WHEN Deposit
+            SHALL emit Deposited
+`, 'utf8');
+    const cVo = compileCanonicalV2({
+      structuresDir: join(workVo, 'truth/structures'),
+      specsPath: join(workVo, 'truth/behaviors'),
+      outFile: join(workVo, '.truthsrc/canonical-v2.json'),
+    });
+    assert.equal(cVo.passed, true);
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(cVo.canonical, { outDir: workVo, packageName: 'example.spec16vo' });
+    const viewSrc = readFileSync(join(workVo, 'generated-scaffold/scala/example/spec16vo/application/readmodels/wallet_summary_readside/WalletSummaryView.scala'), 'utf8');
+    assert.match(viewSrc, /import example\.spec16vo\.domain\.values\._/);
+    assert.match(viewSrc, /lastAmount:\s*Money\s*=\s*Money\.Zero/);
+
+    // Zero-VO bounded context
+    mkdirSync(join(workZero, 'truth/structures'), { recursive: true });
+    mkdirSync(join(workZero, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(workZero, 'truth/structures/model.yaml'), `
+system: zero-sys
+subdomain: simple
+aggregates:
+  - name: Counter
+    aliases: [counter]
+    idField: counterId
+    stateFields:
+      - name: counterId
+        type: String
+      - name: count
+        type: Int
+        default: 0
+    commands:
+      - name: Increment
+        parameters:
+          - name: delta
+            type: Int
+        produces: [Incremented]
+    events:
+      - name: Incremented
+        fields:
+          - name: delta
+            type: Int
+`, 'utf8');
+    writeFileSync(join(workZero, 'truth/behaviors/counter-inc.ears'), `slice Counter.Increment
+
+rules:
+  [INC_BAD] IF delta <= 0 THEN SHALL reject request with INC_BAD
+  [INC_OK]  WHILE delta > 0
+            WHEN Increment
+            SHALL emit Incremented
+            post:
+              counter.count' = counter.count + delta
+`, 'utf8');
+    const cZero = compileCanonicalV2({
+      structuresDir: join(workZero, 'truth/structures'),
+      specsPath: join(workZero, 'truth/behaviors'),
+      outFile: join(workZero, '.truthsrc/canonical-v2.json'),
+    });
+    assert.equal(cZero.passed, true);
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(cZero.canonical, { outDir: workZero, packageName: 'example.spec16zero' });
+    const convPath = join(workZero, 'generated-scaffold/scala/example/spec16zero/infrastructure/persistence/converters/CounterProtoConverters.scala');
+    assert.equal(existsSync(convPath), true, 'Zero-VO context must still emit <Agg>ProtoConverters.scala');
+    assert.doesNotMatch(readFileSync(convPath, 'utf8'), /domain\.values\._/);
+  } finally {
+    rmSync(workVo, { recursive: true, force: true });
+    rmSync(workZero, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S17] Scala single-stack init-v2 + tasks-v2 + check-v2 strict + mutation-gate works with zero TypeScript files', () => {
+  const work = makeTempDir('coarising-spec-s17-scala-only-');
+  try {
+    const initRes = initV2Project({
+      targetDir: work,
+      system: 'scala-single-stack',
+      context: 'quota',
+      targets: ['scala-cqrs-play-service-v2'],
+      packageName: 'example.singlestack',
+      force: true,
+      initHooks: false,
+    });
+    assert.equal(initRes.compiled?.passed, true);
+    assert.equal(existsSync(join(work, 'generated-scaffold/ts')), false, 'Scala single-stack must emit zero TS scaffold files');
+    assert.equal(existsSync(join(work, 'generated-tests/ts')), false, 'Scala single-stack must emit zero TS test files');
+    assert.equal(existsSync(join(work, 'handwritten/quota-intake.cloze.ts')), false, 'Scala single-stack must emit zero TS cloze slots');
+    assert.equal(existsSync(join(work, 'handwritten/scala/example/singlestack/application/services/QuotaIntakeImpl.scala')), true);
+
+    const queue = deriveClozeTasksV2({ rootDir: work });
+    assert.deepEqual(queue.targets, ['scala-cqrs-play-service-v2']);
+    assert.equal(queue.tasks.length, 1);
+    assert.equal(queue.tasks[0].targetFiles.length, 1, 'single-stack slot must have exactly 1 Scala targetFile');
+    assert.match(queue.tasks[0].targetFiles[0].file, /QuotaIntakeImpl\.scala$/);
+
+    const checkRes = runCheckV2({
+      rootDir: work,
+      strict: true,
+      mutationGate: true,
+    });
+    assert.equal(checkRes.passed, true, `Scala single-stack check-v2 failed: ${JSON.stringify(checkRes, null, 2)}`);
+    assert.equal(checkRes.verify.tsCheck.skipped, true);
+    assert.equal(checkRes.verify.scalaCheck.passed, true);
+    assert.equal(checkRes.verify.mutationCheck.passed, true);
+    assert.equal(checkRes.verify.mutationCheck.ts.skipped, true);
+    assert.equal(checkRes.verify.mutationCheck.scala.killRate, 100);
+    assert.equal(checkRes.coverage.passed, true);
+  } finally {
     rmSync(work, { recursive: true, force: true });
   }
 });
