@@ -37,7 +37,7 @@ export function checkInput(input) {
   checkNoExtraKeys(input, new Set([
     'schemaVersion', 'package', 'serviceName', 'bootstrap', 'journalConnection',
     'readSideConnection', 'endpoints', 'pages', 'artifactSource', 'configurationScala',
-    'aggregates', 'readsideProjections', 'readsideFiles',
+    'aggregates', 'readsideProjections', 'policyProjections', 'readsideFiles',
   ]), 'input');
   if (input.schemaVersion !== SCHEMA) fail('schemaVersion must be ' + SCHEMA);
   if (typeof input.package !== 'string' || !PACKAGE_RE.test(input.package)) fail('package invalid');
@@ -103,6 +103,15 @@ export function checkInput(input) {
       checkNoExtraKeys(rp, new Set(['name', 'subpackage']), 'readsideProjections[' + i + ']');
       if (typeof rp.name !== 'string' || !TYPE_NAME_RE.test(rp.name)) fail('readsideProjections[' + i + '].name invalid');
       if (typeof rp.subpackage !== 'string' || !PACKAGE_RE.test(rp.subpackage)) fail('readsideProjections[' + i + '].subpackage invalid');
+    }
+  }
+  if (input.policyProjections !== undefined) {
+    if (!Array.isArray(input.policyProjections)) fail('policyProjections must be an array');
+    for (let i = 0; i < input.policyProjections.length; i++) {
+      const pp = checkObject(input.policyProjections[i], 'policyProjections[' + i + ']');
+      checkNoExtraKeys(pp, new Set(['name', 'sourceAggregate']), 'policyProjections[' + i + ']');
+      if (typeof pp.name !== 'string' || !TYPE_NAME_RE.test(pp.name)) fail('policyProjections[' + i + '].name invalid');
+      if (typeof pp.sourceAggregate !== 'string' || !TYPE_NAME_RE.test(pp.sourceAggregate)) fail('policyProjections[' + i + '].sourceAggregate invalid');
     }
   }
   if (!Array.isArray(input.readsideFiles)) fail('readsideFiles must be an array');
@@ -446,9 +455,11 @@ function renderApplicationBootstrap(input) {
   const { package: pkg, serviceName: name, bootstrap } = input;
   const aggregates = input.aggregates ?? [];
   const readsideProjections = input.readsideProjections ?? [];
+  const policyProjections = input.policyProjections ?? [];
   const traits = [
     ...aggregates.map(a => `${a.name}Bootstrap`),
     ...readsideProjections.map(rp => `${rp.name}Bootstrap`),
+    ...policyProjections.map(pp => `${pp.name}Bootstrap`),
   ];
   const extendsClause = traits.length ? ' extends ' + traits.join('\n  with ') : '';
 
@@ -461,6 +472,12 @@ function renderApplicationBootstrap(input) {
     `import ${pkg}.${rp.subpackage}.${rp.name}ProjectionHandler`,
     `import ${pkg}.${rp.subpackage}.repository.${rp.name}Repository`,
   ]);
+  const policyImports = policyProjections.length > 0
+    ? [
+        `import ${pkg}.application.projection.policy.PolicyDlqSink`,
+        ...policyProjections.map(pp => `import ${pkg}.application.projection.policy.${pp.name}Semantics`),
+      ]
+    : [];
 
   const injectedParams = [
     '  classicSystem: akka.actor.ActorSystem,',
@@ -473,6 +490,12 @@ function renderApplicationBootstrap(input) {
       `  ${lowerFirst(rp.name)}Repository: ${rp.name}Repository,`,
       `  ${lowerFirst(rp.name)}Bindings: ${rp.name}ProjectionHandler.Bindings,`,
     ]),
+    ...(policyProjections.length > 0
+      ? [
+          ...policyProjections.map(pp => `  ${lowerFirst(pp.name)}Semantics: ${pp.name}Semantics,`),
+          '  policyDlqSink: PolicyDlqSink,',
+        ]
+      : []),
   ];
   if (injectedParams.length) {
     injectedParams[injectedParams.length - 1] = injectedParams[injectedParams.length - 1].replace(/,$/, '');
@@ -498,6 +521,16 @@ function renderApplicationBootstrap(input) {
         '  )',
       ].join('\n');
     }),
+    ...policyProjections.map(pp => [
+      `  init${pp.name}Projection(`,
+      '    system = system,',
+      '    sharding = sharding,',
+      '    readJournalPluginId = classicSystem.settings.config.getString("akka.persistence.query.journal.id"),',
+      `    tags = ${pp.sourceAggregate}Aggregate.tags,`,
+      `    semantics = ${lowerFirst(pp.name)}Semantics,`,
+      '    dlqSink = policyDlqSink',
+      '  )',
+    ].join('\n')),
   ];
 
   return [
@@ -508,6 +541,7 @@ function renderApplicationBootstrap(input) {
     'import akka.cluster.sharding.typed.scaladsl.ClusterSharding',
     ...aggImports,
     ...projImports,
+    ...policyImports,
     'import javax.inject.{Inject, Singleton}',
     'import play.api.{Application, ApplicationLoader}',
     'import scala.concurrent.ExecutionContext',

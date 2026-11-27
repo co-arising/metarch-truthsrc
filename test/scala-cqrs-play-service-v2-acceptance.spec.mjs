@@ -17,6 +17,7 @@ import {
   GENERATED_HEADER_SCALA,
   GENERATOR_MANIFEST,
   generateScalaCqrsPlayServiceV2ForBc,
+  mergeCanonicalsForBc,
 } from '../generators/scala-cqrs-play-service-v2/generate.mjs';
 import { emitV2ExecutableTests } from '../lib/v2/test-emitter/emit.mjs';
 import {
@@ -67,12 +68,16 @@ function compileBankFixture(workDir) {
   return { compiled, canonicalPath, dbPath };
 }
 
-test('[SPEC-S1] 54-Family Superset Manifest & Generated Header Provenance', () => {
+test('[SPEC-S1] 60-Family Superset Manifest & Generated Header Provenance', () => {
   assert.equal(GENERATOR_MANIFEST.schemaVersion, 'truthsrc.product-generator/v2');
   assert.equal(GENERATOR_MANIFEST.name, 'scala-cqrs-play-service');
   assert.equal(GENERATOR_MANIFEST.version, '2');
-  assert.equal(GENERATOR_MANIFEST.artifactFamilyCoverage.totalUnifiedFamilies, 54);
+  assert.equal(GENERATOR_MANIFEST.artifactFamilyCoverage.totalUnifiedFamilies, 60);
   assert.equal(GENERATOR_MANIFEST.artifactFamilyCoverage.supersetOfV1, true);
+
+  const policyProducer = GENERATOR_MANIFEST.producers.find(p => p.id === 'policy-projection-dsl');
+  assert.ok(policyProducer, 'policy-projection-dsl producer must be declared');
+  assert.deepEqual(policyProducer.familyNumbers, [55, 56, 57, 58, 59, 60]);
 
   // Explicit superseded mapping for legacy saga families #16-#21
   const orchProducer = GENERATOR_MANIFEST.producers.find(p => p.id === 'orchestration-saga-dsl');
@@ -360,7 +365,7 @@ test('[SPEC-S5] 6-Chain Glue Audit (GLUE-1..GLUE-6) & Complete Guice DI Closure 
 
     const hwBindings = readFileSync(join(work, 'handwritten/scala/example/bankwealth/v2/modules/HandwrittenBindingsModule.scala'), 'utf8');
     assert.match(hwBindings, /install\(new GeneratedBindingsModule\(\)\)/);
-    assert.match(hwBindings, /install\(new BankwealthProjectionModule\(\)\)/);
+    assert.match(genBindings, /install\(new BankwealthProjectionModule\(\)\)/);
 
     const buildSbt = readFileSync(join(work, 'generated-scaffold/build.sbt'), 'utf8');
     assert.match(buildSbt, /handwritten/);
@@ -1511,6 +1516,326 @@ test('[SPEC-S17] Scala single-stack init-v2 + tasks-v2 + check-v2 strict + mutat
     assert.equal(checkRes.verify.mutationCheck.ts.skipped, true);
     assert.equal(checkRes.verify.mutationCheck.scala.killRate, 100);
     assert.equal(checkRes.coverage.passed, true);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S18] Monolith BC merge rejects conflicting structural collisions (BC_MERGE_CONFLICT) & compiler rejects Scala reserved keywords (V2_RESERVED_IDENTIFIER)', () => {
+  const work = makeTempDir('coarising-spec-s18-');
+  try {
+    // 1. Conflicting same-named VO across two subdomains must fail closed with BC_MERGE_CONFLICT
+    const mkSub = (sub, voFields) => {
+      const dir = join(work, sub);
+      mkdirSync(join(dir, 'structures'), { recursive: true });
+      mkdirSync(join(dir, 'behaviors'), { recursive: true });
+      writeFileSync(join(dir, 'structures/model.yaml'), `
+system: spec18
+subdomain: ${sub}
+valueObjects:
+  - name: SharedInfo
+    fields:
+${voFields}
+aggregates:
+  - name: ${sub === 'alpha' ? 'AlphaDoc' : 'BetaItem'}
+    idField: itemId
+    stateFields:
+      - name: itemId
+        type: String
+      - name: status
+        type: String
+        default: "New"
+    commands:
+      - name: Touch
+        parameters:
+          - name: itemId
+            type: String
+        produces: [Touched]
+    events:
+      - name: Touched
+        fields:
+          - name: itemId
+            type: String
+`, 'utf8');
+      writeFileSync(join(dir, 'behaviors/touch.ears'), `slice ${sub === 'alpha' ? 'AlphaDoc' : 'BetaItem'}.Touch
+
+rules:
+  [T_BAD] IF itemId == "" THEN SHALL reject request with T_BAD
+  [T_OK]  WHILE itemId != ""
+          WHEN Touch
+          SHALL transition state.status -> "Done"
+            AND emit Touched
+`, 'utf8');
+      return compileCanonicalV2({ structuresDir: join(dir, 'structures'), specsPath: join(dir, 'behaviors') });
+    };
+    const cA = mkSub('alpha', '      - name: code\n        type: String');
+    const cB = mkSub('beta', '      - name: score\n        type: Int');
+    assert.equal(cA.passed, true);
+    assert.equal(cB.passed, true);
+    assert.throws(
+      () => mergeCanonicalsForBc([cA.canonical, cB.canonical], { bcName: 'unified' }),
+      /BC_MERGE_CONFLICT: conflicting valueObject "SharedInfo" across subdomains \(alpha vs beta\)/u,
+    );
+
+    // Identical Shared Kernel VO across subdomains must still deduplicate cleanly
+    const cBIdentical = mkSub('beta-same', '      - name: code\n        type: String');
+    assert.equal(cBIdentical.passed, true);
+    const mergedOk = mergeCanonicalsForBc([cA.canonical, cBIdentical.canonical], { bcName: 'unified' });
+    assert.equal(mergedOk.mergedCanonical.structures.valueObjects.length, 1);
+
+    // 2. Reserved Scala keywords (`type`, `match`) must fail compile-v2 with V2_RESERVED_IDENTIFIER
+    const kwDir = join(work, 'kw');
+    mkdirSync(join(kwDir, 'structures'), { recursive: true });
+    mkdirSync(join(kwDir, 'behaviors'), { recursive: true });
+    writeFileSync(join(kwDir, 'structures/model.yaml'), `
+system: spec18-kw
+subdomain: core
+valueObjects:
+  - name: Meta
+    fields:
+      - name: type
+        type: String
+      - name: match
+        type: Bool
+aggregates:
+  - name: Ticket
+    idField: ticketId
+    stateFields:
+      - name: ticketId
+        type: String
+      - name: type
+        type: String
+        default: "Std"
+    commands:
+      - name: Tag
+        parameters:
+          - name: ticketId
+            type: String
+        produces: [Tagged]
+    events:
+      - name: Tagged
+        fields:
+          - name: ticketId
+            type: String
+`, 'utf8');
+    writeFileSync(join(kwDir, 'behaviors/tag.ears'), `slice Ticket.Tag
+
+rules:
+  [TAG_BAD] IF ticketId == "" THEN SHALL reject request with TAG_BAD
+  [TAG_OK]  WHILE ticketId != ""
+            WHEN Tag
+            SHALL emit Tagged
+`, 'utf8');
+    const cKw = compileCanonicalV2({ structuresDir: join(kwDir, 'structures'), specsPath: join(kwDir, 'behaviors') });
+    assert.equal(cKw.passed, false);
+    const reservedCodes = cKw.diagnostics.filter(d => d.code === 'V2_RESERVED_IDENTIFIER');
+    assert.ok(reservedCodes.length >= 3, `expected >= 3 V2_RESERVED_IDENTIFIER diagnostics, got ${reservedCodes.length}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S19] ReadSide nested Option/Seq/Map JSON codecs, Orchestration nominal externContracts, and ProjectionModule evolution wiring', () => {
+  const work = makeTempDir('coarising-spec-s19-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+
+    // Phase 1: Start without ReadModels so HandwrittenBindingsModule is created on disk
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec19
+subdomain: ledger
+exactTypes:
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    units: [CNY]
+valueObjects:
+  - name: TagVO
+    fields:
+      - name: key
+        type: String
+      - name: price
+        type: Money
+      - name: note
+        type: Optional[String]
+ports:
+  - name: RiskEngine
+    operations: []
+externContracts:
+  - name: calculateFee
+    ownerPort: RiskEngine
+    params:
+      - name: amount
+        type: Money
+      - name: tag
+        type: TagVO
+aggregates:
+  - name: LedgerEntry
+    idField: entryId
+    stateFields:
+      - name: entryId
+        type: String
+      - name: amount
+        type: Money
+      - name: status
+        type: String
+        default: "New"
+    commands:
+      - name: Post
+        parameters:
+          - name: entryId
+            type: String
+          - name: amount
+            type: Money
+          - name: tag
+            type: TagVO
+        produces: [Posted]
+    events:
+      - name: Posted
+        fields:
+          - name: entryId
+            type: String
+          - name: amount
+            type: Money
+          - name: tag
+            type: TagVO
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/post.ears'), `slice LedgerEntry.Post
+
+rules:
+  [POST_BAD] IF amount.amount <= 0.00 THEN SHALL reject request with POST_BAD
+  [POST_OK]  WHILE amount.amount > 0.00
+             WHEN Post
+             SHALL transition state.status -> "Posted"
+               AND emit Posted
+             post:
+               state.amount' = amount
+`, 'utf8');
+    const c1 = compileCanonicalV2({ structuresDir: join(work, 'truth/structures'), specsPath: join(work, 'truth/behaviors') });
+    assert.equal(c1.passed, true, `SPEC-S19 phase1 failed: ${JSON.stringify(c1.diagnostics)}`);
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(c1.canonical, { outDir: work, packageName: 'example.spec19' });
+
+    // Phase 2: Add ReadModel with nested Optional/Seq/Map/VO/ExactType and regenerate in place
+    writeFileSync(join(work, 'truth/structures/model.yaml'), readFileSync(join(work, 'truth/structures/model.yaml'), 'utf8') + `
+readModels:
+  - name: EntryView
+    fields:
+      - name: entryId
+        type: String
+        source: eventField:Posted.entryId
+      - name: seqOptString
+        type: Seq[Optional[String]]
+        source: derived
+      - name: mapOptTag
+        type: Map[String, Optional[TagVO]]
+        source: derived
+      - name: optSeqMoney
+        type: Optional[Seq[Money]]
+        source: derived
+`, 'utf8');
+    const c2 = compileCanonicalV2({ structuresDir: join(work, 'truth/structures'), specsPath: join(work, 'truth/behaviors') });
+    assert.equal(c2.passed, true, `SPEC-S19 phase2 failed: ${JSON.stringify(c2.diagnostics)}`);
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(c2.canonical, { outDir: work, packageName: 'example.spec19' });
+
+    const connPort = readFileSync(join(work, 'generated-scaffold/scala/example/spec19/application/toolgates/RiskEngineConnectorPort.scala'), 'utf8');
+    assert.match(connPort, /import example\.spec19\.domain\.values\._/);
+    assert.match(connPort, /def calculateFee\(amount: Money, tag: TagVO\): Future\[Boolean\]/);
+
+    const repoImpl = readFileSync(join(work, 'generated-scaffold/scala/example/spec19/infrastructure/repositories/projection/EntryReadsideRepositoryImpl.scala'), 'utf8');
+    assert.doesNotMatch(repoImpl, /\.as\[Vector\[Option\[String\]\]\]/, 'Seq[Optional[String]] must use explicit JsValue codec');
+    assert.match(repoImpl, /Option\(j\d+\)\.filter\(_ != play\.api\.libs\.json\.JsNull\)/, 'JsValue optional decode must use Option(j) rather than j.toOption');
+    assert.match(repoImpl, /: play\.api\.libs\.json\.JsValue\)\.getOrElse\(play\.api\.libs\.json\.JsNull\)/, 'Optional JSON encode must widen explicitly to JsValue');
+
+    const genBindings = readFileSync(join(work, 'generated-scaffold/scala/example/spec19/modules/GeneratedBindingsModule.scala'), 'utf8');
+    assert.match(genBindings, /install\(new LedgerProjectionModule\(\)\)/, 'GeneratedBindingsModule must install ProjectionModule when ReadModel is added later');
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S20] SMT len>=0 non-negativity + quantifier Skolem witness + ears-simplify bound member rendering pass strict verify & mutation gate', () => {
+  const work = makeTempDir('coarising-spec-s20-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec20
+subdomain: grading
+valueObjects:
+  - name: LineItem
+    fields:
+      - name: label
+        type: String
+      - name: score
+        type: Int
+aggregates:
+  - name: ExamSheet
+    idField: sheetId
+    stateFields:
+      - name: sheetId
+        type: String
+      - name: status
+        type: String
+        default: "Draft"
+    commands:
+      - name: Submit
+        parameters:
+          - name: sheetId
+            type: String
+          - name: items
+            type: Seq[LineItem]
+          - name: tags
+            type: Seq[String]
+        produces: [Submitted]
+    events:
+      - name: Submitted
+        fields:
+          - name: sheetId
+            type: String
+          - name: items
+            type: Seq[LineItem]
+          - name: tags
+            type: Seq[String]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/sheet.ears'), `slice ExamSheet.Submit
+
+rules:
+  [EMPTY_TAGS] IF len(tags) == 0 THEN SHALL reject request with EMPTY_TAGS
+  [BAD_ITEM]   IF not (forall x in items: x.score > 0) THEN SHALL reject request with BAD_ITEM
+  [SUBMIT_OK]  WHILE len(tags) > 0 and forall x in items: x.score > 0
+               WHEN Submit
+               SHALL transition state.status -> "Submitted"
+                 AND emit Submitted
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S20 len==0/len>0 + quantifier compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec20' });
+    emitV2ExecutableTests(comp.canonical, { outDir: work, targets: ['scala-cqrs-play-service-v2'], packageName: 'example.spec20' });
+
+    const rules = readFileSync(join(work, 'generated-scaffold/scala/example/spec20/domain/invariants/ExamSheetRules.scala'), 'utf8');
+    assert.match(rules, /p\.tags\.size\.toLong == 0L/);
+    assert.match(rules, /p\.items\.exists\(x => x\.score <= 0L\)/);
+    assert.doesNotMatch(rules, /p\.x\.score/);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+      mutationGate: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S20 strict verify+mutation failed: ${JSON.stringify(verify, null, 2)}`);
+    assert.equal(verify.scalaCheck.passed, true);
+    assert.equal(verify.mutationCheck.passed, true);
+    assert.equal(verify.mutationCheck.scala.killRate, 100);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }
