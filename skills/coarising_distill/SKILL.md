@@ -149,21 +149,23 @@ Before locking Phase 1, silently scan the PRD against these **8 blind-spot & uni
 
 1. **Always present a plain-language Deployment & Integration Proposal to the user/architect** (do NOT expose raw DDD jargon — translate into team ownership, deployment cadence, and failure-isolation trade-offs):
    - **Packaging Choice (`boundedContexts`)**: Given the distilled subdomains (e.g. `exam`, `certification`, `filing`), propose concrete options:
-     - **Option A (Recommended for MVP / small team — Modular Monolith)**: Package multiple subdomains into 1 deployable service (`boundedContexts: [{ name: core-service, subdomains: [a, b], package: ... }]`), keeping strict package isolation so they can split later with zero truth-source edits.
-     - **Option B (Team / Scale Split)**: Split high-churn or independently scaled subdomains into separate Bounded Context services (each gets its own `ApplicationBootstrap`, `conf/routes`, `build.sbt`, and database schema).
-   - **Cross-BC Context Mapping Pattern (`integrations[*].pattern`)**: For every event/API crossing two different Bounded Contexts, confirm the integration contract:
-     - `ACL` (Anti-Corruption Layer — default recommended when downstream must be insulated from upstream model changes; generates `#46 <Agg>ExternalEvents.scala` + `ExternalAuthority`),
-     - `OHS/PL` (Open Host Service / Published Language — public API or standardized event schema),
-     - `Conformist` or `Shared Kernel` (explicitly record the coupling risk).
-2. **Persist the approved decision into `truth/domain-map.yaml`** (`boundedContexts:` + `integrations:` + `package:` per BC).
-3. **Generate per Bounded Context** (not blindly 1-service-per-subdomain):
-   - Single-subdomain BC:
+     - **Option A (Fastest / Default for MVP, Pilot & Small Teams — All-in-One Monolith / 「大泥球」单服务合包策略)**: Package ALL subdomains into **1 single deployable Play/sbt service** (`--packaging monolith --bc <app-name> --canonicals a.json,b.json,...`), sharing one `ApplicationBootstrap` / `BootstrapModule` / `conf/routes` / `build.sbt` with zero cross-service RPC/ACL overhead. Because problem-space subdomain truth stays cleanly separated in `truth/<subdomain>/`, you can split into multiple BCs later with ZERO business-truth rewrites!
+     - **Option B (Modular Multi-BC Split — For Multi-Team / Independent Scaling)**: Split high-churn or independently scaled subdomains into separate Bounded Context services in `truth/domain-map.yaml` (each gets its own `ApplicationBootstrap`, `conf/routes`, `build.sbt`, and database schema, with automatic `#46 ExternalEventBridge` across BC boundaries).
+   - **Cross-BC Context Mapping Pattern (`integrations[*].pattern`, only needed for Option B)**: For every event/API crossing two different Bounded Contexts, confirm the integration contract (`ACL` default, `OHS/PL`, `Conformist`, or `Shared Kernel`).
+2. **Persist the approved decision into `truth/domain-map.yaml`** (for Option B) or proceed directly with `--packaging monolith` (for Option A).
+3. **Generate per Bounded Context** (never blindly 1-service-per-subdomain without asking!):
+   - **Option A — All-in-One Monolith / 大泥球合包（无需写复杂跨服务 ACL，自动导出合并后的 `.truthsrc/bc-<app>-canonical-v2.json` 供 `emit-tests-v2` 与 `verify-v2` 直接使用）**:
      ```bash
-     truthsrc generate-v2 --generator scala-cqrs-play-service-v2 --in .truthsrc/canonical-v2.json --out . --package <pkg>
+     truthsrc generate-v2 --generator scala-cqrs-play-service-v2 --packaging monolith --bc <appName> --canonicals a.json,b.json,... --out . --package <pkg>
+     truthsrc emit-tests-v2 --target scala-cqrs-play-service-v2 --in .truthsrc/bc-<appName>-canonical-v2.json --out . --package <pkg>
      ```
-   - Multi-subdomain packaged BC:
+   - **Option B — Multi-BC Split via `domain-map.yaml`**:
      ```bash
      truthsrc generate-v2 --generator scala-cqrs-play-service-v2 --domain-map truth/domain-map.yaml --bc <bcName> --canonicals a.json,b.json --out services/<bcName> --package <pkg>
+     ```
+   - **Single-subdomain project**:
+     ```bash
+     truthsrc generate-v2 --generator scala-cqrs-play-service-v2 --in .truthsrc/canonical-v2.json --out . --package <pkg>
      ```
 
 ### Phase 4 — Business Signoff & Handoff to Implementation

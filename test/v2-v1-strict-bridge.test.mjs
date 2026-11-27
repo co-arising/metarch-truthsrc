@@ -1098,9 +1098,27 @@ rules:
 
     // #46 ExternalEventBridge + ExternalAuthority wired cleanly into ExamSession + ApplicationBootstrap!
     assert.equal(existsSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/application/aggregates/behaviors/ExamSessionExternalEvents.scala')), true);
+    assert.equal(existsSync(bcRes.mergedCanonicalPath), true, 'must persist merged BC canonical-v2.json for emit-tests-v2/verify-v2');
     const appBoot = readFileSync(join(bcOut, 'generated-scaffold/scala/edu/platform/core/infrastructure/bootstrap/ApplicationBootstrap.scala'), 'utf8');
     assert.match(appBoot, /initCandidateAccountAggregate\(sharding, candidateAccountComputations\)/);
     assert.match(appBoot, /initExamSessionAggregate\(sharding, examSessionComputations, examSessionAuthority\)/);
+
+    // Monolith ("大泥球" all-in-one) packaging mode: zero domainMap required, packages ALL 3 subdomains into 1 Play/sbt service!
+    const monoOut = join(work, 'services/all-in-one');
+    const monoRes = generateScalaCqrsPlayServiceV2ForBc({
+      bcName: 'edu-monolith',
+      packaging: 'monolith',
+      canonicals: [cIdentity, cExam, cCert],
+      outDir: monoOut,
+      packageName: 'edu.platform.monolith',
+    });
+    assert.equal(monoRes.packaging, 'monolith');
+    assert.deepEqual(monoRes.packagedSubdomains.sort(), ['cert', 'exam', 'identity']);
+    assert.equal(monoRes.externalIntegrationsCount, 0);
+    assert.equal(existsSync(monoRes.mergedCanonicalPath), true);
+    assert.equal(existsSync(join(monoOut, 'generated-scaffold/scala/edu/platform/monolith/domain/entities/CandidateAccountEntity.scala')), true);
+    assert.equal(existsSync(join(monoOut, 'generated-scaffold/scala/edu/platform/monolith/domain/entities/ExamSessionEntity.scala')), true);
+    assert.equal(existsSync(join(monoOut, 'generated-scaffold/scala/edu/platform/monolith/domain/entities/CertificateEntity.scala')), true);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }

@@ -246,19 +246,26 @@ export function generateScalaCqrsPlayServiceV2ForBc({
   canonicals,
   outDir,
   packageName = null,
+  packaging = 'auto',
   overwriteCloze = false,
   runtimeProfile = null,
   includeCommonKernel = true,
   includeFrameworkLayers = true,
 } = {}) {
-  const bcSpec = (domainMap?.boundedContexts ?? []).find(b => b.name === bcName) ?? null;
+  const isMonolith = packaging === 'monolith' || !domainMap;
+  const bcSpec = !isMonolith
+    ? ((domainMap?.boundedContexts ?? []).find(b => b.name === bcName) ?? null)
+    : null;
   let selected = canonicals;
   if (bcSpec && Array.isArray(bcSpec.subdomains) && bcSpec.subdomains.length > 0) {
     const allowed = new Set(bcSpec.subdomains);
     const filtered = canonicals.filter(c => allowed.has(c.subdomain) || allowed.has(c.context));
     if (filtered.length > 0) selected = filtered;
   }
-  const { mergedCanonical, externalIntegrations } = mergeCanonicalsForBc(selected, { bcName, domainMap });
+  const { mergedCanonical, externalIntegrations } = mergeCanonicalsForBc(selected, {
+    bcName,
+    domainMap: isMonolith ? null : domainMap,
+  });
   const effPkg = packageName || bcSpec?.package || `example.${String(bcName || mergedCanonical.context).replace(/[^a-z0-9_]/giu, '').toLowerCase()}`;
   const res = generateScalaCqrsPlayServiceV2(mergedCanonical, {
     outDir,
@@ -269,9 +276,17 @@ export function generateScalaCqrsPlayServiceV2ForBc({
     includeFrameworkLayers,
     externalIntegrations,
   });
+
+  // Persist merged BC canonical so emit-tests-v2 / tasks-v2 / verify-v2 work out of the box!
+  const root = resolve(outDir);
+  const mergedCanonicalRel = `.truthsrc/bc-${bcName || mergedCanonical.context}-canonical-v2.json`;
+  writeArtifact(root, mergedCanonicalRel, `${JSON.stringify(mergedCanonical, null, 2)}\n`, { overwrite: true });
+
   return {
     ...res,
+    packaging: isMonolith ? 'monolith' : 'context-map',
     boundedContext: bcName || mergedCanonical.context,
+    mergedCanonicalPath: join(root, mergedCanonicalRel),
     externalIntegrationsCount: externalIntegrations.length,
   };
 }
