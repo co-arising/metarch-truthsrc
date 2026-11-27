@@ -920,7 +920,7 @@ test('scala-cqrs-play-service-v2 (Full Blocks A+B+C+D): generates bank-wealth-de
     // 6. Saga / Effect Orchestration + SagaCoordinatorBootstrap + serialization.conf host/effect registrations
     assert.equal(existsSync(join(work, 'generated-scaffold/scala/example/bankwealth/infrastructure/bootstrap/SagaCoordinatorBootstrap.scala')), true);
     const serConf = readFileSync(join(work, 'generated-scaffold/conf/serialization.conf'), 'utf8');
-    assert.match(serConf, /cash-fund-purchase-saga-host/);
+    assert.match(serConf, /cash-fund-purchase-host/);
     assert.match(serConf, /cash-fund-purchase-effect/);
 
     const tc = detectScalaToolchain();
