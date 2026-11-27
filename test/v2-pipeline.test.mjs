@@ -492,7 +492,7 @@ rules:
         '    if (!externs.authOk(req.payload.actor)) return { ok: false, code: "DENY", ruleId: "APP_1" };',
         '    if (!externs.seenBefore(req.payload.actor, req.payload.reqId)) {',
         '      effects.pin("TicketOriginal", { actor: req.payload.actor, reqId: req.payload.reqId });',
-        '      effects.dispatch("Ticket.Classify", req.payload);',
+        '      effects.dispatch("Ticket.Classify", { ...req.payload, score: req.stateSnapshot?.score ?? 10 });',
         '      return { ok: true, ruleId: "APP_2", responseType: "IntakeAck", response: { replayed: false } };',
         '    }',
         '    return { ok: true, ruleId: "APP_3", responseType: "IntakeAck", response: { replayed: true } };',

@@ -21,6 +21,7 @@
     "editor/",
     "tools/artifact-docs-check.mjs",
     "tools/artifact-docs-sync.mjs",
+    "tools/check-contracts.mjs",
     "tools/codegen-parity.mjs",
     "tools/lint.mjs",
     "scaffold/",
@@ -60,6 +61,8 @@
   ],
   "scripts": {
     "lint": "node tools/lint.mjs && eslint --quiet .",
+    "check:contracts": "node tools/check-contracts.mjs",
+    "export:capabilities": "node bin/truthsrc.js export-capabilities",
     "lint:arch": "node tools/lint.mjs",
     "lint:eslint": "eslint --quiet .",
     "lint:report": "eslint emitter lib/layout lib/derivation/value-object-package.mjs tools/lint.mjs eslint.config.mjs",

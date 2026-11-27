@@ -60,6 +60,9 @@ jobs:
       - name: Tier 1 architectural + ESLint check
         run: npm run lint
 
+      - name: Single-source-of-truth contract & skill parity gate
+        run: npm run check:contracts
+
       - name: Run EARS 1.0 & co-arising 2.0 full suites (TS + Scala + JVM TCK + Mutation + Authz Matrix + Acceptance)
         run: |
           npm run test:ears

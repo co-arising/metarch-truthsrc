@@ -128,6 +128,7 @@ Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --for
                     [--domain-map <domain-map.yaml>] --out <atlas.html> [--out-dir <diagrams-dir>] [--title <text>]
                                                            export unified offline HTML Atlas viewer covering ALL Problem-Space & Solution-Space diagrams (+ Mermaid/CSV/CML)
   truthsrc lsp-ears                                        LSP 3.17 stdio server for .ears (live diagnostics, go-to-definition, hover)
+  truthsrc export-capabilities [--out <file>]              export single-source-of-truth capabilities.lock JSON
   truthsrc mcp                                         MCP stdio server: query verbs as tools
                                                        (stdio JSON-RPC; configure your MCP client with
                                                        "command": "truthsrc", "args": ["mcp"])
@@ -168,7 +169,7 @@ if (args.includes('--help') || args.includes('-h')) {
 try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
 
 // Legacy tree defaults are intentionally retained, but evaluated only after preflight.
-const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'audit-system-lineage-v2', 'run-tck-v2', 'guard-write', 'init-hooks', 'init-v2', 'check-v2', 'tasks-v2', 'lsp-ears'].includes(cmd);
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate', 'check-spec', 'project-spec', 'emit-tests', 'compile-v2', 'generate-v2', 'emit-tests-v2', 'context-pack-v2', 'verify-v2', 'audit-coverage-v2', 'audit-system-lineage-v2', 'run-tck-v2', 'guard-write', 'init-hooks', 'init-v2', 'check-v2', 'tasks-v2', 'lsp-ears', 'export-capabilities'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -533,6 +534,18 @@ switch (cmd) {
   case 'lsp-ears': {
     const { runEarsLspServer } = await import('../lib/v2/ears-lsp.mjs');
     runEarsLspServer();
+    break;
+  }
+  case 'export-capabilities': {
+    try {
+      const { fileURLToPath } = await import('node:url');
+      const { exportCapabilitiesLock } = await import('../lib/v2/surface-registry.mjs');
+      const pkgRoot = fileURLToPath(new URL('..', import.meta.url));
+      const outIdx = args.indexOf('--out');
+      const outFile = outIdx >= 0 && args[outIdx + 1] ? args[outIdx + 1] : null;
+      const lock = exportCapabilitiesLock(pkgRoot, { outFile });
+      console.log(JSON.stringify(lock, null, 2));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }
   case 'mcp': {

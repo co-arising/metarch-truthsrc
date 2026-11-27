@@ -27,6 +27,7 @@ import {
   verifyLockedTestsManifest,
 } from '../lib/v2/verify-gate.mjs';
 import { buildV2WorkshopView, exportV2WorkshopHtml } from '../lib/v2/view-v2.mjs';
+import { deriveClozeTasksV2 } from '../lib/v2/tasks-v2.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
@@ -682,6 +683,389 @@ rules:
     assert.equal(verify.passed, true, `SPEC-S9 verify-v2 failed: ${JSON.stringify(verify, null, 2)}`);
     assert.equal(verify.scalaCheck.passed, true);
   } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S10] ReadSide projection selects String identity key and emits typed Option/Seq/Map/Decimal readers (Issue #2)', () => {
+  const work = makeTempDir('coarising-spec-s10-');
+  try {
+    mkdirSync(join(work, 'truth/finance/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/finance/behaviors/domain'), { recursive: true });
+    writeFileSync(join(work, 'truth/finance/structures/model.yaml'), `
+system: exam-spec10
+context: finance
+aggregates:
+  - name: RefundCase
+    stateFields:
+      - name: refundedAmount
+        type: Decimal(2)
+      - name: credits
+        type: Int
+      - name: publishedAt
+        type: Optional[Int]
+      - name: topics
+        type: Seq[String]
+      - name: status
+        type: String
+        default: pending
+    commands:
+      - name: RecordRefund
+        produces: [RefundRecorded]
+        parameters:
+          - name: refundedAmount
+            type: Decimal(2)
+          - name: credits
+            type: Int
+          - name: topics
+            type: Seq[String]
+    events:
+      - name: RefundRecorded
+        fields:
+          - name: refundedAmount
+            type: Decimal(2)
+          - name: credits
+            type: Int
+          - name: publishedAt
+            type: Optional[Int]
+          - name: topics
+            type: Seq[String]
+readModels:
+  - name: refund-tracking
+    sourceAggregate: RefundCase
+    fields:
+      - name: refundedAmount
+        type: Decimal(2)
+        source: eventField:RefundCase.RefundRecorded.refundedAmount
+      - name: optionalReason
+        type: Optional[String]
+  - name: batch-configuration
+    sourceAggregate: RefundCase
+    fields:
+      - name: credits
+        type: Int
+        source: eventField:RefundCase.RefundRecorded.credits
+      - name: publishedAt
+        type: Optional[Int]
+        source: eventField:RefundCase.RefundRecorded.publishedAt
+      - name: refundTotal
+        type: Optional[Decimal(2)]
+      - name: topics
+        type: Seq[String]
+        source: eventField:RefundCase.RefundRecorded.topics
+      - name: tagScores
+        type: Map[String, Int]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/finance/behaviors/domain/refund-record.ears'), `
+slice RefundCase.RecordRefund
+rules:
+  [REFUND_INVALID] IF refundedAmount <= 0.00 WHEN RecordRefund THEN SHALL reject request with REFUND_INVALID
+  [REFUND_RECORDED] WHILE refundedAmount > 0.00
+                    WHEN RecordRefund
+                    SHALL emit RefundRecorded
+                    post:
+                      state.refundedAmount' = refundedAmount
+`, 'utf8');
+
+    const compiled = compileCanonicalV2({
+      structuresDir: join(work, 'truth/finance/structures'),
+      specsPath: join(work, 'truth/finance/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(compiled.passed, true, `SPEC-S10 compile failed: ${JSON.stringify(compiled.diagnostics)}`);
+
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(compiled.canonical, { outDir: work, packageName: 'exam.spec10' });
+    emitV2ExecutableTests(compiled.canonical, {
+      outDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      packageName: 'exam.spec10',
+    });
+
+    const refundHandler = readFileSync(
+      join(work, 'generated-scaffold/scala/exam/spec10/application/readmodels/refund_tracking_readside/RefundTrackingReadsideProjectionHandler.scala'),
+      'utf8',
+    );
+    assert.match(refundHandler, /RefundTrackingView\(id = envelope\.persistenceId\)/);
+    assert.doesNotMatch(refundHandler, /refundedAmount = envelope\.persistenceId/);
+
+    const batchSchema = readFileSync(
+      join(work, 'generated-scaffold/scala/exam/spec10/infrastructure/repositories/projection/BatchConfigurationReadsideSchema.scala'),
+      'utf8',
+    );
+    assert.match(batchSchema, /id VARCHAR\(255\) NOT NULL DEFAULT '' PRIMARY KEY/);
+    assert.doesNotMatch(batchSchema, /credits BIGINT[^,\n]*PRIMARY KEY/);
+
+    const batchRepo = readFileSync(
+      join(work, 'generated-scaffold/scala/exam/spec10/infrastructure/repositories/projection/BatchConfigurationReadsideRepositoryImpl.scala'),
+      'utf8',
+    );
+    assert.match(batchRepo, /import play\.api\.libs\.json\.Json/);
+    assert.match(batchRepo, /publishedAt = rs\.longOpt\("published_at"\)/);
+    assert.match(batchRepo, /refundTotal = rs\.bigDecimalOpt\("refund_total"\)\.map\(BigDecimal\(_\)\)/);
+    assert.match(batchRepo, /topics = scala\.util\.Try\(Json\.parse\(rs\.stringOpt\("topics"\)/);
+    assert.match(batchRepo, /Json\.stringify\(Json\.toJson\(row\.topics\)\)/);
+    assert.doesNotMatch(batchRepo, /rs\.stringOpt\("published_at"\)/);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S10 verify-v2 failed: ${JSON.stringify(verify, null, 2)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S11] Application success fixture + PlayController bindPrincipal & ServerSnapshotProvider handle extern-only guards cleanly (Issue #3)', () => {
+  const work = makeTempDir('coarising-spec-s11-');
+  try {
+    mkdirSync(join(work, 'truth/grading/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/grading/behaviors/domain'), { recursive: true });
+    mkdirSync(join(work, 'truth/grading/behaviors/application'), { recursive: true });
+    writeFileSync(join(work, 'truth/grading/structures/model.yaml'), `
+system: exam-spec11
+context: grading
+valueObjects:
+  - name: ScoreItem
+    fields:
+      - name: itemId
+        type: String
+      - name: points
+        type: Decimal(2)
+aggregates:
+  - name: PaperGrade
+    stateFields:
+      - name: status
+        type: String
+        default: pending
+    commands:
+      - name: Confirm
+        produces: [GradeConfirmed]
+        parameters:
+          - name: paperId
+            type: String
+          - name: operatorId
+            type: String
+          - name: scores
+            type: Seq[ScoreItem]
+          - name: batchId
+            type: String
+          - name: confirmedAt
+            type: Int
+    events:
+      - name: GradeConfirmed
+        fields:
+          - name: paperId
+            type: String
+          - name: operatorId
+            type: String
+          - name: batchId
+            type: String
+externContracts:
+  - name: paperScorable
+    params:
+      - name: paperId
+        type: String
+ports:
+  - name: GradePort
+    operations:
+      - name: confirm
+        callerKind: human
+        parameters:
+          - name: paperId
+            type: String
+          - name: operatorId
+            type: String
+          - name: scores
+            type: Seq[ScoreItem]
+        authz:
+          mode: static-roles
+          allowedRoles: [grader]
+          bindPrincipal:
+            - param: operatorId
+              from: principal.id
+stories:
+  - name: GradePaperStory
+    callerContract:
+      idempotencyKey: paperId
+      retryPolicy: idempotent-by-paper
+      forbiddenUntrustedFields: [batchId, confirmedAt]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/grading/behaviors/domain/paper-grade-confirm.ears'), `
+slice PaperGrade.Confirm
+rules:
+  [GRADE_PAPER_INVALID] IF paperId == "" WHEN Confirm THEN SHALL reject request with GRADE_PAPER_INVALID
+  [GRADE_PAPER_CONFIRMED] WHILE paperId != ""
+                          WHEN Confirm
+                          SHALL emit GradeConfirmed
+                          post:
+                            state.status' = "confirmed"
+`, 'utf8');
+    writeFileSync(join(work, 'truth/grading/behaviors/application/grade-paper-story.story.ears'), `
+story GradePaperStory layer application
+
+where:
+  extern paperScorable(paperId)
+
+axioms:
+  [AX-GRADE-1] ALWAYS clientPayload SHALL NOT supply batchId, confirmedAt
+
+rules:
+  [GRADEPAPERSTORY-01] IF not paperScorable(paperId)
+                       WHEN GradePort.confirm
+                       THEN SHALL reject request with PAPER_NOT_SCORABLE
+  [GRADEPAPERSTORY-02] WHILE paperScorable(paperId)
+                       WHEN GradePort.confirm
+                       SHALL dispatch PaperGrade.Confirm
+`, 'utf8');
+
+    const compiled = compileCanonicalV2({
+      structuresDir: join(work, 'truth/grading/structures'),
+      specsPath: join(work, 'truth/grading/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(compiled.passed, true, `SPEC-S11 compile failed: ${JSON.stringify(compiled.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(compiled.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(compiled.canonical, { outDir: work, packageName: 'exam.spec11' });
+    emitV2ExecutableTests(compiled.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'exam.spec11',
+    });
+
+    // Verify generated tests materialize scores: [ScoreItem], principal, batchId & confirmedAt in stateSnapshot, and assert dispatched payload
+    const tsAppSpec = readFileSync(join(work, 'generated-tests/ts/grade-paper-story.ears.spec.ts'), 'utf8');
+    assert.match(tsAppSpec, /"scores":\[\{"itemId":/);
+    assert.match(tsAppSpec, /"batchId":"sample_batchId"/);
+    assert.match(tsAppSpec, /"confirmedAt":1700000000000/);
+    assert.match(tsAppSpec, /expected dispatched field PaperGrade\.Confirm\.scores/);
+    assert.match(tsAppSpec, /expected principal-bound PaperGrade\.Confirm\.operatorId/);
+
+    const tsHttpSpec = readFileSync(join(work, 'generated-tests/ts/interfaces-http.ears.spec.ts'), 'utf8');
+    assert.match(tsHttpSpec, /loadStateSnapshot/);
+    assert.match(tsHttpSpec, /createRoleBasedAuthority/);
+
+    const playCtrl = readFileSync(join(work, 'generated-scaffold/scala/controllers/GradePaperStoryPlayController.scala'), 'utf8');
+    assert.match(playCtrl, /snapshots: ServerSnapshotProvider/);
+    assert.match(playCtrl, /snapshots\.load\("GradePort\.confirm", rawPayload, principal\)/);
+    assert.match(playCtrl, /Set\("stateSnapshot", "batchId", "confirmedAt"\)/);
+    assert.match(playCtrl, /\("operatorId", "principal\.id"\)/);
+
+    const gbModule = readFileSync(join(work, 'generated-scaffold/scala/exam/spec11/modules/GeneratedBindingsModule.scala'), 'utf8');
+    assert.match(gbModule, /bind\(classOf\[ServerSnapshotProvider\]\)\.to\(classOf\[ServerSnapshotProviderImpl\]\)/);
+
+    const tsClozeFile = join(work, 'handwritten/grade-paper-story.cloze.ts');
+    const tsClozeSrc = readFileSync(tsClozeFile, 'utf8').replace(
+      /\/\/ @cloze:start\(grade-paper-story\)[\s\S]*?\/\/ @cloze:end\(grade-paper-story\)/u,
+      [
+        '// @cloze:start(grade-paper-story)',
+        '    const paperId = String(req.payload.paperId ?? "");',
+        '    if (!externs.paperScorable(paperId)) {',
+        '      return { ok: false, code: "PAPER_NOT_SCORABLE", ruleId: "GRADEPAPERSTORY-01" };',
+        '    }',
+        '    const snap = (req.stateSnapshot ?? {}) as Readonly<Record<string, unknown>>;',
+        '    effects.dispatch("PaperGrade.Confirm", {',
+        '      paperId,',
+        '      operatorId: req.payload.operatorId ?? req.principal?.id,',
+        '      scores: req.payload.scores,',
+        '      batchId: snap.batchId,',
+        '      confirmedAt: snap.confirmedAt,',
+        '    });',
+        '    return { ok: true, ruleId: "GRADEPAPERSTORY-02" };',
+        '    // @cloze:end(grade-paper-story)',
+      ].join('\n'),
+    );
+    writeFileSync(tsClozeFile, tsClozeSrc, 'utf8');
+
+    const scalaClozeFile = join(work, 'handwritten/scala/exam/spec11/application/services/GradePaperStoryImpl.scala');
+    const scalaClozeSrc = readFileSync(scalaClozeFile, 'utf8').replace(
+      /\/\/ @cloze:start\(grade-paper-story\)[\s\S]*?\/\/ @cloze:end\(grade-paper-story\)/u,
+      [
+        '// @cloze:start(grade-paper-story)',
+        '    val paperId = req.payload.get("paperId").map(_.toString).getOrElse("")',
+        '    if (!externs.paperScorable(paperId)) {',
+        '      Left(iMadzError("PAPER_NOT_SCORABLE", "GRADEPAPERSTORY-01"))',
+        '    } else {',
+        '      val operatorId = req.payload.get("operatorId").orElse(req.principal.flatMap(_.get("id"))).getOrElse("")',
+        '      val scores = req.payload.getOrElse("scores", Seq.empty)',
+        '      val batchId = req.stateSnapshot.getOrElse("batchId", "")',
+        '      val confirmedAt = req.stateSnapshot.getOrElse("confirmedAt", 0L)',
+        '      effects.dispatch("PaperGrade.Confirm", Map("paperId" -> paperId, "operatorId" -> operatorId, "scores" -> scores, "batchId" -> batchId, "confirmedAt" -> confirmedAt))',
+        '      Right(GradePaperStorySuccessResponse(ruleId = "GRADEPAPERSTORY-02"))',
+        '    }',
+        '    // @cloze:end(grade-paper-story)',
+      ].join('\n'),
+    );
+    writeFileSync(scalaClozeFile, scalaClozeSrc, 'utf8');
+
+    const tsRun = spawnSync(
+      process.execPath,
+      ['--test', join(work, 'generated-tests/ts/grade-paper-story.ears.spec.ts')],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S11 TS unit spec failed:\n${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S11 Scala verify-v2 failed: ${JSON.stringify(verify, null, 2)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S12] Monolith upgrade writes default canonical-v2.json, enables zero-flag tasks-v2, and prunes stale common-kernel files without touching handwritten (Issue #4)', () => {
+  const srcWork = makeTempDir('coarising-spec-s12-src-');
+  const work = makeTempDir('coarising-spec-s12-');
+  try {
+    const { compiled } = compileBankFixture(srcWork);
+    // Pre-seed stale legacy kernel files from a7e5bb1 + stale manifest file + pre-existing handwritten code
+    mkdirSync(join(work, 'generated-scaffold/scala/net/imadz/common'), { recursive: true });
+    mkdirSync(join(work, 'generated-scaffold/scala/stale'), { recursive: true });
+    mkdirSync(join(work, 'handwritten/scala/custom'), { recursive: true });
+    mkdirSync(join(work, '.truthsrc'), { recursive: true });
+    writeFileSync(join(work, 'generated-scaffold/scala/net/imadz/common/CommonTypes.scala'), 'object OldCommonTypes\n', 'utf8');
+    writeFileSync(join(work, 'generated-scaffold/scala/net/imadz/common/CborSerializable.scala'), 'trait OldCbor\n', 'utf8');
+    writeFileSync(join(work, 'generated-scaffold/scala/stale/OldRemoved.scala'), 'object OldRemoved\n', 'utf8');
+    writeFileSync(join(work, '.truthsrc/generated-scala-manifest.json'), JSON.stringify({
+      schemaVersion: 'co-arising.generated-scala-manifest/v1',
+      scaffoldPaths: ['generated-scaffold/scala/stale/OldRemoved.scala'],
+    }), 'utf8');
+    const keepFile = join(work, 'handwritten/scala/custom/KeepMe.scala');
+    writeFileSync(keepFile, 'object KeepMe { val untouched = true }\n', 'utf8');
+
+    const res = generateScalaCqrsPlayServiceV2ForBc({
+      bcName: 'exam-monolith',
+      canonicals: [compiled.canonical],
+      outDir: work,
+      packageName: 'exam.spec12',
+      packaging: 'monolith',
+    });
+
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/net/imadz/common/CommonTypes.scala')), false, 'stale CommonTypes.scala must be pruned');
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/net/imadz/common/CborSerializable.scala')), false, 'stale CborSerializable.scala must be pruned');
+    assert.equal(existsSync(join(work, 'generated-scaffold/scala/stale/OldRemoved.scala')), false, 'prior manifest orphan file must be pruned');
+    assert.equal(readFileSync(keepFile, 'utf8'), 'object KeepMe { val untouched = true }\n');
+
+    assert.equal(existsSync(res.canonicalPath), true);
+    assert.equal(res.canonicalPath, join(work, '.truthsrc/canonical-v2.json'));
+    assert.equal(existsSync(res.mergedCanonicalPath), true);
+    assert.equal(existsSync(res.dbPath), true);
+
+    const queue = deriveClozeTasksV2({ rootDir: work });
+    assert.equal(queue.summary.totalCloze > 0, true, 'tasks-v2 --root <dir> must see all monolith clozeSlots immediately');
+  } finally {
+    rmSync(srcWork, { recursive: true, force: true });
     rmSync(work, { recursive: true, force: true });
   }
 });
