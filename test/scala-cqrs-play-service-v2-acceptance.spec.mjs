@@ -4,12 +4,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { compileCanonicalV2 } from '../lib/v2/compiler.mjs';
 import { getCodegenPlugin } from '../lib/v2/codegen/interface.mjs';
+import '../lib/v2/codegen/typescript.mjs';
 import {
   GENERATED_HEADER_CONF,
   GENERATED_HEADER_SCALA,
@@ -285,6 +287,7 @@ test('[SPEC-S5] 6-Chain Glue Audit (GLUE-1..GLUE-6) & Complete Guice DI Closure 
 
     const plugin = getCodegenPlugin('scala-cqrs-play-service-v2');
     plugin.generate(enriched, { outDir: work, packageName: 'example.bankwealth.v2' });
+    getCodegenPlugin('typescript').generate(enriched, { outDir: work });
 
     const pkgBase = join(work, 'generated-scaffold/scala/example/bankwealth/v2');
 
@@ -338,6 +341,18 @@ test('[SPEC-S5] 6-Chain Glue Audit (GLUE-1..GLUE-6) & Complete Guice DI Closure 
     assert.match(genBindings, /bind\(classOf\[CashFundPurchaseEffectFace\.Port\]\)\.to\(classOf\[CashFundPurchaseEffectPortImpl\]\)/);
     assert.match(genBindings, /bind\(classOf\[CashFundPurchaseHandler\]\)\.toInstance\(CashFundPurchaseImpl\)/);
     assert.match(genBindings, /bind\(classOf\[SagaCoordinatorBootstrap\]\)\.asEagerSingleton\(\)/);
+    assert.match(genBindings, /def provideHttpRouter\(/);
+    assert.match(genBindings, /def provideCashFundPurchaseExternPorts\(/);
+    assert.match(genBindings, /def provideCashFundPurchaseEffectsPort\(/);
+
+    // Multi-aggregate safe AggregateStateApiController & self-contained Play AuthEndpointDsl
+    const aggStateCtrl = readFileSync(join(work, 'generated-scaffold/scala/controllers/AggregateStateApiController.scala'), 'utf8');
+    assert.match(aggStateCtrl, /FundOrderProtocol\.GetState\(replyTo\)/);
+    assert.match(aggStateCtrl, /FundOrderEntity\.State/);
+    assert.match(aggStateCtrl, /writesFundOrderState/);
+    assert.doesNotMatch(aggStateCtrl, /net\.imadz\.common\.auth|net\.imadz\.metarch/);
+    assert.equal(existsSync(join(pkgBase, 'infrastructure/api/AuthEndpointDsl.scala')), true);
+    assert.equal(existsSync(join(work, 'generated-scaffold/conf/dev.conf')), true);
 
     const hwBindings = readFileSync(join(work, 'handwritten/scala/example/bankwealth/v2/modules/HandwrittenBindingsModule.scala'), 'utf8');
     assert.match(hwBindings, /install\(new GeneratedBindingsModule\(\)\)/);
@@ -345,8 +360,17 @@ test('[SPEC-S5] 6-Chain Glue Audit (GLUE-1..GLUE-6) & Complete Guice DI Closure 
 
     const buildSbt = readFileSync(join(work, 'generated-scaffold/build.sbt'), 'utf8');
     assert.match(buildSbt, /handwritten/);
+    assert.match(buildSbt, /saga-core/);
     assert.match(buildSbt, /akka-projection-eventsourced/);
     assert.match(buildSbt, /scalikejdbc/);
+    const pluginsSbt = readFileSync(join(work, 'generated-scaffold/project/plugins.sbt'), 'utf8');
+    assert.match(pluginsSbt, /libraryDependencySchemes \+= "org\.scala-lang\.modules" %% "scala-xml" % VersionScheme\.Always/);
+
+    // TS HTTP server gates client stateSnapshot behind allowRequestStateSnapshot
+    const tsBootstrap = readFileSync(join(work, 'generated-scaffold/ts/modules/bootstrap.ts'), 'utf8');
+    assert.match(tsBootstrap, /allowRequestStateSnapshot\?: boolean/);
+    assert.match(tsBootstrap, /options\.allowRequestStateSnapshot === true/);
+    assert.equal(existsSync(join(work, 'handwritten/effects/cash-fund-purchase.effect-adapter.ts')), true);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }
@@ -424,18 +448,30 @@ rules:
 
     const cOrders = compileCanonicalV2({ structuresDir: join(work, 'truth/orders/structures'), specsPath: join(work, 'truth/orders/behaviors') }).canonical;
     const cBilling = compileCanonicalV2({ structuresDir: join(work, 'truth/billing/structures'), specsPath: join(work, 'truth/billing/behaviors') }).canonical;
+    // Inject L2 clozeSlots + roles to verify monolith merge retains cloze slots & auto-creates SQLite DB
+    const cBillingWithCloze = structuredClone(cBilling);
+    cBillingWithCloze.structures.roles = [{ name: 'billing-admin', kind: 'human' }];
+    cBillingWithCloze.clozeSlots = [{ slotId: 'invoice-reconcile', target: 'Invoice.Issue', kind: 'slice', layer: 'domain', tier: 'L2', ruleIds: ['INVOICE_OK'] }];
 
     // Mode A: Monolith ("大泥球")
     const monoOut = join(work, 'mono');
     const monoRes = generateScalaCqrsPlayServiceV2ForBc({
       bcName: 'shop-monolith',
       packaging: 'monolith',
-      canonicals: [cOrders, cBilling],
+      canonicals: [cOrders, cBillingWithCloze],
       outDir: monoOut,
       packageName: 'shop.monolith',
     });
     assert.equal(monoRes.packaging, 'monolith');
     assert.equal(existsSync(monoRes.mergedCanonicalPath), true);
+    assert.equal(existsSync(monoRes.dbPath), true);
+    const mergedJson = JSON.parse(readFileSync(monoRes.mergedCanonicalPath, 'utf8'));
+    assert.equal(mergedJson.clozeSlots.length, 1);
+    assert.equal(mergedJson.structures.roles.length, 1);
+    const monoDb = new DatabaseSync(monoRes.dbPath, { readOnly: true });
+    const monoClozeCount = monoDb.prepare('SELECT COUNT(*) AS n FROM cloze_slots').get().n;
+    monoDb.close();
+    assert.equal(monoClozeCount, 1, 'monolith SQLite must retain merged cloze_slots');
     assert.equal(existsSync(join(monoOut, 'generated-scaffold/scala/shop/monolith/domain/entities/OrderEntity.scala')), true);
     assert.equal(existsSync(join(monoOut, 'generated-scaffold/scala/shop/monolith/domain/entities/InvoiceEntity.scala')), true);
 
@@ -529,6 +565,122 @@ test('[SPEC-S8] Explorer SQLite Rich Node Graph (17+ Kinds, 4A/4B Behavior Chann
     const viewRes = exportV2WorkshopHtml({ rootDir: work, dbFile: dbPath, outFile: workshopOut });
     assert.ok(viewRes.nodes >= 85, `expected >= 85 rich nodes in Explorer graph, got ${viewRes.nodes}`);
     assert.equal(viewRes.mappedNodes, viewRes.nodes, `expected 100% mapped nodes (${viewRes.mappedNodes}/${viewRes.nodes})`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S9] Z3 Witness Materializer: len(seq) Bounded Lists & Symmetric String Equality Witnesses Pass Live TS + ScalaTest', () => {
+  const work = makeTempDir('truthsrc-spec-s9-');
+  try {
+    mkdirSync(join(work, 'truth/exam/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/exam/behaviors/domain'), { recursive: true });
+    writeFileSync(join(work, 'truth/exam/structures/exam.yaml'), `
+system: exam-spec
+subdomain: exam
+context: exam
+aggregates:
+  - name: ExamBatch
+    aliases: [state]
+    stateFields:
+      - name: status
+        type: String
+        default: draft
+        waiveLineage: immutable-config
+      - name: topics
+        type: Seq[String]
+        default: []
+      - name: existingId
+        type: String
+        default: ""
+    commands:
+      - name: SetTopics
+        produces: [TopicsSet]
+        parameters:
+          - name: subjects
+            type: Seq[String]
+      - name: GenerateReplay
+        produces: [ReplayConfirmed]
+        parameters:
+          - name: requestId
+            type: String
+    events:
+      - name: TopicsSet
+        fields:
+          - name: subjects
+            type: Seq[String]
+      - name: ReplayConfirmed
+        fields:
+          - name: requestId
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/exam/behaviors/domain/exam-batch-set-topics.ears'), `
+slice ExamBatch.SetTopics
+where:
+  eligible = state.status == "draft" and len(subjects) >= 1 and len(subjects) <= 99
+rules:
+  [SET_TOPICS_REJECTED] IF not eligible WHEN SetTopics THEN SHALL reject request with SET_TOPICS_REJECTED
+  [SET_TOPICS_ACCEPTED] WHILE eligible
+                        WHEN SetTopics
+                        SHALL emit TopicsSet
+                        post:
+                          state.topics' = subjects
+`, 'utf8');
+    writeFileSync(join(work, 'truth/exam/behaviors/domain/exam-batch-replay.ears'), `
+slice ExamBatch.GenerateReplay
+rules:
+  [GENERATE_MISMATCH] IF state.existingId != requestId WHEN GenerateReplay THEN SHALL reject request with GENERATE_MISMATCH
+  [GENERATE_REPLAY]   WHILE state.existingId == requestId
+                      WHEN GenerateReplay
+                      SHALL emit ReplayConfirmed
+                      post:
+                        state.existingId' = requestId
+`, 'utf8');
+
+    const compiled = compileCanonicalV2({
+      structuresDir: join(work, 'truth/exam/structures'),
+      specsPath: join(work, 'truth/exam/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(compiled.passed, true, `SPEC-S9 compile failed: ${JSON.stringify(compiled.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(compiled.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(compiled.canonical, { outDir: work, packageName: 'exam.spec9' });
+    emitV2ExecutableTests(compiled.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'exam.spec9',
+    });
+
+    // Verify materialized TS test actually populated non-empty subjects & equal string witnesses
+    const topicsSpec = readFileSync(join(work, 'generated-tests/ts/exam-batch-set-topics.ears.spec.ts'), 'utf8');
+    assert.match(topicsSpec, /"subjects":\["item_1"/);
+    const replaySpec = readFileSync(join(work, 'generated-tests/ts/exam-batch-generate-replay.ears.spec.ts'), 'utf8');
+    assert.doesNotMatch(replaySpec, /"existingId":"".*"requestId":"0"/);
+
+    // Verify materialized TS domain specs pass live node --test (pure domain, no loopback HTTP needed)
+    const tsRun = spawnSync(
+      process.execPath,
+      [
+        '--test',
+        join(work, 'generated-tests/ts/exam-batch-set-topics.ears.spec.ts'),
+        join(work, 'generated-tests/ts/exam-batch-generate-replay.ears.spec.ts'),
+      ],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S9 TS domain tests failed:\n${tsRun.stdout}\n${tsRun.stderr}`);
+
+    // Verify full Scala domain + ScalaTest + InterfacesHttpSpec + Onion DIP
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S9 verify-v2 failed: ${JSON.stringify(verify, null, 2)}`);
+    assert.equal(verify.scalaCheck.passed, true);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }

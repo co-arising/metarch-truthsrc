@@ -21,7 +21,7 @@ truthsrc tasks-v2 --root my-service --format human
 ```
 
 - **v2 文档与规范**：[v2 Quickstart](knowledge_base/guides/co_arising_v2_quickstart.md) · [EARS v2 双语语法参考](knowledge_base/reference/ears_v2_grammar_reference.md) · [错误码手册](knowledge_base/reference/v2_diagnostics_error_codes.md) · [全域治理规范](knowledge_base/architecture/co_arising_v2_full_coverage_governance.md) · [v2.0.0 Release Notes](knowledge_base/releases/v2_0_0_release_notes.md)
-- **Agent 与编辑器配套**：[coarising-distill Skill](skills/coarising_distill/SKILL.md)（PRD → 真源）· [coarising-cloze-worker Skill](skills/coarising_cloze_worker/SKILL.md)（隔离区 `@cloze` 填空 + 盲审）· [AGY 并行编排模板](workflows/coarising_cloze_pipeline.py) · [VS Code `.ears` 高亮与 LSP (`truthsrc lsp-ears`)](editor/ears-vscode/package.json) · `truthsrc mcp`（含 5 个 v2 MCP 工具）
+- **Agent 与编辑器配套**：[coarising-distill Skill](skills/coarising_distill/SKILL.md)（PRD → 真源）· [coarising-cloze-worker Skill](skills/coarising_cloze_worker/SKILL.md)（隔离区 `@cloze` 填空 + 盲审）· [coarising-saga-monarch Skill](skills/coarising_saga_monarch/SKILL.md)（Saga 与 Monarch Schema）· [AGY 并行编排模板](workflows/coarising_cloze_pipeline.py) · [VS Code `.ears` 高亮与 LSP (`truthsrc lsp-ears`)](editor/ears-vscode/package.json) · `truthsrc mcp`（共 32 个 MCP 工具：26 个 v1 + 6 个 v2 含 `v2_view`）
 
 ```text
 真实作者文件 → 编译、校验 → 本地知识图导出的 AST → 生成代码
@@ -55,10 +55,10 @@ truthsrc tasks-v2 --root my-service --format human
 ### A. 已取得完整本地 tgz（工具使用者）
 
 当前不提供本轮的新 npm registry 发布或虚构的 Release 下载地址。拿到经确认的
-本地包后执行；包内版本当前仍为 `0.5.0`，同一版本号不证明内容或远端发布状态相同。
+本地包后执行；包内版本当前为 `2.0.0`，同一版本号不证明内容或远端发布状态相同。
 
 ```bash
-PACKAGE="/absolute/path/to/madpolaris-truthsrc-0.5.0.tgz"
+PACKAGE="/absolute/path/to/madpolaris-truthsrc-2.0.0.tgz"
 PREFIX="$HOME/.local/truthsrc-cli"
 npm install --prefix "$PREFIX" --offline --ignore-scripts --no-audit --no-fund "$PACKAGE"
 export PATH="$PREFIX/node_modules/.bin:$PATH"
@@ -105,7 +105,7 @@ npm pack --offline --ignore-scripts --pack-destination "$PACK_DIR"
 printf '本地包目录：%s\n' "$PACK_DIR"
 ```
 
-当前包文件名是 `madpolaris-truthsrc-0.5.0.tgz`。`npm pack` 不发布 registry；
+当前包文件名是 `madpolaris-truthsrc-2.0.0.tgz`。`npm pack` 不发布 registry；
 安装失败时保留诊断，核对版本和包清单，不借用另一个已安装版本冒充本次成功。
 
 ## 开始练习

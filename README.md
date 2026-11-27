@@ -35,7 +35,7 @@ truthsrc tasks-v2 --root my-service --format human
 ```
 
 - **Guides & Reference**: [v2 Quickstart](knowledge_base/guides/co_arising_v2_quickstart.md) · [EARS v2 Grammar](knowledge_base/reference/ears_v2_grammar_reference.md) · [Diagnostics & Error Codes](knowledge_base/reference/v2_diagnostics_error_codes.md) · [Full-Coverage Governance](knowledge_base/architecture/co_arising_v2_full_coverage_governance.md) · [v2.0.0 Release Notes](knowledge_base/releases/v2_0_0_release_notes.md)
-- **Agent & IDE Ecosystem**: [coarising-distill Skill](skills/coarising_distill/SKILL.md) (PRD → truth) · [coarising-cloze-worker Skill](skills/coarising_cloze_worker/SKILL.md) (`@cloze` TDD + blind review) · [AGY Parallel Workflow](workflows/coarising_cloze_pipeline.py) · [VS Code `.ears` Extension & LSP (`truthsrc lsp-ears`)](editor/ears-vscode/package.json) · `truthsrc mcp` (`v2_compile`, `v2_query_graph`, `v2_tasks`, `v2_context_pack`, `v2_verify`)
+- **Agent & IDE Ecosystem**: [coarising-distill Skill](skills/coarising_distill/SKILL.md) (PRD → truth) · [coarising-cloze-worker Skill](skills/coarising_cloze_worker/SKILL.md) (`@cloze` TDD + blind review) · [coarising-saga-monarch Skill](skills/coarising_saga_monarch/SKILL.md) (Saga & Monarch schemas) · [AGY Parallel Workflow](workflows/coarising_cloze_pipeline.py) · [VS Code `.ears` Extension & LSP (`truthsrc lsp-ears`)](editor/ears-vscode/package.json) · `truthsrc mcp` (`v2_compile`, `v2_query_graph`, `v2_tasks`, `v2_context_pack`, `v2_verify`, `v2_view`) · `atlas-v2` / `event-matrix-v2` / 54-family `scala-cqrs-play-service:2` codegen
 
 ## What it does (v1 & v2)
 
@@ -48,7 +48,7 @@ truthsrc tasks-v2 --root my-service --format human
 | Ask both directions | `truthsrc query-project --knowledge SetCount` · `--file <f> --line <n>` |
 | Prove lineage | `truthsrc verify-project` — re-verifies every anchor against file bytes |
 | Export a map | `truthsrc view-project --html <new-file>` — single-file, offline, read-only snapshot |
-| Agent access | `truthsrc mcp` — 26 read-oriented tools over stdio JSON-RPC |
+| Agent access | `truthsrc mcp` — 32 tools (26 v1 read-oriented + 6 v2 EARS/workflow tools) over stdio JSON-RPC |
 
 Zero npm runtime dependencies — the toolchain is Node stdlib only
 (built-in `node:sqlite` is why the floor is **Node ≥ 22.13.0**).
@@ -71,7 +71,7 @@ node metarch-truthsrc/bin/truthsrc.js --help
 
 Tip: `alias truthsrc="node $(pwd)/metarch-truthsrc/bin/truthsrc.js"` makes the
 docs read literally. Verified on Node 22.13.0 and 22.23.4. A prebuilt local
-tarball (`madpolaris-truthsrc-0.5.0.tgz`) also works offline —
+tarball (`madpolaris-truthsrc-2.0.0.tgz`) also works offline —
 [install details in README-zh](README-zh.md#install-the-local-cli).
 
 ## Start here
@@ -119,11 +119,13 @@ Scala project with a physically separated handwritten zone.
 
 - [AGENTS.md](AGENTS.md) — the editing contract: every batch of author-tree
   edits ends with `validate` AND `roundtrip` green; agents draft, humans approve.
-- [skills/](skills/) — four SKILL.md packs: query discipline (the DESCRIBE
-  model), extract a tree from an existing codebase, extract from reachable
-  data, bootstrap workshop drafts from a one-line description.
-- `truthsrc mcp` exposes describe / expand / blast_radius / lineage / anchors /
-  orphans / consistency_check plus registry verbs — read-oriented by design.
+- [skills/](skills/) — v1 and v2 SKILL.md packs: query discipline (the DESCRIBE
+  model), extract from codebase/data, bootstrap workshop drafts, plus v2
+  `coarising_distill`, `coarising_cloze_worker`, and `coarising_saga_monarch`.
+- `truthsrc mcp` exposes 26 v1 read-oriented tools (`describe`, `expand`,
+  `blast_radius`, `lineage`, `anchors`, `orphans`, `consistency_check`, etc.)
+  plus 6 v2 tools (`v2_compile`, `v2_query_graph`, `v2_tasks`, `v2_context_pack`,
+  `v2_verify`, `v2_view`).
 
 ## Repo map
 
