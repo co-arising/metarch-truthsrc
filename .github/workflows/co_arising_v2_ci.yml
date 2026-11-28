@@ -64,17 +64,48 @@ jobs:
       - name: Single-source-of-truth contract & skill parity gate
         run: npm run check:contracts
 
-      - name: Run EARS 1.0 & co-arising 2.0 full suites (TS + Scala + JVM TCK + Mutation + Authz Matrix + Acceptance)
+      - name: Run EARS 1.0 & co-arising 2.0 full suites (TS + Scala + JVM TCK + Mutation + Authz Matrix + Wave-9 Regressions + Acceptance)
         run: |
           npm run test:ears
           npm run test:v2
           npm run test:acceptance-v2
 
-      - name: Smoke test init-v2 + check-v2 --strict --mutation-gate across TS + Scala
+      - name: Smoke test init-v2 + check-v2 --strict --mutation-gate across TS + Scala + Play scaffold
         run: |
           TMP_PROJ="$(mktemp -d)/ci-starter"
           node bin/truthsrc.js init-v2 "$TMP_PROJ" --target typescript,scala --package example.ci
           node bin/truthsrc.js check-v2 --root "$TMP_PROJ" --strict --mutation-gate --format human
+          node tools/e2e-play-smoke.mjs --gen-only
+
+  e2e-play-blackbox-smoke:
+    needs: v2-toolchain-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: sbt
+
+      - name: Install Z3 & sbt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y z3
+          curl -fL https://github.com/coursier/coursier/releases/latest/download/cs-x86_64-pc-linux.gz | gzip -d > /usr/local/bin/cs
+          chmod +x /usr/local/bin/cs
+          cs install sbt
+          echo "$HOME/.local/share/coursier/bin" >> "$GITHUB_PATH"
+
+      - name: Run Play black-box E2E smoke test (init-v2 -> sbt stage -> live HTTP)
+        run: node tools/e2e-play-smoke.mjs --require-sbt
 
   dispatch-downstream:
     needs: v2-toolchain-matrix

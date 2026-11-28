@@ -17,6 +17,12 @@
 //      - No hardcoded `net.imadz` / `net/imadz` runtime coordinates outside
 //        `lib/runtime-profile.mjs` in `lib/`, `generators/scala-cqrs-play-service/`,
 //        and active unified `emitter/families/`.
+//   4. Wave-9 fail-fast generator invariants:
+//      - No wildcard `'*'` role bypasses in v2 authz templates.
+//      - No silent ReadSide column fallback to Zero/empty on corrupt non-empty rows.
+//      - No PolicyDlqSink.Noop binding in GeneratedBindingsModule.
+//      - Play runtime wiring invariants (JdbcProjection, CSRFFilter, Guice BootstrapModule,
+//        fail-closed FORBIDDEN_PDP & PRINCIPAL_BINDING_MISSING).
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -63,6 +69,9 @@ for (const rel of files) {
 // 2. Static hygiene + generator architecture rules.
 const FORBIDDEN_BUSINESS_NAMES = /\b(bankwealth|CreditBalance|FundOrder|SipPlan|BankPayment|BankRefund|BankService|BankTa|BankSip|RULES_FLIP_AGGREGATES|EFFECT_FACE_FLIPS|PIPELINE_INVOCATION_FLIPS|[A-Z_]+_FLIP_CONTEXTS)\b|bank-(?:sip-dispatch|ta-effect|ta-submission|cash-payment|independent-refund|payment-host|refund-host)|(?:Payment|Refund)(?:Original|Bindings)|mock-ta|cash-contract|repo\s*===\s*['"]bank['"]/u;
 const FORBIDDEN_RUNTIME_LITERAL = /\bnet(?:\\\.|[./])imadz\b/u;
+const FORBIDDEN_WILDCARD_AUTHZ = /(?:Set\s*\(\s*['"]\*['"]\s*\)|\.contains\s*\(\s*['"]\*['"]\s*\))/u;
+const FORBIDDEN_SILENT_READSIDE_FALLBACK = /scala\.util\.Try\s*\([\s\S]*?\)\.getOrElse\s*\(\s*(?:BigDecimal\s*\(\s*0\s*\)|0L?|Seq\.empty|Map\.empty|Vector\.empty|Nil|""|'')/u;
+const FORBIDDEN_NOOP_DLQ_BINDING = /bind\s*\(\s*classOf\s*\[\s*PolicyDlqSink\s*\]\s*\)\.toInstance\s*\(\s*PolicyDlqSink\.Noop\s*\)/u;
 const ACTIVE_UNIFIED_EMITTERS = new Set([
   'emitter/families/value-object.mjs',
   'emitter/families/domain-entity.mjs',
@@ -154,7 +163,54 @@ for (const rel of files) {
         FORBIDDEN_RUNTIME_LITERAL.test(trimmed)) {
       report(rel, lineNo, 'arch/no-hardcoded-runtime', 'route runtime package/organization coordinates through lib/runtime-profile.mjs');
     }
+
+    // Wave-9 fail-fast rule: forbid wildcard "*" role bypass in v2 authz templates.
+    if ((rel === 'lib/v2/bridge/v1-strict-api-auth.mjs' || rel.startsWith('generators/scala-cqrs-play-service-v2/')) &&
+        !isComment &&
+        FORBIDDEN_WILDCARD_AUTHZ.test(trimmed)) {
+      report(rel, lineNo, 'arch/no-wildcard-authz', 'wildcard "*" role bypass is forbidden in authz templates (fail closed)');
+    }
+
+    // Wave-9 fail-fast rule: forbid silent Zero/empty fallbacks on corrupt ReadSide columns.
+    if (rel === 'lib/v2/bridge/v1-strict-readside.mjs' && !isComment && FORBIDDEN_SILENT_READSIDE_FALLBACK.test(trimmed)) {
+      report(rel, lineNo, 'arch/no-silent-readside-fallback', 'corrupt ReadSide columns must throw IllegalStateException instead of silently falling back to Zero/empty');
+    }
+
+    // Wave-9 fail-fast rule: forbid binding PolicyDlqSink to Noop in GeneratedBindingsModule.
+    if (rel === 'lib/v2/bridge/v1-strict-block-cd.mjs' && !isComment && FORBIDDEN_NOOP_DLQ_BINDING.test(trimmed)) {
+      report(rel, lineNo, 'arch/no-noop-policy-dlq', 'PolicyDlqSink must bind to PolicyDlqBury rather than PolicyDlqSink.Noop');
+    }
   });
+}
+
+// 3. Whole-file Wave-9 Play runtime wiring invariants.
+const PLAY_RUNTIME_INVARIANTS = [
+  {
+    file: 'lib/v2/bridge/v1-strict-readside.mjs',
+    mustContain: ['JdbcProjection.atLeastOnceAsync', 'IllegalStateException'],
+    reason: 'ReadSide bridge must wire real Akka JdbcProjection and fail loudly on corrupt columns',
+  },
+  {
+    file: 'lib/v2/bridge/v1-strict-api-auth.mjs',
+    mustContain: ['FORBIDDEN_PDP', 'PRINCIPAL_BINDING_MISSING', 'withRequest'],
+    reason: 'API/Auth bridge must enforce fail-closed PDP, principal binding, and POST query+body merging',
+  },
+  {
+    file: 'lib/v2/bridge/v1-strict-block-cd.mjs',
+    mustContain: ['play.filters.csrf.CSRFFilter', 'play.modules.enabled', 'BootstrapModule'],
+    reason: 'Play v2 generator must boot via Guice BootstrapModule and enable CSRFFilter in service.conf',
+  },
+];
+
+for (const inv of PLAY_RUNTIME_INVARIANTS) {
+  const fullPath = path.join(ROOT, inv.file);
+  if (!fs.existsSync(fullPath)) continue;
+  const content = fs.readFileSync(fullPath, 'utf8');
+  for (const token of inv.mustContain) {
+    if (!content.includes(token)) {
+      report(inv.file, 1, 'arch/play-runtime-wiring-invariants', `missing required runtime invariant ${JSON.stringify(token)}: ${inv.reason}`);
+    }
+  }
 }
 
 if (errors.length > 0) {
