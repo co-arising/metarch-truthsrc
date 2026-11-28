@@ -72,6 +72,7 @@ const FORBIDDEN_RUNTIME_LITERAL = /\bnet(?:\\\.|[./])imadz\b/u;
 const FORBIDDEN_WILDCARD_AUTHZ = /(?:Set\s*\(\s*['"]\*['"]\s*\)|\.contains\s*\(\s*['"]\*['"]\s*\))/u;
 const FORBIDDEN_SILENT_READSIDE_FALLBACK = /scala\.util\.Try\s*\([\s\S]*?\)\.getOrElse\s*\(\s*(?:BigDecimal\s*\(\s*0\s*\)|0L?|Seq\.empty|Map\.empty|Vector\.empty|Nil|""|'')/u;
 const FORBIDDEN_NOOP_DLQ_BINDING = /bind\s*\(\s*classOf\s*\[\s*PolicyDlqSink\s*\]\s*\)\.toInstance\s*\(\s*PolicyDlqSink\.Noop\s*\)/u;
+const FORBIDDEN_ORPHAN_HANDWRITTEN_APP = /handwrittenFiles\s*\[\s*['"`]app\//u;
 const ACTIVE_UNIFIED_EMITTERS = new Set([
   'emitter/families/value-object.mjs',
   'emitter/families/domain-entity.mjs',
@@ -179,6 +180,11 @@ for (const rel of files) {
     // Wave-9 fail-fast rule: forbid binding PolicyDlqSink to Noop in GeneratedBindingsModule.
     if (rel === 'lib/v2/bridge/v1-strict-block-cd.mjs' && !isComment && FORBIDDEN_NOOP_DLQ_BINDING.test(trimmed)) {
       report(rel, lineNo, 'arch/no-noop-policy-dlq', 'PolicyDlqSink must bind to PolicyDlqBury rather than PolicyDlqSink.Noop');
+    }
+
+    // Wave-9 fail-fast rule: handwrittenFiles in v2 bridges must use handwritten/scala/... (never orphan app/...).
+    if (rel.startsWith('lib/v2/') && !isComment && FORBIDDEN_ORPHAN_HANDWRITTEN_APP.test(trimmed)) {
+      report(rel, lineNo, 'arch/no-orphan-handwritten-app-path', 'handwrittenFiles entries must target handwritten/scala/... rather than orphan app/...');
     }
   });
 }

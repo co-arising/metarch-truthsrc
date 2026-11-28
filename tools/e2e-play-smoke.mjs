@@ -110,6 +110,8 @@ async function main() {
     assert.match(routes, /GET\s+\/api\/v1\/core\/aggregates\/quota-bucket\/:quotaBucketId\b/u, 'routes must expose aggregate state query route');
     assert.match(controller, /\.withRequest\s*\{/u, 'PlayController POST route must use AuthedWriteBuilder.withRequest');
     assert.match(controller, /pdp:\s*AuthorizationPort/u, 'PlayController must inject AuthorizationPort');
+    assert.ok(fs.existsSync(path.join(projDir, 'handwritten', 'scala', 'example', 'smoke', 'infrastructure', 'api', 'AuthorizationPortImpl.scala')), 'AuthorizationPortImpl.scala must exist under handwritten/scala/');
+    assert.equal(fs.existsSync(path.join(projDir, 'app')), false, 'No orphan app/ directory should be emitted');
 
     if (genOnly) {
       process.stdout.write('[e2e-play] --gen-only passed (generation, check-v2 --strict, and Play scaffold invariants verified).\n');

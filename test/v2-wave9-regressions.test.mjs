@@ -251,9 +251,8 @@ describe('Wave-9 Batch 1 (P0): Play production boot, projection, authz & readsid
       const apiSuite = emitV1ApiAuthSuite(canonical, { packageName: 'example.wave9' });
       const controller = getFileFromSuite(apiSuite, 'OrderIntakePlayController.scala');
       const authzImplPath = path.join(tmpDir, 'handwritten', 'scala', 'example', 'wave9', 'infrastructure', 'api', 'AuthorizationPortImpl.scala');
-      const allScala = fs.readdirSync(tmpDir, { recursive: true }).map(String).filter(f => f.endsWith('.scala'));
-      const hasAuthzImpl = fs.existsSync(authzImplPath) || allScala.some(f => fs.readFileSync(path.join(tmpDir, f), 'utf8').includes('class AuthorizationPortImpl'));
-      assert.ok(hasAuthzImpl, 'class AuthorizationPortImpl must be emitted by Play v2 generator');
+      assert.ok(fs.existsSync(authzImplPath), 'AuthorizationPortImpl.scala must be emitted under handwritten/scala/ (never orphan app/)');
+      assert.equal(fs.existsSync(path.join(tmpDir, 'app')), false, 'Play v2 generator must not emit orphan app/ directory');
       assert.match(controller, /pdp:\s*AuthorizationPort/u);
       assert.match(controller, /FORBIDDEN_PDP/u);
       assert.match(controller, /PRINCIPAL_BINDING_MISSING/u);
@@ -733,5 +732,22 @@ describe('Wave-9 Batch 7: BC check-v2, POST query+body merge, corrupt ReadSide f
       mapEntries: { 'state.tags': { vip: 'true' } },
     });
     assert.ok(Array.isArray(mat.state.tags) && mat.state.tags.includes('vip'), `Expected 'vip' in materialized state.tags, got ${JSON.stringify(mat.state)}`);
+  });
+});
+
+describe('Wave-9 Perf & Progress: check-v2 timings and parallel mutation worker', () => {
+  test('runCheckV2 reports stage timingsMs and honors mutationGate=false', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'wave9-timings-'));
+    try {
+      const c1 = makeBaseCanonical({ context: 'subA' });
+      const { mergedCanonical } = mergeCanonicalsForBc([c1], { bcName: 'perf' });
+      fs.mkdirSync(path.join(tmpDir, '.truthsrc'), { recursive: true });
+      fs.writeFileSync(path.join(tmpDir, '.truthsrc', 'canonical-v2.json'), JSON.stringify(mergedCanonical, null, 2));
+      const res = runCheckV2({ rootDir: tmpDir, mutationGate: false, progress: false });
+      assert.ok(res.timingsMs && typeof res.timingsMs.totalMs === 'number', 'runCheckV2 must report timingsMs');
+      assert.equal(res.verify.mutationCheck.enabled, false, 'mutationGate=false must disable mutation gate');
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 });
