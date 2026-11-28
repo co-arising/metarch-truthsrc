@@ -1840,3 +1840,500 @@ rules:
     rmSync(work, { recursive: true, force: true });
   }
 });
+
+test('[SPEC-S21] Application stateSnapshot-derived dispatch fields validate non-null types without false equality failures while preserving strict bindPrincipal (Wave-3 M02)', () => {
+  const work = makeTempDir('coarising-spec-s21-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec21
+subdomain: orders
+aggregates:
+  - name: Order
+    idField: orderId
+    stateFields:
+      - name: orderId
+        type: String
+      - name: status
+        type: String
+        default: "Pending"
+    commands:
+      - name: Confirm
+        parameters:
+          - name: orderId
+            type: String
+          - name: operatorId
+            type: String
+          - name: batchCode
+            type: String
+          - name: confirmedAt
+            type: Int
+          - name: fee
+            type: Decimal(2)
+        produces: [Confirmed]
+    events:
+      - name: Confirmed
+        fields:
+          - name: orderId
+            type: String
+          - name: operatorId
+            type: String
+          - name: batchCode
+            type: String
+externContracts:
+  - name: orderReady
+    params:
+      - name: orderId
+        type: String
+ports:
+  - name: OrderPort
+    operations:
+      - name: confirm
+        callerKind: human
+        parameters:
+          - name: orderId
+            type: String
+          - name: operatorId
+            type: String
+        authz:
+          mode: static-roles
+          allowedRoles: [operator]
+          bindPrincipal:
+            - param: operatorId
+              from: principal.id
+stories:
+  - name: ConfirmOrderStory
+    inboundPort: OrderPort
+    dispatches: [Order.Confirm]
+    callerContract:
+      idempotencyKey: orderId
+      retryPolicy: idempotent-by-order
+      forbiddenUntrustedFields: [batchCode, confirmedAt, fee]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/order-confirm.ears'), `slice Order.Confirm
+rules:
+  [BAD_ID] IF orderId == "" THEN SHALL reject request with BAD_ID
+  [OK]     WHILE orderId != ""
+           WHEN Confirm
+           SHALL transition state.status -> "Confirmed"
+             AND emit Confirmed
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/confirm-story.story.ears'), `story ConfirmOrderStory layer application
+where:
+  extern orderReady(orderId)
+axioms:
+  [AX-1] ALWAYS clientPayload SHALL NOT supply batchCode, confirmedAt, fee
+rules:
+  [NOT_READY]  IF not orderReady(orderId)
+               WHEN OrderPort.confirm
+               THEN SHALL reject request with ORDER_NOT_READY
+  [CONFIRM_OK] WHILE orderReady(orderId)
+               WHEN OrderPort.confirm
+               SHALL dispatch Order.Confirm
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S21 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec21' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec21',
+    });
+
+    // Handwritten handlers normalize/derive stateSnapshot fields rather than verbatim passthrough
+    const tsCloze = join(work, 'handwritten/confirm-order-story.cloze.ts');
+    writeFileSync(tsCloze, readFileSync(tsCloze, 'utf8').replace(
+      /\/\/ @cloze:start\(confirm-order-story\)[\s\S]*?\/\/ @cloze:end\(confirm-order-story\)/u,
+      [
+        '// @cloze:start(confirm-order-story)',
+        '    const orderId = String(req.payload.orderId ?? "");',
+        '    if (!externs.orderReady(orderId)) return { ok: false, code: "ORDER_NOT_READY", ruleId: "NOT_READY" };',
+        '    const rawBatch = String(req.stateSnapshot?.batchCode ?? "DEFAULT").trim().toUpperCase();',
+        '    const baseTs = Number(req.stateSnapshot?.confirmedAt ?? 0);',
+        '    effects.dispatch("Order.Confirm", {',
+        '      orderId,',
+        '      operatorId: req.payload.operatorId ?? req.principal?.id,',
+        '      batchCode: "NORM-" + rawBatch,',
+        '      confirmedAt: baseTs + 1000,',
+        '      fee: "12.50",',
+        '    });',
+        '    return { ok: true, ruleId: "CONFIRM_OK" };',
+        '    // @cloze:end(confirm-order-story)',
+      ].join('\n'),
+    ), 'utf8');
+
+    const scCloze = join(work, 'handwritten/scala/example/spec21/application/services/ConfirmOrderStoryImpl.scala');
+    writeFileSync(scCloze, readFileSync(scCloze, 'utf8').replace(
+      /\/\/ @cloze:start\(confirm-order-story\)[\s\S]*?\/\/ @cloze:end\(confirm-order-story\)/u,
+      [
+        '// @cloze:start(confirm-order-story)',
+        '    val orderId = req.payload.get("orderId").map(_.toString).getOrElse("")',
+        '    if (!externs.orderReady(orderId)) Left(iMadzError("ORDER_NOT_READY", "NOT_READY"))',
+        '    else {',
+        '      val operatorId = req.payload.get("operatorId").orElse(req.principal.flatMap(_.get("id"))).getOrElse("")',
+        '      val rawBatch = req.stateSnapshot.get("batchCode").map(_.toString.trim.toUpperCase).getOrElse("DEFAULT")',
+        '      val baseTs = req.stateSnapshot.get("confirmedAt").collect { case l: Long => l; case i: Int => i.toLong }.getOrElse(0L)',
+        '      effects.dispatch("Order.Confirm", Map(',
+        '        "orderId" -> orderId,',
+        '        "operatorId" -> operatorId,',
+        '        "batchCode" -> ("NORM-" + rawBatch),',
+        '        "confirmedAt" -> (baseTs + 1000L),',
+        '        "fee" -> BigDecimal("12.50")',
+        '      ))',
+        '      Right(ConfirmOrderStorySuccessResponse(ruleId = "CONFIRM_OK"))',
+        '    }',
+        '    // @cloze:end(confirm-order-story)',
+      ].join('\n'),
+    ), 'utf8');
+
+    const tsRun = spawnSync(
+      process.execPath,
+      ['--test', join(work, 'generated-tests/ts/confirm-order-story.ears.spec.ts')],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S21 TS spec failed:\n${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S21 Scala verify failed: ${JSON.stringify(verify, null, 2)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S22] Coupled len/sum/vacuous-truth SMT axioms, dual opposite quantifiers with shared var, sum(seq) materialization, and multi-branch L1 Scala rules pass 100% mutation gate (Wave-3 M09/M10/M11)', () => {
+  const work = makeTempDir('coarising-spec-s22-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec22
+subdomain: analytics
+valueObjects:
+  - name: LineItem
+    fields:
+      - name: label
+        type: String
+      - name: score
+        type: Int
+aggregates:
+  - name: MetricBatch
+    idField: batchId
+    stateFields:
+      - name: batchId
+        type: String
+      - name: status
+        type: String
+        default: "Draft"
+    commands:
+      - name: Evaluate
+        parameters:
+          - name: batchId
+            type: String
+          - name: items
+            type: Seq[LineItem]
+          - name: scores
+            type: Seq[Int]
+          - name: amounts
+            type: Seq[Decimal(2)]
+        produces: [EmptyAccepted, Evaluated]
+      - name: Screen
+        parameters:
+          - name: batchId
+            type: String
+          - name: readings
+            type: Seq[Int]
+          - name: items
+            type: Seq[LineItem]
+        produces: [Screened]
+    events:
+      - name: EmptyAccepted
+        fields:
+          - name: batchId
+            type: String
+      - name: Evaluated
+        fields:
+          - name: batchId
+            type: String
+      - name: Screened
+        fields:
+          - name: batchId
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/evaluate.ears'), `slice MetricBatch.Evaluate
+rules:
+  [EMPTY_ITEMS] IF len(items) == 0 THEN SHALL transition state.status -> "EmptyOk" AND emit EmptyAccepted
+  [BAD_ITEM]    IF exists x in items: x.score <= 0 THEN SHALL reject request with BAD_ITEM
+  [LOW_SCORE]   IF len(items) > 0 and not (exists x in items: x.score <= 0) and (len(scores) == 0 or sum(scores) <= 100) THEN SHALL reject request with LOW_SCORE
+  [LOW_AMOUNT]  IF len(items) > 0 and not (exists x in items: x.score <= 0) and len(scores) > 0 and sum(scores) > 100 and sum(amounts) < 50.00 THEN SHALL reject request with LOW_AMOUNT
+  [EVAL_OK]     WHILE len(items) > 0 and not (exists x in items: x.score <= 0) and len(scores) > 0 and sum(scores) > 100 and sum(amounts) >= 50.00
+                WHEN Evaluate
+                SHALL transition state.status -> "Evaluated"
+                  AND emit Evaluated
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/screen.ears'), `slice MetricBatch.Screen
+rules:
+  [EXTREME_SPREAD] IF exists x in readings: x < 0 and exists x in readings: x > 100 THEN SHALL reject request with EXTREME_SPREAD
+  [ONLY_NEG]       IF exists x in readings: x < 0 and not (exists x in readings: x > 100) THEN SHALL reject request with ONLY_NEG
+  [ONLY_HIGH]      IF not (exists x in readings: x < 0) and exists x in readings: x > 100 THEN SHALL reject request with ONLY_HIGH
+  [BAD_ITEM]       IF not (exists x in readings: x < 0) and not (exists x in readings: x > 100) and exists x in items: x.score <= 0 THEN SHALL reject request with BAD_ITEM
+  [SCREEN_OK]      WHILE not (exists x in readings: x < 0) and not (exists x in readings: x > 100) and forall x in items: x.score > 0
+                   WHEN Screen
+                   SHALL transition state.status -> "Screened"
+                     AND emit Screened
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S22 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec22' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec22',
+    });
+
+    const tsBehavior = readFileSync(join(work, 'generated-scaffold/ts/metric-batch.behavior.ts'), 'utf8');
+    assert.doesNotMatch(tsBehavior, /cmd\.x\.score/, 'TS quantifier codegen must not prefix bound variable with cmd.');
+    const scRules = readFileSync(join(work, 'generated-scaffold/scala/example/spec22/domain/invariants/MetricBatchRules.scala'), 'utf8');
+    assert.match(scRules, /EmptyAccepted\(p\.batchId\)/);
+    assert.match(scRules, /Evaluated\(p\.batchId\)/);
+
+    const tsRun = spawnSync(
+      process.execPath,
+      [
+        '--test',
+        join(work, 'generated-tests/ts/metric-batch-evaluate.ears.spec.ts'),
+        join(work, 'generated-tests/ts/metric-batch-screen.ears.spec.ts'),
+      ],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S22 TS domain specs failed:\n${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+      mutationGate: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S22 Scala verify+mutation failed: ${JSON.stringify(verify, null, 2)}`);
+    assert.equal(verify.mutationCheck.scala.killRate, 100);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S23] Map[String, ValueObject] member access in EARS guards compiles, probes subfields, respects map-presence, and passes strict TS + Scala + 100% mutation gate (Wave-3 M12)', () => {
+  const work = makeTempDir('coarising-spec-s23-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec23
+subdomain: grading
+valueObjects:
+  - name: LineItem
+    fields:
+      - name: label
+        type: String
+      - name: score
+        type: Int
+      - name: weight
+        type: Decimal(2)
+aggregates:
+  - name: GradeBook
+    idField: bookId
+    stateFields:
+      - name: bookId
+        type: String
+      - name: status
+        type: String
+        default: "Open"
+      - name: entries
+        type: Map[String, LineItem]
+    commands:
+      - name: VerifyEntry
+        parameters:
+          - name: bookId
+            type: String
+          - name: key
+            type: String
+        produces: [EntryPassed]
+    events:
+      - name: EntryPassed
+        fields:
+          - name: bookId
+            type: String
+          - name: key
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/verify-entry.ears'), `slice GradeBook.VerifyEntry
+rules:
+  [MISSING]    IF not (key in state.entries) THEN SHALL reject request with MISSING
+  [LOW_SCORE]  IF key in state.entries and state.entries[key].score < 60 THEN SHALL reject request with LOW_SCORE
+  [LOW_WEIGHT] IF key in state.entries and state.entries[key].score >= 60 and state.entries[key].weight < 0.50 THEN SHALL reject request with LOW_WEIGHT
+  [BAD_LABEL]  IF key in state.entries and state.entries[key].score >= 60 and state.entries[key].weight >= 0.50 and state.entries[key].label == "" THEN SHALL reject request with BAD_LABEL
+  [PASS_OK]    WHILE key in state.entries and state.entries[key].score >= 60 and state.entries[key].weight >= 0.50 and state.entries[key].label != ""
+               WHEN VerifyEntry
+               SHALL transition state.status -> "Passed"
+                 AND emit EntryPassed
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S23 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec23' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec23',
+    });
+
+    const scRules = readFileSync(join(work, 'generated-scaffold/scala/example/spec23/domain/invariants/GradeBookRules.scala'), 'utf8');
+    assert.match(scRules, /state\.entries\.get\(p\.key\)\.map\(_\.score\)\.getOrElse\(0L\)/);
+    assert.match(scRules, /state\.entries\.get\(p\.key\)\.map\(_\.weight\)\.getOrElse\(BigDecimal\("0"\)\)/);
+    assert.match(scRules, /state\.entries\.get\(p\.key\)\.map\(_\.label\)\.getOrElse\(""\)/);
+
+    const tsRun = spawnSync(
+      process.execPath,
+      ['--test', join(work, 'generated-tests/ts/grade-book-verify-entry.ears.spec.ts')],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S23 TS domain spec failed:\n${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+      mutationGate: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S23 Scala verify+mutation failed: ${JSON.stringify(verify, null, 2)}`);
+    assert.equal(verify.mutationCheck.scala.killRate, 100);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S24] ExactType nested post: field update emits smart-constructor create(...).getOrElse(...) instead of invalid .copy(...) and passes strict TS + Scala + 100% mutation gate', () => {
+  const work = makeTempDir('coarising-spec-s24-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec24
+subdomain: wallet
+exactTypes:
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    units: [CNY]
+aggregates:
+  - name: Wallet
+    idField: walletId
+    stateFields:
+      - name: walletId
+        type: String
+      - name: balance
+        type: Money
+    commands:
+      - name: Deposit
+        parameters:
+          - name: walletId
+            type: String
+          - name: delta
+            type: Decimal(2)
+        produces: [Deposited]
+    events:
+      - name: Deposited
+        fields:
+          - name: walletId
+            type: String
+          - name: delta
+            type: Decimal(2)
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/deposit.ears'), `slice Wallet.Deposit
+axioms:
+  [AX-1] ALWAYS state.balance.amount >= 0.00
+rules:
+  [DEP_BAD] IF delta <= 0.00 THEN SHALL reject request with DEP_BAD
+  [DEP_OK]  WHILE delta > 0.00
+            WHEN Deposit
+            SHALL emit Deposited
+            post:
+              state.balance.amount' = state.balance.amount + delta
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S24 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec24' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec24',
+    });
+
+    const evHandler = readFileSync(
+      join(work, 'generated-scaffold/scala/example/spec24/domain/entities/behaviors/WalletEventHandler.scala'),
+      'utf8',
+    );
+    assert.match(evHandler, /example\.spec24\.domain\.values\.Money\.create\(/);
+    assert.doesNotMatch(evHandler, /state\.balance\.copy\(/);
+
+    const tsRun = spawnSync(
+      process.execPath,
+      ['--test', join(work, 'generated-tests/ts/wallet-deposit.ears.spec.ts')],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S24 TS domain spec failed:\n${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({
+      rootDir: work,
+      targets: ['scala-cqrs-play-service-v2'],
+      canonicalFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+      strict: true,
+      mutationGate: true,
+    });
+    assert.equal(verify.passed, true, `SPEC-S24 Scala verify+mutation failed: ${JSON.stringify(verify, null, 2)}`);
+    assert.equal(verify.mutationCheck.scala.killRate, 100);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
