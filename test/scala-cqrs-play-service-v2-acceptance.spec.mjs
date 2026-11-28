@@ -2442,3 +2442,271 @@ rules:
     rmSync(work, { recursive: true, force: true });
   }
 });
+
+test('[SPEC-S26] Wave-5 M18A: nested Map[String, Map[String, VO]] compiles through SMT, TS, Scala, Proto3 BoxPO, and 100% Mutation Gate without recursion', () => {
+  const work = makeTempDir('coarising-spec-s26-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: nested-map-sys
+subdomain: matrix
+valueObjects:
+  - name: CellVO
+    fields:
+      - name: score
+        type: Int
+      - name: label
+        type: String
+aggregates:
+  - name: Matrix
+    idField: matrixId
+    stateFields:
+      - name: matrixId
+        type: String
+      - name: grid
+        type: Map[String, Map[String, CellVO]]
+      - name: counts
+        type: Map[String, Map[String, Int]]
+    commands:
+      - name: CheckCell
+        parameters:
+          - name: matrixId
+            type: String
+          - name: row
+            type: String
+          - name: col
+            type: String
+        produces: [CellApproved]
+    events:
+      - name: CellApproved
+        fields:
+          - name: matrixId
+            type: String
+          - name: row
+            type: String
+          - name: col
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/matrix-check-cell.ears'), `slice Matrix.CheckCell
+rules:
+  [R_LOW] IF state.grid[row][col].score < 50 THEN SHALL reject request with SCORE_LOW
+  [R_OK]  WHILE state.grid[row][col].score >= 50
+          WHEN CheckCell
+          SHALL emit CellApproved
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S26 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec26' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec26',
+    });
+
+    const rulesScala = readFileSync(join(work, 'generated-scaffold/scala/example/spec26/domain/invariants/MatrixRules.scala'), 'utf8');
+    assert.match(rulesScala, /state\.grid\.get\(p\.row\)\.flatMap\(_\.get\(p\.col\)\)\.map\(_\.score\)\.getOrElse\(0L\)/);
+    assert.doesNotMatch(rulesScala, /map\(_\.\)/);
+
+    const sharedProto = readFileSync(join(work, 'generated-scaffold/protobuf/shared_value_objects.proto'), 'utf8');
+    assert.match(sharedProto, /message MapCellVOBoxPO/);
+    assert.match(sharedProto, /message MapIntBoxPO/);
+
+    const tsRun = spawnSync(
+      process.execPath,
+      ['--test', join(work, 'generated-tests/ts/matrix-check-cell.ears.spec.ts')],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S26 TS test failed: ${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({ rootDir: work, targets: ['scala'], mutationGate: true });
+    assert.equal(verify.passed, true, `SPEC-S26 Scala verify failed: ${JSON.stringify(verify.targets?.scala ?? verify)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S27] Wave-5 M17 & M19: non-destructive handwritten method sync, bindings drift check, and safe starter pruning on package rename', () => {
+  const work = makeTempDir('coarising-spec-s27-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+
+    // Phase 1: Initial truth with 1 L2 method and 1 externContract under pkg v1
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: evolve-sys
+subdomain: scoring
+ports:
+  - name: EnginePort
+    direction: outbound
+externContracts:
+  - name: checkAlpha
+    ownerPort: EnginePort
+    params:
+      - name: score
+        type: Int
+    returns: Bool
+aggregates:
+  - name: Scorer
+    idField: scorerId
+    stateFields:
+      - name: scorerId
+        type: String
+      - name: score
+        type: Int
+    commands:
+      - name: ScoreAlpha
+        parameters:
+          - name: scorerId
+            type: String
+          - name: points
+            type: Int
+        produces: [AlphaScored]
+    events:
+      - name: AlphaScored
+        fields:
+          - name: scorerId
+            type: String
+          - name: points
+            type: Int
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/scorer-alpha.ears'), `slice Scorer.ScoreAlpha
+rules:
+  [R_NO] IF points * points <= 0 THEN SHALL reject request with ALPHA_DENIED
+  [R_OK] WHILE points * points > 0
+         WHEN ScoreAlpha
+         SHALL emit AlphaScored
+         post:
+           state.score' = points
+`, 'utf8');
+
+    const c1 = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(c1.passed, true, `SPEC-S27 phase1 compile failed: ${JSON.stringify(c1.diagnostics)}`);
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(c1.canonical, { outDir: work, packageName: 'example.v1' });
+
+    // Add a user marker comment to ComputationsImpl to prove non-destructive sync preserves user edits
+    const compImplPath = join(work, 'handwritten/scala/example/v1/domain/services/impl/ScorerComputationsImpl.scala');
+    writeFileSync(compImplPath, `// USER-CUSTOM-PRESERVED\n${readFileSync(compImplPath, 'utf8')}`, 'utf8');
+
+    // Phase 2: Add 2nd L2 method & 2nd externContract in-place (overwriteCloze: false)
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: evolve-sys
+subdomain: scoring
+ports:
+  - name: EnginePort
+    direction: outbound
+externContracts:
+  - name: checkAlpha
+    ownerPort: EnginePort
+    params:
+      - name: score
+        type: Int
+    returns: Bool
+  - name: checkBeta
+    ownerPort: EnginePort
+    params:
+      - name: score
+        type: Int
+    returns: Bool
+aggregates:
+  - name: Scorer
+    idField: scorerId
+    stateFields:
+      - name: scorerId
+        type: String
+      - name: score
+        type: Int
+    commands:
+      - name: ScoreAlpha
+        parameters:
+          - name: scorerId
+            type: String
+          - name: points
+            type: Int
+        produces: [AlphaScored]
+      - name: ScoreBeta
+        parameters:
+          - name: scorerId
+            type: String
+          - name: points
+            type: Int
+        produces: [BetaScored]
+    events:
+      - name: AlphaScored
+        fields:
+          - name: scorerId
+            type: String
+          - name: points
+            type: Int
+      - name: BetaScored
+        fields:
+          - name: scorerId
+            type: String
+          - name: points
+            type: Int
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/scorer-beta.ears'), `slice Scorer.ScoreBeta
+rules:
+  [R_NO] IF points * points <= 0 THEN SHALL reject request with BETA_DENIED
+  [R_OK] WHILE points * points > 0
+         WHEN ScoreBeta
+         SHALL emit BetaScored
+         post:
+           state.score' = points
+`, 'utf8');
+
+    const c2 = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(c2.passed, true, `SPEC-S27 phase2 compile failed: ${JSON.stringify(c2.diagnostics)}`);
+    const g2 = getCodegenPlugin('scala-cqrs-play-service-v2').generate(c2.canonical, { outDir: work, packageName: 'example.v1', overwriteCloze: false });
+
+    const syncedComp = readFileSync(compImplPath, 'utf8');
+    assert.match(syncedComp, /USER-CUSTOM-PRESERVED/, 'user comments in ComputationsImpl must be preserved');
+    assert.match(syncedComp, /override def scoreBeta\(/, 'missing L2 method scoreBeta must be synced');
+    const syncedConn = readFileSync(join(work, 'handwritten/scala/example/v1/infrastructure/connectors/EnginePortConnectorImpl.scala'), 'utf8');
+    assert.match(syncedConn, /override def checkBeta\(score: Long\): Future\[Boolean\]/, 'missing externContract method checkBeta must be synced');
+    assert.equal(g2.syncedHandwrittenMethods.length, 2);
+
+    // Phase 3: Rename package example.v1 -> example.v2; untouched starter files are pruned, user-edited files are preserved & reported
+    const g3 = getCodegenPlugin('scala-cqrs-play-service-v2').generate(c2.canonical, { outDir: work, packageName: 'example.v2', overwriteCloze: false });
+    assert.equal(
+      existsSync(join(work, 'handwritten/scala/example/v1/modules/HandwrittenBindingsModule.scala')),
+      false,
+      'untouched starter HandwrittenBindingsModule under old package must be pruned',
+    );
+    assert.equal(
+      existsSync(join(work, 'handwritten/scala/example/v1/infrastructure/api/ServerSnapshotProviderImpl.scala')),
+      false,
+      'untouched starter ServerSnapshotProviderImpl under old package must be pruned',
+    );
+    assert.equal(
+      existsSync(compImplPath),
+      true,
+      'user-modified ComputationsImpl under old package must never be deleted',
+    );
+    assert.equal(
+      g3.staleHandwrittenFiles.some(f => f.path === 'handwritten/scala/example/v1/domain/services/impl/ScorerComputationsImpl.scala' && f.code === 'STALE_HANDWRITTEN_FILE'),
+      true,
+      'user-modified stale handwritten file must be reported in staleHandwrittenFiles',
+    );
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});

@@ -6,13 +6,13 @@
 //   - Block D: Full ReadSide/Projection Suite (#15,#23,#24,#26,#27,#28,#38b), auth-core Play Controllers + AggregateStateApiController + CommandDsl + conf/routes (#34-#37), Orchestration/Saga/Effect/ToolGate/ExternalEventBridge (#13,#25,#40-#44,#46,#38c,#38d), Play service-runtime (#38), project-scaffold (#39), 5-layer Authz PEP/PDP
 //   - Multi-Subdomain -> Bounded Context Packaging: `generateScalaCqrsPlayServiceV2ForBc`
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { registerCodegenPlugin } from '../../lib/v2/codegen/interface.mjs';
 import { resolveRuntimeProfile } from '../../lib/runtime-profile.mjs';
 import { writeV2KnowledgeGraph } from '../../lib/v2/knowledge-db.mjs';
-import { scalaStrictCodegenPlugin } from '../../lib/v2/bridge/v1-strict-scala.mjs';
+import { scalaStrictCodegenPlugin, syncMissingScalaMethods } from '../../lib/v2/bridge/v1-strict-scala.mjs';
 import { emitV1BlockC, emitV1BlockD } from '../../lib/v2/bridge/v1-strict-block-cd.mjs';
 import { emitV1OrchestrationSuite } from '../../lib/v2/bridge/v1-strict-orchestration.mjs';
 
@@ -202,6 +202,20 @@ export function mergeCanonicalsForBc(canonicals, { bcName, domainMap = null } = 
   return { mergedCanonical: merged, externalIntegrations };
 }
 
+function pruneEmptyAncestors(startDir, stopDir) {
+  let cur = resolve(startDir);
+  const boundary = resolve(stopDir);
+  while (cur.startsWith(boundary) && cur !== boundary) {
+    try {
+      if (readdirSync(cur).length > 0) break;
+      rmdirSync(cur);
+      cur = dirname(cur);
+    } catch {
+      break;
+    }
+  }
+}
+
 export function generateScalaCqrsPlayServiceV2(canonicalV2, {
   outDir,
   packageName = 'example.v2',
@@ -243,6 +257,8 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
   }
 
   const allFamilies = new Set(blockARes.familiesUsed ?? []);
+  const syncedHandwrittenMethods = [...(blockARes.syncedHandwrittenMethods ?? [])];
+  const handwrittenDrift = [];
 
   // 2. Block C & D: Pre-derive Orchestration (for ExternalAuthority propagation into Block C),
   //    then emit Block C + full Block D (ReadSide, auth-core PlayController, AggregateStateApiController, CommandDsl, conf/routes, Saga/Effect, service-runtime, project-scaffold)
@@ -275,6 +291,13 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
     const hwAlreadyInstallsProjection = Boolean(
       existingHwBindings && /install\s*\(\s*new\s+[A-Za-z0-9_]+ProjectionModule\s*\(\s*\)\s*\)/u.test(existingHwBindings),
     );
+    if (existingHwBindings && !/\bGeneratedBindingsModule\b/u.test(existingHwBindings)) {
+      handwrittenDrift.push({
+        path: hwBindingsRel,
+        code: 'HANDWRITTEN_BINDINGS_MISSING_GENERATED_MODULE',
+        message: 'existing HandwrittenBindingsModule does not install GeneratedBindingsModule; newly added bindings may not be wired at runtime',
+      });
+    }
 
     const blockD = emitV1BlockD(canonicalV2, {
       packageName,
@@ -292,7 +315,14 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
       writtenMap.set(relPath, writeArtifact(root, relPath, stamped, { overwrite: true }));
     }
     for (const [hwPath, content] of Object.entries(blockD.handwrittenFiles ?? {})) {
-      writtenMap.set(hwPath, writeArtifact(root, hwPath, content, { overwrite: overwriteCloze }));
+      const hwRec = writeArtifact(root, hwPath, content, { overwrite: overwriteCloze });
+      if (hwRec.skippedExisting && blockD.handwrittenMethodSpecs?.[hwPath]) {
+        const syncRes = syncMissingScalaMethods(hwRec.absPath, blockD.handwrittenMethodSpecs[hwPath]);
+        if (syncRes.synced) {
+          syncedHandwrittenMethods.push({ path: hwPath, addedMethods: syncRes.addedMethods });
+        }
+      }
+      writtenMap.set(hwPath, hwRec);
     }
 
     // Starter handwritten Guice bindings module (never overwritten once created) so
@@ -319,19 +349,65 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
 
   for (const rec of writtenMap.values()) written.push(rec);
 
-  // Prune stale compiler-owned scaffold files from previous generations (never touching handwritten/).
+  // Prune stale compiler-owned scaffold files and untouched starter handwritten files from previous generations.
+  // Never deletes user-modified handwritten files; instead reports them in staleHandwrittenFiles.
   const manifestRel = '.truthsrc/generated-scala-manifest.json';
   const manifestAbs = join(root, manifestRel);
   const currentScaffoldPaths = new Set(
     [...writtenMap.keys()].filter(p => p.startsWith('generated-scaffold/')),
   );
+  const currentHandwrittenPaths = new Set(
+    [...writtenMap.keys()].filter(p => p.startsWith('handwritten/')),
+  );
+  const prunedHandwrittenFiles = [];
+  const staleHandwrittenFiles = [];
+  let prevManifest = null;
   if (existsSync(manifestAbs)) {
     try {
-      const prev = JSON.parse(readFileSync(manifestAbs, 'utf8'));
-      for (const oldRel of prev.scaffoldPaths ?? []) {
+      prevManifest = JSON.parse(readFileSync(manifestAbs, 'utf8'));
+      for (const oldRel of prevManifest.scaffoldPaths ?? []) {
         if (typeof oldRel === 'string' && oldRel.startsWith('generated-scaffold/') && !currentScaffoldPaths.has(oldRel)) {
           const staleAbs = join(root, oldRel);
-          if (existsSync(staleAbs)) unlinkSync(staleAbs);
+          if (existsSync(staleAbs)) {
+            unlinkSync(staleAbs);
+            pruneEmptyAncestors(dirname(staleAbs), join(root, 'generated-scaffold'));
+          }
+        }
+      }
+      for (const [oldHwRel, starterSha] of Object.entries(prevManifest.starterHandwrittenHashes ?? {})) {
+        if (typeof oldHwRel !== 'string' || !oldHwRel.startsWith('handwritten/') || currentHandwrittenPaths.has(oldHwRel)) {
+          continue;
+        }
+        const oldHwAbs = join(root, oldHwRel);
+        if (!existsSync(oldHwAbs)) continue;
+        const curSha = createHash('sha256').update(readFileSync(oldHwAbs, 'utf8')).digest('hex');
+        if (curSha === starterSha) {
+          unlinkSync(oldHwAbs);
+          pruneEmptyAncestors(dirname(oldHwAbs), join(root, 'handwritten'));
+          prunedHandwrittenFiles.push(oldHwRel);
+        } else {
+          staleHandwrittenFiles.push({
+            path: oldHwRel,
+            code: 'STALE_HANDWRITTEN_FILE',
+            message: `handwritten file "${oldHwRel}" belongs to a removed package or symbol and has local edits; migrate or remove it manually`,
+          });
+        }
+      }
+      if (prevManifest.packageName && prevManifest.packageName !== packageName) {
+        const prevPkgDir = prevManifest.packageName.split('.').join('/');
+        const staleManagedProtoDir = join(
+          root,
+          'generated-scaffold',
+          'target',
+          'scala-2.13',
+          'src_managed',
+          'main',
+          prevPkgDir,
+          'infrastructure',
+          'proto',
+        );
+        if (existsSync(staleManagedProtoDir)) {
+          rmSync(staleManagedProtoDir, { recursive: true, force: true });
         }
       }
     } catch {
@@ -347,10 +423,25 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
       }
     }
   }
+
+  const nextStarterHandwrittenHashes = {};
+  for (const hwRel of [...currentHandwrittenPaths].sort()) {
+    const rec = writtenMap.get(hwRel);
+    if (rec && !rec.skippedExisting && rec.sha256) {
+      nextStarterHandwrittenHashes[hwRel] = rec.sha256;
+    } else if (prevManifest?.starterHandwrittenHashes?.[hwRel]) {
+      nextStarterHandwrittenHashes[hwRel] = prevManifest.starterHandwrittenHashes[hwRel];
+    }
+  }
   writeArtifact(
     root,
     manifestRel,
-    `${JSON.stringify({ schemaVersion: 'co-arising.generated-scala-manifest/v1', scaffoldPaths: [...currentScaffoldPaths].sort() }, null, 2)}\n`,
+    `${JSON.stringify({
+      schemaVersion: 'co-arising.generated-scala-manifest/v1',
+      packageName,
+      scaffoldPaths: [...currentScaffoldPaths].sort(),
+      starterHandwrittenHashes: nextStarterHandwrittenHashes,
+    }, null, 2)}\n`,
     { overwrite: true },
   );
 
@@ -367,6 +458,10 @@ export function generateScalaCqrsPlayServiceV2(canonicalV2, {
     canonicalSha256: sha,
     outDir: root,
     files: written,
+    syncedHandwrittenMethods,
+    prunedHandwrittenFiles,
+    staleHandwrittenFiles,
+    handwrittenDrift,
   };
 }
 
