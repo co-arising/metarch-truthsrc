@@ -2710,3 +2710,176 @@ rules:
     rmSync(work, { recursive: true, force: true });
   }
 });
+
+test('[SPEC-S28] Wave-6 M20 & M23: event-triggered Policy stories satisfy numeric event-field lineage and Optional[ValueObject] member access compiles safely in TS, Scala, and 100% Mutation Gate', () => {
+  const work = makeTempDir('coarising-spec-s28-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: wave6-sys
+subdomain: optpolicy
+exactTypes:
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    units: [CNY, USD]
+valueObjects:
+  - name: ProfileVO
+    fields:
+      - name: score
+        type: Int
+      - name: tier
+        type: String
+  - name: TagVO
+    fields:
+      - name: code
+        type: String
+aggregates:
+  - name: Member
+    idField: memberId
+    stateFields:
+      - name: memberId
+        type: String
+      - name: profile
+        type: Optional[ProfileVO]
+      - name: lastAmount
+        type: Money
+    commands:
+      - name: ApproveTrade
+        parameters:
+          - name: memberId
+            type: String
+          - name: amount
+            type: Money
+          - name: tag
+            type: TagVO
+        produces: [TradeApproved]
+    events:
+      - name: TradeApproved
+        fields:
+          - name: memberId
+            type: String
+          - name: amount
+            type: Money
+          - name: tag
+            type: TagVO
+  - name: Ledger
+    idField: ledgerId
+    stateFields:
+      - name: ledgerId
+        type: String
+      - name: posted
+        type: Money
+    commands:
+      - name: PostEntry
+        parameters:
+          - name: ledgerId
+            type: String
+          - name: amount
+            type: Money
+          - name: tag
+            type: TagVO
+        produces: [EntryPosted]
+    events:
+      - name: EntryPosted
+        fields:
+          - name: ledgerId
+            type: String
+          - name: amount
+            type: Money
+stories:
+  - name: SettleOnTradeApproved
+    dispatches: [Ledger.PostEntry]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/member-approve.ears'), `slice Member.ApproveTrade
+rules:
+  [NO_PROF]   IF state.profile is none THEN SHALL reject request with NO_PROFILE
+  [LOW_SCORE] IF state.profile is some AND state.profile.score < 50 THEN SHALL reject request with LOW_SCORE
+  [BAD_AMT]   IF state.profile is some AND state.profile.score >= 50 AND amount.amount <= 0.00 THEN SHALL reject request with BAD_AMT
+  [OK]        WHILE state.profile is some AND state.profile.score >= 50 AND amount.amount > 0.00
+              WHEN ApproveTrade
+              SHALL emit TradeApproved
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/ledger-post.ears'), `slice Ledger.PostEntry
+rules:
+  [BAD_AMT] IF amount.amount <= 0.00 THEN SHALL reject request with BAD_AMT
+  [OK]      WHILE amount.amount > 0.00
+            WHEN PostEntry
+            SHALL emit EntryPosted
+            post:
+              state.posted.amount' = state.posted.amount + amount.amount
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/settle-policy.story.ears'), `story SettleOnTradeApproved layer application
+rules:
+  [ON_APPROVED] WHEN event Member.TradeApproved
+                SHALL dispatch Ledger.PostEntry
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S28 compile failed (M20 lineage regression?): ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec28' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec28',
+    });
+
+    const rulesScala = readFileSync(join(work, 'generated-scaffold/scala/example/spec28/domain/invariants/MemberRules.scala'), 'utf8');
+    assert.match(rulesScala, /state\.profile\.map\(_\.score\)\.getOrElse\(0L\)/);
+    assert.doesNotMatch(rulesScala, /state\.profile\.score/);
+
+    const tsBeh = readFileSync(join(work, 'generated-scaffold/ts/member.behavior.ts'), 'utf8');
+    assert.match(tsBeh, /state\.profile\?\.score/);
+
+    const policyKernel = readFileSync(join(work, 'generated-scaffold/scala/example/spec28/application/projection/policy/PolicyOnPostEntry.scala'), 'utf8');
+    assert.match(policyKernel, /amount = event\.amount/);
+    assert.match(policyKernel, /tag = event\.tag/);
+
+    const tsRun = spawnSync(
+      process.execPath,
+      ['--test', join(work, 'generated-tests/ts/member-approve-trade.ears.spec.ts')],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S28 TS domain test failed: ${tsRun.stdout}\n${tsRun.stderr}`);
+
+    // Fill application @cloze so verify-v2 + mutation-gate passes 100%
+    const tsClozePath = join(work, 'handwritten/settle-on-trade-approved.cloze.ts');
+    writeFileSync(tsClozePath, readFileSync(tsClozePath, 'utf8').replace(
+      /\/\/ @cloze:start\(settle-on-trade-approved\)[\s\S]*?\/\/ @cloze:end\(settle-on-trade-approved\)/u,
+      `// @cloze:start(settle-on-trade-approved)
+    effects.dispatch("Ledger.PostEntry", {
+      ledgerId: String(req.payload.ledgerId ?? req.payload.memberId ?? "l-1"),
+      amount: req.payload.amount ?? { amount: "10.00", currency: "CNY" },
+      tag: req.payload.tag ?? { code: "t1" },
+    });
+    return { ok: true, ruleId: "ON_APPROVED" };
+    // @cloze:end(settle-on-trade-approved)`,
+    ), 'utf8');
+
+    const storyImplPath = join(work, 'handwritten/scala/example/spec28/application/services/SettleOnTradeApprovedImpl.scala');
+    writeFileSync(storyImplPath, readFileSync(storyImplPath, 'utf8').replace(
+      /\/\/ @cloze:start\(settle-on-trade-approved\)[\s\S]*?\/\/ @cloze:end\(settle-on-trade-approved\)/u,
+      `// @cloze:start(settle-on-trade-approved)
+    effects.dispatch("Ledger.PostEntry", Map(
+      "ledgerId" -> req.payload.get("ledgerId").orElse(req.payload.get("memberId")).getOrElse("l-1"),
+      "amount" -> req.payload.getOrElse("amount", Map("amount" -> "10.00", "currency" -> "CNY")),
+      "tag" -> req.payload.getOrElse("tag", Map("code" -> "t1"))
+    ))
+    Right(SettleOnTradeApprovedSuccessResponse(ruleId = "ON_APPROVED"))
+    // @cloze:end(settle-on-trade-approved)`,
+    ), 'utf8');
+
+    const verify = runV2VerifyGate({ rootDir: work, targets: ['scala'], mutationGate: true });
+    assert.equal(verify.passed, true, `SPEC-S28 Scala verify + mutation gate failed: ${JSON.stringify(verify.targets?.scala ?? verify)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
