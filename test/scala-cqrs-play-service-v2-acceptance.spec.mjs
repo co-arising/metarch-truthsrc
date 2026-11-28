@@ -2337,3 +2337,108 @@ rules:
     rmSync(work, { recursive: true, force: true });
   }
 });
+
+test('[SPEC-S25] Proto3 nested containers (Optional[Seq], Seq[Optional], Map[String, Optional[VO]]) emit typed BoxPO + converters, and PlayController preserves principal entitlements/attributes (Wave-4 M13/M15)', () => {
+  const work = makeTempDir('coarising-spec-s25-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec25
+subdomain: catalog
+valueObjects:
+  - name: TagVO
+    fields:
+      - name: code
+        type: String
+aggregates:
+  - name: CatalogDoc
+    idField: docId
+    stateFields:
+      - name: docId
+        type: String
+      - name: status
+        type: String
+        default: "Draft"
+      - name: optTags
+        type: Optional[Seq[String]]
+      - name: seqOptNotes
+        type: Seq[Optional[String]]
+      - name: mapOptTag
+        type: Map[String, Optional[TagVO]]
+    commands:
+      - name: Publish
+        parameters:
+          - name: docId
+            type: String
+        produces: [Published]
+    events:
+      - name: Published
+        fields:
+          - name: docId
+            type: String
+ports:
+  - name: DocPort
+    operations:
+      - name: publish
+        kind: command
+        parameters:
+          - name: docId
+            type: String
+        authz:
+          mode: static-roles
+          allowedRoles: [editor]
+          requiresEntitlement:
+            - code: doc.publish
+stories:
+  - name: PublishDocStory
+    inboundPort: DocPort
+    dispatches: [CatalogDoc.Publish]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/doc-publish.ears'), `slice CatalogDoc.Publish
+rules:
+  [PUB_BAD] IF docId == "" THEN SHALL reject request with PUB_BAD
+  [PUB_OK]  WHILE docId != ""
+            WHEN Publish
+            SHALL transition state.status -> "Published"
+              AND emit Published
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/publish-story.story.ears'), `story PublishDocStory layer application
+rules:
+  [S_BAD] IF docId == "" WHEN DocPort.publish THEN SHALL reject request with BAD_DOC
+  [S_OK]  WHILE docId != "" WHEN DocPort.publish SHALL dispatch CatalogDoc.Publish
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S25 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec25' });
+
+    const sharedProto = readFileSync(join(work, 'generated-scaffold/protobuf/shared_value_objects.proto'), 'utf8');
+    assert.match(sharedProto, /message SeqStringBoxPO/);
+    assert.match(sharedProto, /message OptStringBoxPO/);
+    assert.match(sharedProto, /message OptTagVOBoxPO/);
+
+    const docProto = readFileSync(join(work, 'generated-scaffold/protobuf/catalog_doc.proto'), 'utf8');
+    assert.match(docProto, /optional SeqStringBoxPO optTags/);
+    assert.match(docProto, /repeated OptStringBoxPO seqOptNotes/);
+    assert.match(docProto, /map<string, OptTagVOBoxPO> mapOptTag/);
+
+    const sharedConv = readFileSync(join(work, 'generated-scaffold/scala/example/spec25/infrastructure/persistence/converters/SharedValueProtoConverters.scala'), 'utf8');
+    assert.match(sharedConv, /def encodeSeqStringBoxPO\(value: Vector\[String\]\): pb\.SeqStringBoxPO/);
+    assert.match(sharedConv, /def encodeOptStringBoxPO\(value: Option\[String\]\): pb\.OptStringBoxPO/);
+    assert.match(sharedConv, /def encodeOptTagVOBoxPO\(value: Option\[TagVO\]\): pb\.OptTagVOBoxPO/);
+
+    const playCtrl = readFileSync(join(work, 'generated-scaffold/scala/controllers/PublishDocStoryPlayController.scala'), 'utf8');
+    assert.match(playCtrl, /"entitlements" -> ctx\.entitlements/);
+    assert.match(playCtrl, /"attributes" -> ctx\.attributes/);
+    assert.match(playCtrl, /def lookupAttr\(ctx: AuthContext, key: String\)/);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
