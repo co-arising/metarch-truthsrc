@@ -3202,3 +3202,194 @@ rules:
     rmSync(work, { recursive: true, force: true });
   }
 });
+
+test('[SPEC-S31] Wave-8 M28/M30: Multi-BC #46 external-event-bridge typed Payload VO & ReadSide multi-event Option wrapping (#26/#28)', () => {
+  const work = makeTempDir('coarising-spec-s31-');
+  try {
+    for (const d of ['subA/structures', 'subA/specs', 'subB/structures', 'subB/specs']) {
+      mkdirSync(join(work, d), { recursive: true });
+    }
+    writeFileSync(join(work, 'subA/structures/lending.yaml'), `
+system: spec31
+subdomain: lending
+exactTypes:
+  - name: Money
+    form: unit-decimal
+    scale: 2
+    units: [CNY]
+valueObjects:
+  - name: RiskNote
+    fields:
+      - name: level
+        type: String
+      - name: score
+        type: Int
+aggregates:
+  - name: LoanAgg
+    idField: loanId
+    stateFields:
+      - name: loanId
+        type: String
+      - name: principal
+        type: Money
+      - name: status
+        type: String
+        default: "NEW"
+      - name: approvedRate
+        type: Optional[Decimal(2)]
+      - name: riskNote
+        type: Optional[RiskNote]
+    commands:
+      - name: OpenLoan
+        parameters:
+          - name: loanId
+            type: String
+          - name: principal
+            type: Money
+        produces: [LoanOpened]
+      - name: ApproveLoan
+        parameters:
+          - name: rate
+            type: Decimal(2)
+          - name: riskNote
+            type: RiskNote
+        produces: [LoanApproved]
+    events:
+      - name: LoanOpened
+        fields:
+          - name: loanId
+            type: String
+          - name: principal
+            type: Money
+      - name: LoanApproved
+        fields:
+          - name: rate
+            type: Decimal(2)
+          - name: riskNote
+            type: RiskNote
+readModels:
+  - name: LoanOverview
+    sourceEvents: [LoanOpened, LoanApproved]
+    fields:
+      - name: loanId
+        type: String
+        source: eventField:LoanOpened.loanId
+      - name: principal
+        type: Money
+        source: eventField:LoanOpened.principal
+      - name: approvedRate
+        type: Optional[Decimal(2)]
+        source: eventField:LoanApproved.rate
+      - name: riskNote
+        type: Optional[RiskNote]
+        source: eventField:LoanApproved.riskNote
+`, 'utf8');
+    writeFileSync(join(work, 'subA/specs/open.ears'), `slice LoanAgg.OpenLoan
+rules:
+  [BAD_ID]  IF loanId == "" THEN SHALL reject request with BAD_ID
+  [BAD_AMT] IF loanId != "" AND principal.amount <= 0.00 THEN SHALL reject request with BAD_AMT
+  [OPEN_OK] WHILE loanId != "" AND principal.amount > 0.00
+            WHEN OpenLoan
+            SHALL transition state.status -> "OPEN"
+              AND emit LoanOpened
+            post:
+              state.loanId' = loanId
+              state.principal' = principal
+`, 'utf8');
+    writeFileSync(join(work, 'subA/specs/approve.ears'), `slice LoanAgg.ApproveLoan
+rules:
+  [NOT_OPEN] IF state.status != "OPEN" THEN SHALL reject request with NOT_OPEN
+  [BAD_RATE] IF state.status == "OPEN" AND rate <= 0.00 THEN SHALL reject request with BAD_RATE
+  [APP_OK]   WHILE state.status == "OPEN" AND rate > 0.00
+             WHEN ApproveLoan
+             SHALL transition state.status -> "APPROVED"
+               AND emit LoanApproved
+             post:
+               state.approvedRate' = rate
+               state.riskNote' = riskNote
+`, 'utf8');
+
+    writeFileSync(join(work, 'subB/structures/audit.yaml'), `
+system: spec31
+subdomain: audit
+aggregates:
+  - name: AuditAgg
+    idField: auditId
+    stateFields:
+      - name: auditId
+        type: String
+      - name: tag
+        type: String
+    commands:
+      - name: RecordAudit
+        parameters:
+          - name: auditId
+            type: String
+          - name: tag
+            type: String
+        produces: [AuditRecorded]
+    events:
+      - name: AuditRecorded
+        fields:
+          - name: auditId
+            type: String
+          - name: tag
+            type: String
+`, 'utf8');
+    writeFileSync(join(work, 'subB/specs/audit.ears'), `slice AuditAgg.RecordAudit
+rules:
+  [EMPTY_ID] IF auditId == "" THEN SHALL reject request with EMPTY_ID
+  [OK]       WHILE auditId != ""
+             WHEN RecordAudit
+             SHALL emit AuditRecorded
+             post:
+               state.auditId' = auditId
+               state.tag' = tag
+`, 'utf8');
+
+    const cA = compileCanonicalV2({ structuresDir: join(work, 'subA/structures'), specsPath: join(work, 'subA/specs') });
+    const cB = compileCanonicalV2({ structuresDir: join(work, 'subB/structures'), specsPath: join(work, 'subB/specs') });
+    assert.equal(cA.passed, true, `SPEC-S31 subA failed: ${JSON.stringify(cA.diagnostics)}`);
+    assert.equal(cB.passed, true, `SPEC-S31 subB failed: ${JSON.stringify(cB.diagnostics)}`);
+
+    const bcOut = join(work, 'bc-credit');
+    const bcRes = generateScalaCqrsPlayServiceV2ForBc({
+      domainMap: {
+        system: 'spec31',
+        boundedContexts: [
+          { name: 'credit', package: 'example.spec31', subdomains: ['lending', 'audit'] },
+          { name: 'upstream', package: 'example.upstream', subdomains: ['upstream'] },
+        ],
+        integrations: [
+          { id: 'upstream-funded', upstream: 'upstream', downstream: 'lending', event: 'LoanOpened', targetAggregate: 'LoanAgg', pattern: 'ACL' },
+        ],
+      },
+      bcName: 'credit',
+      canonicals: [cA.canonical, cB.canonical],
+      outDir: bcOut,
+      packageName: 'example.spec31',
+    });
+    assert.equal(bcRes.externalIntegrationsCount, 1);
+
+    // M28: Typed Payload VO + full event slotMembers + String identityKey
+    const payloadPath = join(bcOut, 'generated-scaffold/scala/example/spec31/domain/values/UpstreamFundedPayload.scala');
+    assert.equal(existsSync(payloadPath), true, 'must emit typed UpstreamFundedPayload VO');
+    const payloadSrc = readFileSync(payloadPath, 'utf8');
+    assert.match(payloadSrc, /final case class UpstreamFundedPayload\(loanId: String, principal: Money\) extends CborSerializable/);
+
+    const extBridgeSrc = readFileSync(join(bcOut, 'generated-scaffold/scala/example/spec31/application/aggregates/behaviors/LoanAggExternalEvents.scala'), 'utf8');
+    assert.match(extBridgeSrc, /def upstreamFunded\(output: UpstreamFundedPayload\): LoanOpened = LoanOpened\(output\.loanId, output\.principal\)/);
+    assert.match(extBridgeSrc, /def upstreamFundedIdentity\(output: UpstreamFundedPayload\): Vector\[String\] = Vector\(output\.loanId\)/);
+
+    // M30: Both #26 ApplyEvent and #28 ReadsideProjectionHandler wrap non-optional event fields into Some(...) for Optional ReadModel columns
+    const applyEvSrc = readFileSync(join(bcOut, 'generated-scaffold/scala/example/spec31/application/projection/handlers/LoanOverviewApplyEvent.scala'), 'utf8');
+    assert.match(applyEvSrc, /approvedRate = Some\(e\.rate\)/);
+    assert.match(applyEvSrc, /riskNote = Some\(e\.riskNote\)/);
+
+    const handlerSrc = readFileSync(join(bcOut, 'generated-scaffold/scala/example/spec31/application/readmodels/loan_overview_readside/LoanOverviewReadsideProjectionHandler.scala'), 'utf8');
+    assert.match(handlerSrc, /approvedRate = Some\(e\.rate\)/);
+    assert.match(handlerSrc, /riskNote = Some\(e\.riskNote\)/);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
