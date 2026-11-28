@@ -31,7 +31,7 @@ import { buildV2WorkshopView, exportV2WorkshopHtml } from '../lib/v2/view-v2.mjs
 import { deriveClozeTasksV2 } from '../lib/v2/tasks-v2.mjs';
 import { materializeApplicationWitness } from '../lib/v2/test-emitter/witness-materialize.mjs';
 import { initV2Project } from '../lib/v2/init-v2.mjs';
-import { runCheckV2 } from '../lib/v2/check-v2.mjs';
+import { renderCheckV2Human, runCheckV2 } from '../lib/v2/check-v2.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
@@ -2879,6 +2879,325 @@ rules:
 
     const verify = runV2VerifyGate({ rootDir: work, targets: ['scala'], mutationGate: true });
     assert.equal(verify.passed, true, `SPEC-S28 Scala verify + mutation gate failed: ${JSON.stringify(verify.targets?.scala ?? verify)}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S29] Scalar Optional[T] flow-sensitive narrowing + OR/Optional boundary witnesses (M24) and coupled forall+sum LIA axioms (M26)', () => {
+  const work = makeTempDir('coarising-spec-s29-');
+  const workNeg = makeTempDir('coarising-spec-s29-neg-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truth/structures/model.yaml'), `
+system: spec29
+context: quota
+aggregates:
+  - name: QuotaAccount
+    idField: accountId
+    stateFields:
+      - name: accountId
+        type: String
+      - name: optLimit
+        type: Optional[Int]
+      - name: optMinRate
+        type: Optional[Decimal(2)]
+      - name: optTier
+        type: Optional[String]
+      - name: lastGranted
+        type: Int
+      - name: lastRate
+        type: Decimal(2)
+    commands:
+      - name: RequestQuota
+        parameters:
+          - name: requested
+            type: Int
+          - name: offeredRate
+            type: Decimal(2)
+          - name: requiredTier
+            type: String
+        produces: [QuotaGranted]
+    events:
+      - name: QuotaGranted
+        fields:
+          - name: requested
+            type: Int
+          - name: offeredRate
+            type: Decimal(2)
+  - name: BatchScore
+    idField: batchId
+    stateFields:
+      - name: batchId
+        type: String
+      - name: lastScores
+        type: Seq[Int]
+    commands:
+      - name: SubmitScores
+        parameters:
+          - name: scores
+            type: Seq[Int]
+        produces: [ScoresAccepted]
+    events:
+      - name: ScoresAccepted
+        fields:
+          - name: scores
+            type: Seq[Int]
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/quota.ears'), `slice QuotaAccount.RequestQuota
+
+rules:
+  [QUOTA_EXCEEDS_LIMIT] IF state.optLimit is some AND requested > state.optLimit
+                        THEN SHALL reject request with EXCEEDS_OPT_LIMIT
+  [QUOTA_RATE_TOO_LOW]  IF (state.optLimit is none OR requested <= state.optLimit) AND state.optMinRate is some AND offeredRate < state.optMinRate
+                        THEN SHALL reject request with RATE_TOO_LOW
+  [QUOTA_TIER_MISMATCH] IF (state.optLimit is none OR requested <= state.optLimit) AND (state.optMinRate is none OR offeredRate >= state.optMinRate) AND state.optTier is some AND requiredTier != state.optTier
+                        THEN SHALL reject request with TIER_MISMATCH
+  [QUOTA_GRANTED]       WHILE (state.optLimit is none OR requested <= state.optLimit) AND (state.optMinRate is none OR offeredRate >= state.optMinRate) AND (state.optTier is none OR requiredTier == state.optTier)
+                        WHEN RequestQuota
+                        SHALL emit QuotaGranted
+                        post:
+                          state.lastGranted' = requested
+                          state.lastRate' = offeredRate
+`, 'utf8');
+    writeFileSync(join(work, 'truth/behaviors/scores.ears'), `slice BatchScore.SubmitScores
+
+rules:
+  [EMPTY_BATCH]           IF len(scores) == 0
+                          THEN SHALL reject request with EMPTY_SCORES
+  [NON_POSITIVE_SCORE]    IF len(scores) > 0 AND exists x in scores: x <= 0
+                          THEN SHALL reject request with NON_POSITIVE_SCORE
+  [ACCEPT_POSITIVE_BATCH] WHILE len(scores) > 0 AND forall x in scores: x > 0 AND sum(scores) >= len(scores)
+                          WHEN SubmitScores
+                          SHALL emit ScoresAccepted
+                          post:
+                            state.lastScores' = scores
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S29 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    // Negative check: unguarded Optional[Int] comparison MUST still be rejected with EARS_TYPE_MISMATCH
+    mkdirSync(join(workNeg, 'truth/structures'), { recursive: true });
+    mkdirSync(join(workNeg, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(workNeg, 'truth/structures/model.yaml'), readFileSync(join(work, 'truth/structures/model.yaml'), 'utf8'));
+    writeFileSync(join(workNeg, 'truth/behaviors/quota.ears'), `slice QuotaAccount.RequestQuota
+rules:
+  [UNGUARDED] IF requested > state.optLimit THEN SHALL reject request with BAD
+  [OK]        WHILE requested <= state.optLimit WHEN RequestQuota SHALL emit QuotaGranted
+`, 'utf8');
+    const compNeg = compileCanonicalV2({
+      structuresDir: join(workNeg, 'truth/structures'),
+      specsPath: join(workNeg, 'truth/behaviors'),
+    });
+    assert.equal(compNeg.passed, false, 'unguarded Optional[Int] ordering comparison must fail binder');
+    assert.ok(compNeg.diagnostics.some(d => d.code === 'EARS_TYPE_MISMATCH'), 'expected EARS_TYPE_MISMATCH on unguarded Optional[Int]');
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec29' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec29',
+    });
+
+    const rulesScala = readFileSync(join(work, 'generated-scaffold/scala/example/spec29/domain/invariants/QuotaAccountRules.scala'), 'utf8');
+    assert.match(rulesScala, /state\.optLimit\.getOrElse\(0L\)/);
+    assert.match(rulesScala, /state\.optMinRate\.getOrElse\(BigDecimal\("0"\)\)/);
+    assert.match(rulesScala, /state\.optTier\.getOrElse\(""\)/);
+
+    const tsRun = spawnSync(
+      process.execPath,
+      [
+        '--test',
+        join(work, 'generated-tests/ts/quota-account-request-quota.ears.spec.ts'),
+        join(work, 'generated-tests/ts/batch-score-submit-scores.ears.spec.ts'),
+      ],
+      { cwd: work, encoding: 'utf8', timeout: 30_000 },
+    );
+    assert.equal(tsRun.status, 0, `SPEC-S29 TS domain tests failed: ${tsRun.stdout}\n${tsRun.stderr}`);
+
+    const verify = runV2VerifyGate({ rootDir: work, targets: ['scala-cqrs-play-service-v2'], mutationGate: true });
+    assert.equal(verify.passed, true, `SPEC-S29 Scala verify + 100% mutation gate failed: ${JSON.stringify({ scala: verify.scalaCheck, mutation: verify.mutationCheck })}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+    rmSync(workNeg, { recursive: true, force: true });
+  }
+});
+
+test('[SPEC-S30] Schema-driven GET query coercion across TS/Scala/Play (M25) and check-v2 sync drift/stale surfacing (M27)', () => {
+  const work = makeTempDir('coarising-spec-s30-');
+  try {
+    mkdirSync(join(work, 'truth/structures'), { recursive: true });
+    mkdirSync(join(work, 'truth/behaviors'), { recursive: true });
+    writeFileSync(join(work, 'truthsrc.v2.json'), JSON.stringify({
+      structures: 'truth/structures',
+      behaviors: 'truth/behaviors',
+      targets: ['scala-cqrs-play-service-v2'],
+      packageName: 'example.spec30v1',
+    }, null, 2), 'utf8');
+
+    writeFileSync(join(work, 'truth/structures/catalog.yaml'), `
+system: spec30
+context: catalog
+ports:
+  - name: CatalogQueryPort
+    direction: inbound
+    operations:
+      - name: listProducts
+        parameters:
+          - name: page
+            type: Int
+          - name: onlyActive
+            type: Bool
+          - name: minPrice
+            type: Decimal(2)
+        returns: ProductListView
+        authz:
+          mode: public
+readModels:
+  - name: ProductListView
+    fields:
+      - name: count
+        type: Int
+        source: derived
+stories:
+  - name: ListCatalogStory
+    parameters:
+      - name: page
+        type: Int
+      - name: onlyActive
+        type: Bool
+      - name: minPrice
+        type: Decimal(2)
+`, 'utf8');
+
+    writeFileSync(join(work, 'truth/behaviors/list-catalog.ears'), `story ListCatalogStory
+
+rules:
+  [LIST_BAD_PAGE]  WHILE page <= 0
+                   WHEN CatalogQueryPort.listProducts
+                   SHALL reject request with INVALID_PAGE
+  [LIST_BAD_PRICE] WHILE page > 0 AND minPrice < 0.00
+                   WHEN CatalogQueryPort.listProducts
+                   SHALL reject request with INVALID_PRICE
+  [LIST_ACTIVE_OK] WHILE page > 0 AND minPrice >= 0.00 AND onlyActive == true
+                   WHEN CatalogQueryPort.listProducts
+                   SHALL expose ProductListView as view
+  [LIST_ALL_OK]    WHILE page > 0 AND minPrice >= 0.00 AND onlyActive == false
+                   WHEN CatalogQueryPort.listProducts
+                   SHALL expose ProductListView as view
+`, 'utf8');
+
+    const comp = compileCanonicalV2({
+      structuresDir: join(work, 'truth/structures'),
+      specsPath: join(work, 'truth/behaviors'),
+      outFile: join(work, '.truthsrc/canonical-v2.json'),
+      dbFile: join(work, '.truthsrc/knowledge.sqlite'),
+    });
+    assert.equal(comp.passed, true, `SPEC-S30 compile failed: ${JSON.stringify(comp.diagnostics)}`);
+
+    getCodegenPlugin('typescript').generate(comp.canonical, { outDir: work });
+    getCodegenPlugin('scala-cqrs-play-service-v2').generate(comp.canonical, { outDir: work, packageName: 'example.spec30v1' });
+    emitV2ExecutableTests(comp.canonical, {
+      outDir: work,
+      targets: ['typescript', 'scala-cqrs-play-service-v2'],
+      packageName: 'example.spec30v1',
+    });
+
+    // Verify PlayController emits typed queryString coercion
+    const playCtrl = readFileSync(join(work, 'generated-scaffold/scala/controllers/ListCatalogStoryPlayController.scala'), 'utf8');
+    assert.match(playCtrl, /coerceQueryValue\(k, v\.head, queryTypes\)/);
+    assert.match(playCtrl, /"page" -> "int"/);
+    assert.match(playCtrl, /"onlyActive" -> "bool"/);
+    assert.match(playCtrl, /"minPrice" -> "decimal"/);
+
+    // Verify Scala InterfacesHttpSpec uses query=Map[String, String] for GET routes
+    const scalaHttpSpec = readFileSync(join(work, 'generated-tests/scala/example/spec30v1/interfaces/http/InterfacesHttpSpec.scala'), 'utf8');
+    assert.match(scalaHttpSpec, /HttpRequest\(method = "GET", path = "\/api\/v1\/catalog\/catalog-query-port\/list-products", query = Map\[String, String\]/);
+
+    // Implement strict-type-checking TS & Scala @cloze handlers
+    const tsClozePath = join(work, 'handwritten/list-catalog-story.cloze.ts');
+    writeFileSync(tsClozePath, readFileSync(tsClozePath, 'utf8').replace(
+      /\/\/ @cloze:start\(list-catalog-story\)[\s\S]*?\/\/ @cloze:end\(list-catalog-story\)/u,
+      `// @cloze:start(list-catalog-story)
+    const page = req.payload.page;
+    const onlyActive = req.payload.onlyActive;
+    const minPrice = req.payload.minPrice;
+    if (typeof page !== "number") return { ok: false, code: "TYPE_BUG_PAGE", ruleId: "BUG" };
+    if (typeof onlyActive !== "boolean") return { ok: false, code: "TYPE_BUG_BOOL", ruleId: "BUG" };
+    if (page <= 0) return { ok: false, code: "INVALID_PAGE", ruleId: "LIST_BAD_PAGE" };
+    if (decCmp(dec(String(minPrice), 2), dec("0.00", 2)) < 0) return { ok: false, code: "INVALID_PRICE", ruleId: "LIST_BAD_PRICE" };
+    return { ok: true, ruleId: onlyActive ? "LIST_ACTIVE_OK" : "LIST_ALL_OK", viewName: "ProductListView", view: { count: 1 } };
+    // @cloze:end(list-catalog-story)`,
+    ), 'utf8');
+
+    const tsRouterCheck = spawnSync(
+      process.execPath,
+      [
+        '--input-type=module',
+        '-e',
+        `import assert from "node:assert/strict";
+         import { createApp } from ${JSON.stringify(join(work, 'generated-scaffold/ts/modules/bootstrap.ts'))};
+         import { listCatalogStoryHandler } from ${JSON.stringify(tsClozePath)};
+         const app = createApp({ handlers: { ListCatalogStory: listCatalogStoryHandler } });
+         const r = app.router.route({ method: "GET", path: "/api/v1/catalog/catalog-query-port/list-products", headers: {}, query: { page: "2", onlyActive: "true", minPrice: "10.00" } });
+         assert.equal(r.status, 200);
+         assert.equal(r.body.ruleId, "LIST_ACTIVE_OK");`,
+      ],
+      { cwd: work, encoding: 'utf8', timeout: 15_000 },
+    );
+    assert.equal(tsRouterCheck.status, 0, `SPEC-S30 TS GET query coercion failed: ${tsRouterCheck.stdout}\n${tsRouterCheck.stderr}`);
+
+    const scalaImplPath = join(work, 'handwritten/scala/example/spec30v1/application/services/ListCatalogStoryImpl.scala');
+    writeFileSync(scalaImplPath, readFileSync(scalaImplPath, 'utf8').replace(
+      /\/\/ @cloze:start\(list-catalog-story\)[\s\S]*?\/\/ @cloze:end\(list-catalog-story\)/u,
+      `// @cloze:start(list-catalog-story)
+    val page: Long = req.payload.get("page") match {
+      case Some(v: Long) => v
+      case other => return Left(iMadzError("TYPE_BUG_PAGE", s"got $other"))
+    }
+    val onlyActive: Boolean = req.payload.get("onlyActive") match {
+      case Some(v: Boolean) => v
+      case other => return Left(iMadzError("TYPE_BUG_BOOL", s"got $other"))
+    }
+    val minPrice: BigDecimal = req.payload.get("minPrice") match {
+      case Some(v: BigDecimal) => v
+      case Some(v: String) => BigDecimal(v)
+      case other => return Left(iMadzError("TYPE_BUG_DEC", s"got $other"))
+    }
+    if (page <= 0L) Left(iMadzError("INVALID_PAGE", "bad page"))
+    else if (minPrice < BigDecimal("0.00")) Left(iMadzError("INVALID_PRICE", "bad price"))
+    else Right(ListCatalogStorySuccessResponse(ruleId = if (onlyActive) "LIST_ACTIVE_OK" else "LIST_ALL_OK", viewName = Some("ProductListView"), view = Map("count" -> 1L)))
+    // @cloze:end(list-catalog-story)`,
+    ), 'utf8');
+
+    const verify = runV2VerifyGate({ rootDir: work, targets: ['scala-cqrs-play-service-v2'], strict: true });
+    assert.equal(verify.passed, true, `SPEC-S30 Scala InterfacesHttpSpec GET coercion failed: ${JSON.stringify(verify.scalaCheck)}`);
+
+    // M27: Rename package while leaving edited handwritten file -> check-v2 --sync must surface pruned/stale files in JSON & human report
+    writeFileSync(join(work, 'truthsrc.v2.json'), JSON.stringify({
+      structures: 'truth/structures',
+      behaviors: 'truth/behaviors',
+      targets: ['scala-cqrs-play-service-v2'],
+      packageName: 'example.spec30v2',
+    }, null, 2), 'utf8');
+    const checkRes = runCheckV2({ rootDir: work, sync: true, strict: false, skipCoverage: true });
+    assert.ok(Array.isArray(checkRes.sync?.staleHandwrittenFiles), 'sync must expose staleHandwrittenFiles');
+    assert.ok(Array.isArray(checkRes.sync?.prunedHandwrittenFiles), 'sync must expose prunedHandwrittenFiles');
+    assert.ok(Array.isArray(checkRes.sync?.handwrittenDrift), 'sync must expose handwrittenDrift');
+    assert.ok(Array.isArray(checkRes.sync?.syncedHandwrittenMethods), 'sync must expose syncedHandwrittenMethods');
+    assert.ok(checkRes.sync.staleHandwrittenFiles.some(s => s.path.includes('ListCatalogStoryImpl.scala')), 'edited v1 story impl must be reported as stale');
+    assert.ok(checkRes.sync.prunedHandwrittenFiles.length >= 1, 'untouched v1 starter files must be pruned');
+    const human = renderCheckV2Human(checkRes);
+    assert.match(human, /STALE_HANDWRITTEN_FILE/);
+    assert.match(human, /ListCatalogStoryImpl\.scala/);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }
