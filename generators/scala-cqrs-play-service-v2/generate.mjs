@@ -156,11 +156,65 @@ export function mergeCanonicalsForBc(canonicals, { bcName, domainMap = null } = 
     }
   }
 
-  const behaviors = dedupBy(canonicals.flatMap(c => c.behaviors ?? []), b => `${b.kind}:${b.target}`);
-  const clozeSlots = dedupBy(canonicals.flatMap(c => c.clozeSlots ?? []), s => s.slotId || s.target);
+  // A4-01 fix: enforce structural conflict checks across ALL merged collections (behaviors, clozeSlots, sagas, effects, eventFolds, etc.)
+  const behaviors = dedupStructuralChecked(canonicals, c => c.behaviors, 'behavior', b => `${b.kind}:${b.target}`);
+  const clozeSlots = dedupStructuralChecked(canonicals, c => c.clozeSlots, 'clozeSlot', s => s.slotId || s.target);
+  const eventFolds = dedupStructuralChecked(canonicals, c => c.eventFolds, 'eventFold', f => `${f.aggregate}:${f.event}`);
   const deterministicCount = behaviors.filter(b => b.theory?.codegenChannel === 'deterministic').length;
   const clozeCount = behaviors.length - deterministicCount;
   const firstSolver = canonicals.find(c => c.verificationSummary?.solver)?.verificationSummary?.solver || 'z3';
+
+  // A4-02 fix: preserve & merge top-level testing (strictest thresholds), readside, and lineage across subdomains
+  const testingCandidates = canonicals.map(c => c.testing).filter(Boolean);
+  let mergedTesting = null;
+  if (testingCandidates.length > 0) {
+    const maxOpt = vals => {
+      const nums = vals.filter(v => typeof v === 'number' && Number.isFinite(v));
+      return nums.length > 0 ? Math.max(...nums) : null;
+    };
+    const domainLayers = testingCandidates.map(t => t.layers?.domain).filter(Boolean);
+    const minLineCoverage = maxOpt(domainLayers.map(d => d.minLineCoverage));
+    const minBranchCoverage = maxOpt(domainLayers.map(d => d.minBranchCoverage));
+    const mutationGate = domainLayers.some(d => d.mutationGate === true);
+    mergedTesting = {
+      ...testingCandidates[0],
+      layers: {
+        ...(testingCandidates[0].layers ?? {}),
+        ...(domainLayers.length > 0 ? {
+          domain: {
+            ...domainLayers[0],
+            ...(minLineCoverage !== null ? { minLineCoverage } : {}),
+            ...(minBranchCoverage !== null ? { minBranchCoverage } : {}),
+            ...(mutationGate ? { mutationGate: true } : {}),
+          },
+        } : {}),
+      },
+    };
+  }
+  const readsideCandidates = canonicals.map(c => c.readside).filter(Boolean);
+  const mergedReadside = readsideCandidates.length > 0
+    ? {
+        ...readsideCandidates[0],
+        materializedViews: dedupBy(
+          readsideCandidates.flatMap(r => r.materializedViews ?? []),
+          v => v.name || v.viewName || JSON.stringify(v),
+        ),
+      }
+    : null;
+  const lineageCandidates = canonicals.map(c => c.lineage).filter(Boolean);
+  const mergedLineage = lineageCandidates.length > 0
+    ? {
+        ...lineageCandidates[0],
+        dispatches: dedupBy(
+          lineageCandidates.flatMap(l => l.dispatches ?? []),
+          d => `${d.story || ''}:${d.aggregate || ''}:${d.command || ''}`,
+        ),
+        authzMatrix: dedupBy(
+          lineageCandidates.flatMap(l => l.authzMatrix ?? []),
+          a => `${a.operation || a.route || ''}:${a.mode || ''}`,
+        ),
+      }
+    : null;
 
   const merged = {
     schemaVersion: first.schemaVersion || 'co-arising.canonical/v2',
@@ -180,16 +234,19 @@ export function mergeCanonicalsForBc(canonicals, { bcName, domainMap = null } = 
       externContracts: dedupStructuralChecked(canonicals, c => c.structures?.externContracts, 'externContract', x => `${x.ownerPort || ''}:${x.name}`),
       aggregates: dedupStructuralChecked(canonicals, c => c.structures?.aggregates, 'aggregate', x => x.name),
       stories: dedupStructuralChecked(canonicals, c => c.structures?.stories, 'story', x => x.name),
-      useCases: dedupBy(canonicals.flatMap(c => c.structures?.useCases ?? []), x => x.id || x.name),
-      journeys: dedupBy(canonicals.flatMap(c => c.structures?.journeys ?? []), x => x.id || x.name),
-      compliance: dedupBy(canonicals.flatMap(c => c.structures?.compliance ?? []), x => x.id || x.name),
-      pipelines: dedupBy(canonicals.flatMap(c => c.structures?.pipelines ?? c.pipelines ?? []), x => x.id || x.name),
-      sagas: dedupBy(canonicals.flatMap(c => c.structures?.sagas ?? c.sagas ?? []), x => x.name),
-      effects: dedupBy(canonicals.flatMap(c => c.structures?.effects ?? c.effects ?? []), x => x.name),
+      useCases: dedupStructuralChecked(canonicals, c => c.structures?.useCases, 'useCase', x => x.id || x.name),
+      journeys: dedupStructuralChecked(canonicals, c => c.structures?.journeys, 'journey', x => x.id || x.name),
+      compliance: dedupStructuralChecked(canonicals, c => c.structures?.compliance, 'compliance', x => x.id || x.name),
+      pipelines: dedupStructuralChecked(canonicals, c => c.structures?.pipelines ?? c.pipelines, 'pipeline', x => x.id || x.name),
+      sagas: dedupStructuralChecked(canonicals, c => c.structures?.sagas ?? c.sagas, 'saga', x => x.name),
+      effects: dedupStructuralChecked(canonicals, c => c.structures?.effects ?? c.effects, 'effect', x => x.name),
     },
     behaviors,
-    eventFolds: dedupBy(canonicals.flatMap(c => c.eventFolds ?? []), f => `${f.aggregate}:${f.event}`),
+    eventFolds,
     clozeSlots,
+    ...(mergedTesting ? { testing: mergedTesting } : {}),
+    ...(mergedReadside ? { readside: mergedReadside } : {}),
+    ...(mergedLineage ? { lineage: mergedLineage } : {}),
     verificationSummary: {
       solver: firstSolver,
       passed: true,
