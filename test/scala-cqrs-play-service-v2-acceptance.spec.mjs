@@ -811,7 +811,8 @@ rules:
     assert.match(batchRepo, /import play\.api\.libs\.json\.Json/);
     assert.match(batchRepo, /publishedAt = rs\.longOpt\("published_at"\)/);
     assert.match(batchRepo, /refundTotal = rs\.bigDecimalOpt\("refund_total"\)\.map\(BigDecimal\(_\)\)/);
-    assert.match(batchRepo, /topics = scala\.util\.Try\(Json\.parse\(rs\.stringOpt\("topics"\)/);
+    assert.match(batchRepo, /topics = rs\.stringOpt\("topics"\)\.map\(_\.trim\)\.filter\(_\.nonEmpty\)\.map\(raw => scala\.util\.Try\(Json\.parse\(raw\)\.as\[Vector\[String\]\]\)/);
+    assert.match(batchRepo, /corrupt ReadSide column topics/);
     assert.match(batchRepo, /Json\.stringify\(Json\.toJson\(row\.topics\)\)/);
     assert.doesNotMatch(batchRepo, /rs\.stringOpt\("published_at"\)/);
 
